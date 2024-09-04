@@ -148,10 +148,12 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
