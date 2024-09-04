@@ -2,6 +2,9 @@
 #include <Adapter.h>
 #include "scene/IScene.h"
 
+#include"../Player/Player.h"
+
+
 class TestScene final
 	: public IScene {
 public:
@@ -17,5 +20,6 @@ public:
 
 
 private: //*** これより先に必要な処理や変数を記述 ***//
-
+	Player player_;
+	//LWP::Resource::RigidModel model_;
 };

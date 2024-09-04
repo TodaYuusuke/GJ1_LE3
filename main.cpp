@@ -5,6 +5,6 @@
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::StartUp("Window Title");
-	LWP::System::Run(new Title);
+	LWP::System::Run(new TestScene);
 	return 0;
 }
