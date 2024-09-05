@@ -13,6 +13,8 @@ void Player::Update()
 
 	//状態リクエストがある時実行
 	if (behaviorReq_) {
+		//過去の状態を保存
+		preBehavior_ = behavior_;
 		//状態を更新
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
@@ -22,7 +24,26 @@ void Player::Update()
 	//状態更新処理
 	(this->*BehaviorUpdate[behavior_])();
 
+	GlovalUpdate();
+
 	model_.DebugGUI();
+}
+
+void Player::GlovalUpdate()
+{
+	//重力処理
+	acceGravity_ -= gravity_;
+	velo_.y += acceGravity_;
+
+	//加算処理
+	model_.worldTF.translation += velo_;
+
+	//0以下の時落下量を消す
+	if (model_.worldTF.translation.y < 0) {
+		model_.worldTF.translation.y = 0;
+		velo_.y = 0;
+		acceGravity_ = 0;
+	}
 }
 
 void Player::Debug()
@@ -37,6 +58,8 @@ void Player::Debug()
 	ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
 	ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
 	ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
+	ImGui::DragFloat("gravity", &gravity_,0.01f);
+	ImGui::DragFloat("jump Velo", &jumpVelo_,0.01f);
 	ImGui::End();
 #endif // DEMO
 
@@ -46,13 +69,17 @@ void Player::Debug()
 void (Player::* Player::BehaviorInitialize[])() = {
 	&Player::InitializeMove,
 	&Player::InitializeSlide,
-	& Player::InitializeQuitSlide
+	&Player::InitializeQuitSlide,
+	&Player::InitializeShot,
+	&Player::InitializeJump
 };
 //更新初期化関数ポインタテーブル
 void (Player::* Player::BehaviorUpdate[])() = {
 	&Player::UpdateMove,
 	&Player::UpdateSlide,
-	& Player::UpdateQuitSlide
+	&Player::UpdateQuitSlide,
+	&Player::UpdateShot,
+	&Player::UpdateJump
 };
 
 #pragma region 各状態の初期化
@@ -73,6 +100,16 @@ void Player::InitializeSlide()
 void Player::InitializeQuitSlide()
 {
 
+}
+
+void Player::InitializeShot()
+{
+}
+
+void Player::InitializeJump()
+{
+	//初期加速度を渡す
+	acceGravity_ += jumpVelo_;
 }
 
 
@@ -104,6 +141,14 @@ void Player::UpdateMove()
 	if (Input::Keyboard::GetTrigger(DIK_LSHIFT)) {
 		behaviorReq_ = Sliding;
 	}
+
+	if (Input::Keyboard::GetTrigger(DIK_C)) {
+		behaviorReq_ = Shot;
+	}
+
+	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+		behaviorReq_ = Jump;
+	}
 #pragma endregion
 
 
@@ -120,7 +165,7 @@ void Player::UpdateSlide()
 	}
 
 	//加算処理
-	model_.worldTF.translation += velo_;
+	//model_.worldTF.translation += velo_;
 
 }
 
@@ -155,8 +200,21 @@ void Player::UpdateQuitSlide()
 	t;
 
 	//加算処理
-	model_.worldTF.translation += velo_;
+	//model_.worldTF.translation += velo_;
 }
+
+void Player::UpdateShot()
+{
+	//硬直処理またはなにか処理を挟んだ後戻す
+	behaviorReq_ = Moving;
+}
+
+void Player::UpdateJump()
+{
+	behaviorReq_ = Moving;
+}
+
+
 
 
 #pragma endregion
