@@ -52,4 +52,8 @@ void EnemyManager::Update() {
 	ImGui::End();
 #endif
 
+	for (auto& enemy : enemies_) {
+		enemy->Update();
+	}
+
 }

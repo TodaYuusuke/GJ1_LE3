@@ -1,12 +1,20 @@
 #include "Player.h"
 
 using namespace LWP;
+using namespace LWP::Object;
 
 void Player::Initialize()
 {
 	model_.LoadCube();
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
+
+	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
+	collider_.SetFollowTarget(&model_.worldTF);
+	collider_.name = "player";
+	
+
+	collider_.enterLambda = [=](Collider::Collider* data) {hp_--; };
 }
 
 void Player::Update()
@@ -57,20 +65,33 @@ void Player::GlovalUpdate()
 
 }
 
+
+
 void Player::Debug()
 {
 #ifdef DEMO
 
-	std::string behaName = "behavior : " + behaviorStirng_[behavior_];
+	std::string behaName = "HP %d behavior : " + behaviorStirng_[behavior_];
 
-	ImGui::Begin("Player");
-	ImGui::Text(behaName.c_str());
-	ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
-	ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
-	ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
-	ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
-	ImGui::DragFloat("gravity", &gravity_, 0.01f);
-	ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
+	ImGui::Begin("Game");
+	if (ImGui::BeginTabBar("LWP")) {
+		if (ImGui::BeginTabItem("Player")) {
+
+			ImGui::Text(behaName.c_str(),hp_);
+			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
+			ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
+			ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
+			ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
+			ImGui::DragFloat("gravity", &gravity_, 0.01f);
+			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
+
+			collider_.DebugGUI();
+			ImGui::EndTabItem();
+			
+		}
+
+		ImGui::EndTabBar();
+	}
 	ImGui::End();
 #endif // DEMO
 

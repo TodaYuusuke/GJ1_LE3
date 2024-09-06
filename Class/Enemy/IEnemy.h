@@ -1,11 +1,8 @@
 #pragma once
 #include <Adapter.h>
 
-// 前方宣言（仮なので座標をもつだけ）
-class Player {
-public:
-	LWP::Math::Vector3 position;
-};
+#include"../Player/Player.h"
+
 
 enum class EnemyType {
 	Spider,
@@ -31,7 +28,8 @@ public:
 	// 自分のタイプを返す関数
 	virtual EnemyType GetType() = 0;
 
-private: // ** メンバ変数 ** //
+
+public: // ** メンバ変数 ** //
 
 	// モデル
 	LWP::Resource::RigidModel model_;

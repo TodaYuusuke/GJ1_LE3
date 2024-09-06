@@ -4,7 +4,7 @@
 class Slime final
 	: public IEnemy {
 public:
-	Slime(Player* ptr) : IEnemy(ptr) {}
+	Slime(Player* ptr) : IEnemy(ptr) { Initialize(); }
 	~Slime() = default;
 
 	// ** メンバ関数 ** //
@@ -17,7 +17,30 @@ public:
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Slime; }
 
-
+	void DebugGUI() override;
 private: // ** メンバ変数 ** //
 
+	LWP::Object::Collider::Collider collider_;
+
+	//飛ぶまでのカウント
+	float jumpCount_ = 0;
+
+private: // ** パラメータ ** //
+
+	//飛んだかどうかのフラグ
+	bool isJump_ = false;
+
+	LWP::Math::Vector3 velo_;
+
+	//次飛ぶまでの秒数
+	float maxjumpTime_ = 2.0f;
+
+	//Y軸の傾きの強さ
+	float jumpYNum_ = 1.0f;
+
+	//
+	float jumpSpd_ = 10.0f;
+
+	//落ちる速度
+	float gravity_ = -10.0f;
 };

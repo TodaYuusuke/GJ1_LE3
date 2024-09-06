@@ -4,7 +4,7 @@
 class Spider final
 	: public IEnemy {
 public:
-	Spider(Player* ptr) : IEnemy(ptr) {}
+	Spider(Player* ptr) : IEnemy(ptr) { Initialize(); }
 	~Spider() = default;
 
 	// ** メンバ関数 ** //
@@ -17,7 +17,15 @@ public:
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
 
+	//攻撃に被弾したときの処理
+	void OnCollision();
 
 private: // ** メンバ変数 ** //
 
+	LWP::Object::Collider::Collider collider_;
+
+private: // ** パラメータ ** //
+
+	//移動速度
+	float spd_ = 5.0f;
 };

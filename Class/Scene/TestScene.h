@@ -22,5 +22,5 @@ public:
 
 private: //*** これより先に必要な処理や変数を記述 ***//
 	Player player_;
-	//LWP::Resource::RigidModel model_;
+	EnemyManager enemyManager_;
 };

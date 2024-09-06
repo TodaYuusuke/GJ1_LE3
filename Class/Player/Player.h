@@ -21,7 +21,11 @@ public:
 	//プレイヤーの現在の状態を取得
 	Behavior& GetBehavior() { return behavior_; }
 
-private:
+public:
+
+	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
+
+private:// ** 処理をまとめた関数 ** //
 	//デバッグ処理
 	void Debug();
 
@@ -46,9 +50,34 @@ private:
 
 	//各状態関係なく更新
 	void GlovalUpdate();
-private:
+
+	//攻撃ヒット時の処理
+	//void OnCollision(Collider::Collider* hitT);
+
+private: // ** パラメータ ** //
+
+	//体力
+	int hp_ = 10;
+	//弾残弾
+	int ammoNum_ = 10;
+	//最大弾薬数
+	int maxAmmoNum_ = 10;
+
+	//移動速度
+	float moveSpd_ = 1.0f;
+
+	//重力
+	float gravity_ = 0.01f;
+	float acceGravity_ = 0.0f;
+
+	//ジャンプの初期ベクトル量
+	float jumpVelo_ = 0.1f;
+
+private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::RigidModel model_;
+
+	LWP::Object::Collider::Collider collider_;
 
 
 	//移動ベクトル
@@ -57,22 +86,7 @@ private:
 	//加速度
 	LWP::Math::Vector3 acce_;
 
-	//体力
-	int hp_= 10 ;
-	//弾残弾
-	int ammoNum_ = 10;
-	//最大弾薬数
-	int maxAmmoNum_ = 10;
-
-	//移動速度
-	float moveSpd_=1.0f;
-
-	//重力
-	float gravity_ = 0.01f;
-	float acceGravity_ = 0.0f;
-
-	//ジャンプの初期ベクトル量
-	float jumpVelo_ = 0.1f;
+	
 
 	//ジャンプの落下速度の調整
 	float t = 0;
@@ -101,6 +115,7 @@ private:
 	SlidingData slidingData_{};
 
 
+
 	//状態リクエスト
 	std::optional<Behavior> behaviorReq_ = std::nullopt;
 	//状態
@@ -115,4 +130,7 @@ private:
 		"Shot",
 		"Jump"
 	};
+
+
+
 };
