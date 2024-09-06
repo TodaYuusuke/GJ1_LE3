@@ -36,11 +36,11 @@ private: // ** パラメータ ** //
 	float maxjumpTime_ = 2.0f;
 
 	//Y軸の傾きの強さ
-	float jumpYNum_ = 1.0f;
+	float jumpYNum_ = 2.0f;
 
 	//
-	float jumpSpd_ = 10.0f;
+	float jumpSpd_ = 50.0f;
 
 	//落ちる速度
-	float gravity_ = -10.0f;
+	float gravity_ = -90.0f;
 };

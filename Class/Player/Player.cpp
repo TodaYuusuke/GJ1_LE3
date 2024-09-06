@@ -9,12 +9,14 @@ void Player::Initialize()
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
 
-	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
+	Collider::Capsule& aabb = collider_.SetBroadShape(Collider::Capsule());
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "player";
 	
 
 	collider_.enterLambda = [=](Collider::Collider* data) {hp_--; };
+
+	
 }
 
 void Player::Update()
@@ -154,6 +156,8 @@ void Player::InitializeJump()
 #pragma region 各状態の更新
 void Player::UpdateMove()
 {
+	float delta = LWP::Info::GetDefaultDeltaTimeF();
+
 	//入力による移動処理
 	LWP::Math::Vector3 move{ 0,0,0 };
 	if (LWP::Input::Keyboard::GetPress(DIK_A)) {
@@ -169,7 +173,7 @@ void Player::UpdateMove()
 	}
 
 	//WorldTFに値追加
-	model_.worldTF.translation += move;
+	model_.worldTF.translation += move*delta;
 
 
 #pragma region 各状態変化
@@ -207,10 +211,13 @@ void Player::UpdateSlide()
 
 void Player::UpdateQuitSlide()
 {
+
+	float delta = LWP::Info::GetDefaultDeltaTimeF();
+
 	//向きによって減速処理
 	if (pVeloX_ > 0) {
 		//xの量引く
-		velo_.x -= slidingData_.acceSpd;
+		velo_.x -= slidingData_.acceSpd *delta;
 
 		//Pの向きが正の向き＆
 		//ベクトルが負の向きの時終了
@@ -221,7 +228,7 @@ void Player::UpdateQuitSlide()
 	}
 	else {
 		//xの量引く
-		velo_.x += slidingData_.acceSpd;
+		velo_.x += slidingData_.acceSpd * delta;
 
 		//Pの向きが負の向き＆
 		//ベクトルが正の向きの時終了

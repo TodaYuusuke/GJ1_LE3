@@ -64,14 +64,14 @@ private: // ** パラメータ ** //
 	int maxAmmoNum_ = 10;
 
 	//移動速度
-	float moveSpd_ = 1.0f;
+	float moveSpd_ = 100.0f;
 
 	//重力
-	float gravity_ = 0.01f;
+	float gravity_ = 100.0f;
 	float acceGravity_ = 0.0f;
-
+	  
 	//ジャンプの初期ベクトル量
-	float jumpVelo_ = 0.1f;
+	float jumpVelo_ = 1000.0f;
 
 private: // ** 変数 ** //
 	//モデル
@@ -103,13 +103,13 @@ private: // ** 変数 ** //
 		LWP::Math::Vector3 startPos;
 
 		//減速開始の長さ
-		float length = 5.0f;
+		float length = 10.0f;
 
 		//速度
-		float spd = 0.5f;
+		float spd = 100.0f;
 
 		//減速量
-		float acceSpd = 1.0f / 30.0f;
+		float acceSpd = 1000.0f;
 
 	};
 	SlidingData slidingData_{};

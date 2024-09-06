@@ -6,6 +6,7 @@ using namespace LWP::Object;
 void Slime::Initialize() {
 	model_.LoadSphere();
 	collider_.SetBroadShape(Collider::Sphere());
+	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "enemy";
 }
 
