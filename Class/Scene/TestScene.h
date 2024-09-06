@@ -1,5 +1,6 @@
 #pragma once
-#include <Adapter.h>
+#include "../Enemy/EnemyManager.h"
+
 #include "scene/IScene.h"
 
 #include"../Player/Player.h"
