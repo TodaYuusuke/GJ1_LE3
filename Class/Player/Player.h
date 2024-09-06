@@ -53,6 +53,9 @@ private:
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
+	
+	//加速度
+	LWP::Math::Vector3 acce_;
 
 	//体力
 	int hp_= 10 ;
@@ -70,6 +73,11 @@ private:
 
 	//ジャンプの初期ベクトル量
 	float jumpVelo_ = 0.1f;
+
+	//ジャンプの落下速度の調整
+	float t = 0;
+
+	bool isJump_ = false;
 
 	//向き(変更しない
 	float pVeloX_ = 1.0f;

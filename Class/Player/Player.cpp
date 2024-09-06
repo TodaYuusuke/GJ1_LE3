@@ -5,6 +5,8 @@ using namespace LWP;
 void Player::Initialize()
 {
 	model_.LoadCube();
+	velo_ = { 0,0,0 };
+	acce_ = { 0,0,0 };
 }
 
 void Player::Update()
@@ -31,19 +33,28 @@ void Player::Update()
 
 void Player::GlovalUpdate()
 {
+
+	float delta = Info::GetDeltaTime();
+
 	//重力処理
-	acceGravity_ -= gravity_;
-	velo_.y += acceGravity_;
+	if (isJump_) {
+		//acce_.y -= gravity_;
+		//velo_.y -= gravity_;
+	}
+
 
 	//加算処理
-	model_.worldTF.translation += velo_;
+	velo_ += acce_*delta;
+	model_.worldTF.translation += velo_*delta;
 
 	//0以下の時落下量を消す
-	if (model_.worldTF.translation.y < 0) {
-		model_.worldTF.translation.y = 0;
+ 	if (model_.worldTF.translation.y < 0) {
+ 		model_.worldTF.translation.y = 0;
 		velo_.y = 0;
-		acceGravity_ = 0;
+		acce_.y = 0;
+		isJump_ = false;
 	}
+
 }
 
 void Player::Debug()
@@ -54,12 +65,12 @@ void Player::Debug()
 
 	ImGui::Begin("Player");
 	ImGui::Text(behaName.c_str());
-	ImGui::DragFloat("move spd", &moveSpd_,0.01f);
+	ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
 	ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
 	ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
 	ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
-	ImGui::DragFloat("gravity", &gravity_,0.01f);
-	ImGui::DragFloat("jump Velo", &jumpVelo_,0.01f);
+	ImGui::DragFloat("gravity", &gravity_, 0.01f);
+	ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
 	ImGui::End();
 #endif // DEMO
 
@@ -109,7 +120,11 @@ void Player::InitializeShot()
 void Player::InitializeJump()
 {
 	//初期加速度を渡す
-	acceGravity_ += jumpVelo_;
+	//acceGravity_ = jumpVelo_;
+	velo_.y += jumpVelo_;
+	acce_.y = -gravity_;
+	t = 0;
+	isJump_ = true;
 }
 
 
@@ -157,7 +172,7 @@ void Player::UpdateSlide()
 {
 
 	//過去位置と現在（1F前)との距離を検索
-	float pLeng  = (slidingData_.startPos - model_.worldTF.GetWorldPosition()).Length();
+	float pLeng = (slidingData_.startPos - model_.worldTF.GetWorldPosition()).Length();
 
 	//指定した距離より離れた場合に減速処理
 	if (slidingData_.length < pLeng) {
@@ -196,7 +211,7 @@ void Player::UpdateQuitSlide()
 	}
 
 	//アニメーション進行度(0-1)
-	float t =1.0f- velo_.Length() / slidingData_.spd;
+	float t = 1.0f - velo_.Length() / slidingData_.spd;
 	t;
 
 	//加算処理

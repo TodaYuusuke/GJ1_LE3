@@ -3,7 +3,8 @@
 // 初期化
 void TestScene::Initialize() {
 	player_.Initialize();
-	mainCamera.transform.translation.z = -50;
+	mainCamera.transform.translation.z = -100;
+	mainCamera.transform.translation.y = 10;
 }
 
 // 更新
