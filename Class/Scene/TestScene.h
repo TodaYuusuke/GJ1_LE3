@@ -1,5 +1,6 @@
 #pragma once
-#include <Adapter.h>
+#include "../Enemy/EnemyManager.h"
+
 #include "scene/IScene.h"
 
 class TestScene final
@@ -18,4 +19,8 @@ public:
 
 private: //*** これより先に必要な処理や変数を記述 ***//
 
+	// 敵管理クラス
+	EnemyManager enemyManager_;
+	// 仮プレイヤークラス
+	Player player_;
 };
