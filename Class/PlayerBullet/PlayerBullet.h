@@ -7,6 +7,12 @@ struct BulletData {
 	LWP::Object::Collider::Collider collider;
 	//1秒間に進む量
 	LWP::Math::Vector3 velo;
+
+	//一応時間制限で死亡
+	float deadCount=0;
+	float maxDeadCount = 180;
+
+	bool isAlive = true;
 };
 
 class PlayerBullets {
@@ -30,11 +36,11 @@ public:
 
 
 	//弾丸のデータを読む
-	std::vector<BulletData*>&GetBulletData() { return bullets_; };
+	std::list<BulletData*>&GetBulletData() { return bullets_; };
 private:
 
 	//弾のデータ群
-	std::vector<BulletData*>bullets_;
+	std::list<BulletData*>bullets_;
 
 	//弾のmodel名
 	std::string modelname_ = "";

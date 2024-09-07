@@ -6,7 +6,7 @@ using namespace LWP::Object;
 PlayerBullets::PlayerBullets()
 {
 	//同次にどんだけ出るか知らん
-	bullets_.reserve(50);
+
 }
 
 PlayerBullets::~PlayerBullets()
@@ -30,8 +30,22 @@ void PlayerBullets::Update()
 		prePos = data->model.worldTF.translation;
 		//移動量加算
 		data->model.worldTF.translation += data->velo*delta;
+
+		if (data->deadCount++ >= data->maxDeadCount) {
+			data->isAlive = false;
+		}
+		
 	}
 
+	//削除処理
+	bullets_.remove_if([](BulletData* data) {
+		if (!data->isAlive) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		});
 }
 
 void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo)

@@ -13,8 +13,6 @@ void TestScene::Initialize() {
 void TestScene::Update() {
 	//mainCamera.DebugGUI();
 
-	std::vector<BulletData*> data = player_.GetPlayerBulletsData();
-
 	player_.Update();
 
 	enemyManager_.Update();
