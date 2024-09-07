@@ -27,7 +27,7 @@ public:
 	Behavior& GetBehavior() { return behavior_; }
 
 	//プレイヤーの弾データを取得
-	std::list<BulletData*>& GetPlayerBulletsData() { return bullets_->GetBulletData(); }
+	//std::list<BulletData> GetPlayerBulletsData() { return bullets_->GetBulletData(); }
 public:
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
@@ -58,7 +58,7 @@ private:// ** 処理をまとめた関数 ** //
 	void GlovalUpdate();
 
 	//弾の発射処理
-	void ShotBullet(const LWP::Math::Vector3&v);
+	void ShotBullet(const LWP::Math::Vector3&v,float shotNum =5);
 
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
@@ -84,6 +84,12 @@ private: // ** パラメータ ** //
 
 	//弾の速度
 	float bulletsSpd_ = 700;
+
+	//弾のばらつき度合い
+	float bulletDispersion_=0.17f;
+
+	//弾の同時発射数
+	int shotBulletNum_ = 5;
 
 private: // ** 変数 ** //
 	//モデル

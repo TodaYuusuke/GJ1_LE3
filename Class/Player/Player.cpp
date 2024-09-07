@@ -1,11 +1,12 @@
 #include "Player.h"
-
+#include<numbers>
 using namespace LWP;
 using namespace LWP::Object;
 
 Player::Player()
 {
-	model_.LoadCube();
+	//model_.LoadCube();
+	model_.LoadFullPath("resources/Player/Player_Boned_IK.gltf");
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
@@ -82,12 +83,39 @@ void Player::GlovalUpdate()
 	bullets_->Update();
 }
 
-void Player::ShotBullet(const LWP::Math::Vector3& v)
+Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
+	Math::Matrix3x3 data;
+	data.m[0][0] = std::cos(theta);
+	data.m[0][1] =-std::sin(theta);
+	data.m[0][2] = 0;
+
+	data.m[1][0]= std::sin(theta);
+	data.m[1][1]= std::cos(theta);
+	data.m[1][2]= 0;
+
+	data.m[2][0] = 0;
+	data.m[2][1] = 0;
+	data.m[2][2] = 1;
+
+	return velo * data;
+};
+
+
+
+
+
+void Player::ShotBullet(const LWP::Math::Vector3& v,float shotNum)
 {
 
-	//ひとまず仮で一発
-	bullets_->SetData(model_.worldTF.translation, { v * bulletsSpd_ });
+	float theta = -bulletDispersion_/2;
 
+	for (int i = 0; i < shotNum; i++) {
+		LWP::Math::Vector3 ve = rotateZ(v, theta);
+		//ひとまず仮で一発
+		bullets_->SetData(model_.worldTF.translation, { ve * bulletsSpd_ });
+		
+		theta += bulletDispersion_ / (shotNum-1.0f);
+	}
 }
 
 
@@ -109,7 +137,8 @@ void Player::Debug()
 			ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
 			ImGui::DragFloat("gravity", &gravity_, 0.01f);
 			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
-
+			ImGui::DragInt("bullet Num", &shotBulletNum_);
+			ImGui::DragFloat("bullet dispersion", &bulletDispersion_,0.01f);
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
 			
@@ -204,7 +233,7 @@ void Player::UpdateMove()
 	}
 
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet(Math::Vector3{pVeloX_,0,0}.Normalize());
+		ShotBullet(Math::Vector3{pVeloX_,0,0}.Normalize(),shotBulletNum_);
 	}
 
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {

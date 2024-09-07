@@ -11,9 +11,6 @@ void TestScene::Initialize() {
 
 // 更新
 void TestScene::Update() {
-	//mainCamera.DebugGUI();
-
 	player_.Update();
-
 	enemyManager_.Update();
 }
