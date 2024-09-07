@@ -30,11 +30,11 @@ public:
 
 
 	//弾丸のデータを読む
-	std::vector<std::unique_ptr<BulletData>>&GetBulletData() { return bullets_; };
+	std::vector<BulletData*>&GetBulletData() { return bullets_; };
 private:
 
 	//弾のデータ群
-	std::vector<std::unique_ptr<BulletData>>bullets_;
+	std::vector<BulletData*>bullets_;
 
 	//弾のmodel名
 	std::string modelname_ = "";

@@ -27,6 +27,8 @@ public:
 	//プレイヤーの現在の状態を取得
 	Behavior& GetBehavior() { return behavior_; }
 
+	//プレイヤーの弾データを取得
+	std::vector<BulletData*>& GetPlayerBulletsData() { return bullets_->GetBulletData(); }
 public:
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }

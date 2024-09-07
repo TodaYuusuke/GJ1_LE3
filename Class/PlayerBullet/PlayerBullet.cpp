@@ -39,7 +39,7 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 
 	float delta = Info::GetDeltaTimeF();
 
-	std::unique_ptr<BulletData> data=std::make_unique<BulletData>();
+	BulletData* data=new BulletData();
 	//仮で円を読み込み
 	data->model.LoadSphere();
 	//初期座標指定
@@ -53,5 +53,5 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 	cap.end = (velo*-1)*delta;
 
 	//データ群に追加
-	bullets_.emplace_back(std::move(data));
+	bullets_.emplace_back((data));
 }
