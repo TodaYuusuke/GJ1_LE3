@@ -19,7 +19,6 @@ public:
 		Moving,		//移動
 		Sliding,	//スライド状態
 		QuitSlide,	//スライド終了
-		Shot,		//攻撃発射処理
 		Jump,		//ジャンプ処理
 		_countBehavior
 	};
@@ -46,18 +45,20 @@ private:// ** 処理をまとめた関数 ** //
 	void InitializeMove();			//移動初期化
 	void InitializeSlide();			//スライド初期化
 	void InitializeQuitSlide();		//スライドやめる初期化
-	void InitializeShot();
+
 	void InitializeJump();
 
 	void UpdateMove();				//移動更新
 	void UpdateSlide();				//スライド更新
 	void UpdateQuitSlide();			//スライドやめる更新
-	void UpdateShot();
 	void UpdateJump();
 #pragma endregion
 
 	//各状態関係なく更新
 	void GlovalUpdate();
+
+	//弾の発射処理
+	void ShotBullet(const LWP::Math::Vector3&v);
 
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
@@ -75,11 +76,14 @@ private: // ** パラメータ ** //
 	float moveSpd_ = 100.0f;
 
 	//重力
-	float gravity_ = 100.0f;
+	float gravity_ = 200.0f;
 	float acceGravity_ = 0.0f;
 	  
 	//ジャンプの初期ベクトル量
-	float jumpVelo_ = 1000.0f;
+	float jumpVelo_ = 50.0f;
+
+	//弾の速度
+	float bulletsSpd_ = 700;
 
 private: // ** 変数 ** //
 	//モデル
@@ -89,18 +93,13 @@ private: // ** 変数 ** //
 
 	//プレイヤーの弾データ
 	std::unique_ptr<PlayerBullets>bullets_;
-	float bulletsSpd_ = 700;
+
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
 	
 	//加速度
 	LWP::Math::Vector3 acce_;
-
-	
-
-	//ジャンプの落下速度の調整
-	float t = 0;
 
 	bool isJump_ = false;
 
@@ -138,7 +137,6 @@ private: // ** 変数 ** //
 		"Moving",
 		"Sliding",
 		"QuitSlide",
-		"Shot",
 		"Jump"
 	};
 
