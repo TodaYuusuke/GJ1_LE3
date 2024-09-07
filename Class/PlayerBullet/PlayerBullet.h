@@ -1,0 +1,44 @@
+#pragma once
+#include <Adapter.h>
+
+struct BulletData {
+	LWP::Resource::RigidModel model;
+
+	LWP::Object::Collider::Collider collider;
+	//1秒間に進む量
+	LWP::Math::Vector3 velo;
+};
+
+class PlayerBullets {
+
+public:
+	PlayerBullets();
+	~PlayerBullets();
+
+	//データの初期化処理
+	void Initialize();
+
+	void Update();
+
+	/// <summary>
+	/// 弾のデータを作成
+	/// </summary>
+	/// <param name="pos">出現座標</param>
+	/// <param name="velo">移動量/s</param>
+	void SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3&velo);
+
+
+
+	//弾丸のデータを読む
+	std::vector<std::unique_ptr<BulletData>>&GetBulletData() { return bullets_; };
+private:
+
+	//弾のデータ群
+	std::vector<std::unique_ptr<BulletData>>bullets_;
+
+	//弾のmodel名
+	std::string modelname_ = "";
+
+	//弾のコライダー名
+	std::string bulletName_ = "playerBullet";
+};

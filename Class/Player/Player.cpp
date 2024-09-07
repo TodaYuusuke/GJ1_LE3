@@ -3,20 +3,29 @@
 using namespace LWP;
 using namespace LWP::Object;
 
-void Player::Initialize()
+Player::Player()
 {
 	model_.LoadCube();
+	bullets_ = std::make_unique<PlayerBullets>();
+
+	collider_.SetBroadShape(Collider::Capsule());
+	collider_.SetFollowTarget(&model_.worldTF);
+	collider_.name = "player";
+
+	collider_.enterLambda = [=](Collider::Collider* data) {data; hp_--; };
+}
+
+Player::~Player()
+{
+}
+
+void Player::Initialize()
+{
+	
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
 
-	Collider::Capsule& aabb = collider_.SetBroadShape(Collider::Capsule());
-	collider_.SetFollowTarget(&model_.worldTF);
-	collider_.name = "player";
-	
-
-	collider_.enterLambda = [=](Collider::Collider* data) {hp_--; };
-
-	
+	bullets_->Initialize();
 }
 
 void Player::Update()
@@ -44,7 +53,7 @@ void Player::Update()
 void Player::GlovalUpdate()
 {
 
-	float delta = Info::GetDeltaTime();
+	float delta = Info::GetDeltaTimeF();
 
 	//重力処理
 	if (isJump_) {
@@ -65,6 +74,7 @@ void Player::GlovalUpdate()
 		isJump_ = false;
 	}
 
+	bullets_->Update();
 }
 
 
@@ -138,6 +148,15 @@ void Player::InitializeQuitSlide()
 
 void Player::InitializeShot()
 {
+	//スライディングショットの場合
+	if (preBehavior_ == Sliding) {
+		//ひとまず仮で一発
+		bullets_->SetData(model_.worldTF.translation, { 0,bulletsSpd_,0 });
+	}
+	else if(preBehavior_ ==Moving){
+		Math::Vector3 v= Math::Vector3{ pVeloX_,0,0 }.Normalize()* bulletsSpd_;
+		bullets_->SetData(model_.worldTF.translation, v);
+	}
 }
 
 void Player::InitializeJump()
@@ -204,9 +223,14 @@ void Player::UpdateSlide()
 		behaviorReq_ = QuitSlide;
 	}
 
-	//加算処理
-	//model_.worldTF.translation += velo_;
 
+	//スライド中に攻撃
+	if (Input::Keyboard::GetTrigger(DIK_C)) {
+		behaviorReq_ = Shot;
+	}
+	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+		behaviorReq_ = Jump;
+	}
 }
 
 void Player::UpdateQuitSlide()
@@ -239,11 +263,10 @@ void Player::UpdateQuitSlide()
 	}
 
 	//アニメーション進行度(0-1)
-	float t = 1.0f - velo_.Length() / slidingData_.spd;
-	t;
+	float at = 1.0f - velo_.Length() / slidingData_.spd;
+	at;
 
-	//加算処理
-	//model_.worldTF.translation += velo_;
+
 }
 
 void Player::UpdateShot()

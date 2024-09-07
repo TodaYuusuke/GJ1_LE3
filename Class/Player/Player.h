@@ -1,7 +1,13 @@
 #pragma once
 #include <Adapter.h>
+
+#include"../PlayerBullet/PlayerBullet.h"
+
 class Player {
 public:
+
+	Player();
+	~Player();
 
 	//初期化
 	void Initialize();
@@ -76,9 +82,12 @@ private: // ** パラメータ ** //
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::RigidModel model_;
-
+	//プレイヤー本体のコライダー
 	LWP::Object::Collider::Collider collider_;
 
+	//プレイヤーの弾データ
+	std::unique_ptr<PlayerBullets>bullets_;
+	float bulletsSpd_ = 700;
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
