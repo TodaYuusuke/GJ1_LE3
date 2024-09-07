@@ -100,10 +100,6 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 	return velo * data;
 };
 
-
-
-
-
 void Player::ShotBullet(const LWP::Math::Vector3& v,float shotNum)
 {
 
@@ -197,7 +193,7 @@ void Player::InitializeJump()
 
 	isJump_ = true;
 
-	ShotBullet({ 0,-1,0 });
+	//ShotBullet({ 0,-1,0 });
 }
 
 
@@ -233,7 +229,7 @@ void Player::UpdateMove()
 	}
 
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet(Math::Vector3{pVeloX_,0,0}.Normalize(),shotBulletNum_);
+		ShotBullet(Math::Vector3{pVeloX_,0,0}.Normalize(),(float)shotBulletNum_);
 	}
 
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {

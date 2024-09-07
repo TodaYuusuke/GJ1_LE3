@@ -27,7 +27,7 @@ public:
 	Behavior& GetBehavior() { return behavior_; }
 
 	//プレイヤーの弾データを取得
-	//std::list<BulletData> GetPlayerBulletsData() { return bullets_->GetBulletData(); }
+	std::vector<BulletData*>& GetPlayerBulletsData() { return bullets_->GetBulletData(); }
 public:
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
@@ -107,6 +107,7 @@ private: // ** 変数 ** //
 	//加速度
 	LWP::Math::Vector3 acce_;
 
+	//ジャンプフラグ
 	bool isJump_ = false;
 
 	//向き(変更しない
@@ -139,6 +140,7 @@ private: // ** 変数 ** //
 	//変更前の状態
 	Behavior preBehavior_=Moving;
 
+	//ImGui用
 	std::string behaviorStirng_[_countBehavior] = {
 		"Moving",
 		"Sliding",

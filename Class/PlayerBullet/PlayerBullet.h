@@ -36,7 +36,7 @@ public:
 
 
 	//弾丸のデータを読む
-	//std::list<BulletData>GetBulletData() { return bullets_; };
+	std::vector<BulletData*>&GetBulletData() { return bullets_; };
 private:
 
 	//弾のデータ群
