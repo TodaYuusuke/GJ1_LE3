@@ -7,10 +7,13 @@ void TestScene::Initialize() {
 	mainCamera.transform.translation.y = 10;
 
 	enemyManager_.Initialize(&player_);
+
+	followCamera_.Initialize(&mainCamera);
 }
 
 // 更新
 void TestScene::Update() {
 	player_.Update();
+	followCamera_.Update(player_.GetWorldPosition());
 	enemyManager_.Update();
 }
