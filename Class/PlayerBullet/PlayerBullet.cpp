@@ -6,16 +6,34 @@ using namespace LWP::Object;
 PlayerBullets::PlayerBullets()
 {
 	//同次にどんだけ出るか知らん
-	bullets_.reserve(50);
+
+	for (int i = 0; i < maxBullet_; i++) {
+		//仮で円を読み込み
+		BulletData* data=new BulletData();
+		data->model.LoadSphere();
+		data->collider.SetFollowTarget(&data->model.worldTF);
+		data->cap = &data->collider.SetBroadShape(Collider::Capsule());
+		data->collider.name = bulletName_;
+		data->isAlive = false;
+		bullets_.emplace_back(data);
+	}
 }
 
 PlayerBullets::~PlayerBullets()
 {
+	bullets_.clear();
 }
 
 void PlayerBullets::Initialize()
 {
-	bullets_.clear();
+
+
+
+	for (auto& data : bullets_) {
+		data->collider.isActive = false;
+		data->model.isActive = false;
+		data->isAlive = false;
+	}
 }
 
 void PlayerBullets::Update()
@@ -25,11 +43,19 @@ void PlayerBullets::Update()
 	float delta = Info::GetDeltaTimeF();
 
 	for (auto& data : bullets_) {
-		//移動前の座標保存
-		Math::Vector3 prePos;
-		prePos = data->model.worldTF.translation;
+		if (!data->isAlive) {
+			continue;
+		}
 		//移動量加算
 		data->model.worldTF.translation += data->velo*delta;
+
+		//カウント以上で描画フラグと使用フラグOFF
+		if (data->deadCount++ >= data->maxDeadCount) {
+			data->isAlive = false;
+			data->collider.isActive = false;
+			data->model.isActive = false;
+		}
+		
 	}
 
 }
@@ -39,19 +65,22 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 
 	float delta = Info::GetDeltaTimeF();
 
-	BulletData* data=new BulletData();
-	//仮で円を読み込み
-	data->model.LoadSphere();
-	//初期座標指定
-	data->model.worldTF.translation = pos;
-	data->velo = velo;
-	//コライダ設定
-	data->collider.SetFollowTarget(&data->model.worldTF);
-	data->collider.name = bulletName_;
-	Collider::Capsule& cap = data->collider.SetBroadShape(Collider::Capsule());
-	//移動量の差を埋めるよう後ろを長くする
-	cap.end = (velo*-1)*delta;
+	for (auto& data : bullets_) {
 
-	//データ群に追加
-	bullets_.emplace_back((data));
+		if (!data->isAlive) {
+			//使用フラグON
+			data->isAlive = true;
+			//data->collider.isActive = true;
+			data->model.isActive = true;
+			//初期座標指定
+			data->model.worldTF.translation = pos;
+			data->velo = velo;
+			data->deadCount = 0;
+
+			//移動量の差を埋めるよう後ろを長くする
+			data->cap->end = (velo * -1) * delta;
+
+			break;
+		}
+	}
 }
