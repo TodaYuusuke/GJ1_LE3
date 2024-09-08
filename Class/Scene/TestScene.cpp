@@ -11,11 +11,6 @@ void TestScene::Initialize() {
 
 // 更新
 void TestScene::Update() {
-	//mainCamera.DebugGUI();
-
-	std::vector<BulletData*> data = player_.GetPlayerBulletsData();
-
 	player_.Update();
-
 	enemyManager_.Update();
 }

@@ -58,7 +58,7 @@ private:// ** 処理をまとめた関数 ** //
 	void GlovalUpdate();
 
 	//弾の発射処理
-	void ShotBullet(const LWP::Math::Vector3&v);
+	void ShotBullet(const LWP::Math::Vector3&v,float shotNum =5);
 
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
@@ -85,6 +85,12 @@ private: // ** パラメータ ** //
 	//弾の速度
 	float bulletsSpd_ = 700;
 
+	//弾のばらつき度合い
+	float bulletDispersion_=0.17f;
+
+	//弾の同時発射数
+	int shotBulletNum_ = 5;
+
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::RigidModel model_;
@@ -101,6 +107,7 @@ private: // ** 変数 ** //
 	//加速度
 	LWP::Math::Vector3 acce_;
 
+	//ジャンプフラグ
 	bool isJump_ = false;
 
 	//向き(変更しない
@@ -133,6 +140,7 @@ private: // ** 変数 ** //
 	//変更前の状態
 	Behavior preBehavior_=Moving;
 
+	//ImGui用
 	std::string behaviorStirng_[_countBehavior] = {
 		"Moving",
 		"Sliding",
