@@ -18,4 +18,11 @@ private://**変数**//
 
 	//座標ずれ
 	LWP::Math::Vector3 coordinateShift_;
+
+	//カメラが追従開始するPとのずれ
+	LWP::Math::Vector3 delayCameraPos_;
+
+	float setPT_ = 0;
+	float addTsec_ = 1;
+	LWP::Math::Vector3 saveCpos_;
 };
