@@ -125,7 +125,6 @@ private: // ** 変数 ** //
 	SlidingData slidingData_{};
 
 
-
 	//状態リクエスト
 	std::optional<Behavior> behaviorReq_ = std::nullopt;
 	//状態

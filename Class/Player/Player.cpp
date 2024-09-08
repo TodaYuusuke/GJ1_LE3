@@ -5,7 +5,7 @@ using namespace LWP::Object;
 
 Player::Player()
 {
-	model_.LoadCube();
+	model_.LoadShortPath("Player/Player_Boned_IK.gltf");
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
