@@ -15,4 +15,7 @@ private://**変数**//
 	
 	//カメラ
 	LWP::Object::Camera* camera_;
+
+	//座標ずれ
+	LWP::Math::Vector3 coordinateShift_;
 };
