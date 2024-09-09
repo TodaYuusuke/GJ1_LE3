@@ -4,12 +4,16 @@ using namespace LWP;
 using namespace LWP::Object;
 
 void Slime::ChildInit() {
-	model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
+	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");	// いったんクモモデルで描画
+	//model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
 	// コライダー設定
 	collider_.worldTF.translation.y = 1.0f;
-	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
-	aabb.min.y = -1.0f;
-	aabb.max.y = 1.0f;
+	Collider::Sphere& sphere = collider_.SetBroadShape(Collider::Sphere());
+	sphere.radius = 1.0f;
+
+	// 奇妙な値になるので初期化
+	model_.worldTF.translation = { 0.0f,0.0f,0.0f };
+	normal_.velocity = { 0.0f,0.0f,0.0f };
 }
 
 void Slime::ChildUpdate() {
@@ -19,10 +23,6 @@ void Slime::ChildUpdate() {
 	normal_.velocity.y += normal_.kGravity;
 	model_.worldTF.translation += normal_.velocity;
 
-	// 一定以下の高度になったらvelocityのxを0に
-	if (model_.worldTF.translation.y <= 0.5f) {
-		normal_.velocity.x = 0.0f;
-	}
 	// スライムが地面に埋まらないように
 	if (model_.worldTF.translation.y < 0.0f) {
 		model_.worldTF.translation.y = 0.0f;
@@ -57,6 +57,10 @@ void Slime::InitNormal() {
 	normal_.jumpInterval = normal_.kJumpIntervalTime;
 }
 void Slime::UpdateNormal() {
+	// 一定以下の高度になったらvelocityのxを0に
+	if (model_.worldTF.translation.y <= 0.2f) {
+		normal_.velocity.x = 0.0f;
+	}
 
 	// インターバル減少
 	normal_.jumpInterval -= Info::GetDefaultDeltaTimeF();
@@ -67,9 +71,10 @@ void Slime::UpdateNormal() {
 
 		// 方向を決める
 		float dir = model_.worldTF.translation.x - player_->GetWorldPosition().x;
-		dir;	// まだつかわない
+		dir = dir / std::sqrtf(dir * dir);	// 正規化
 		// 速度加算
 		normal_.velocity = normal_.kJumpVelocity;
+		normal_.velocity.x *= dir;
 	}
 }
 void Slime::InitKnockback() {
