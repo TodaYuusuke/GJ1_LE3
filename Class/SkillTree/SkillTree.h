@@ -29,6 +29,7 @@ private:
 		std::vector<SkillData>data;
 	};
 
+	LWP::Object::TransformQuat baseposition_;
 
 	SkillData datas_[_countBaseSkill];
 };

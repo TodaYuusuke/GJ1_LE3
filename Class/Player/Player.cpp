@@ -7,6 +7,7 @@ Player::Player()
 {
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
+	animation.LoadAnimationLongPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
@@ -91,6 +92,11 @@ void Player::GlovalUpdate()
 		}
 	}
 
+	
+
+	//プレイヤーの向きの処理
+	model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,(float)std::numbers::pi / 2.0f ,0 });
+
 	bullets_->Update();
 }
 
@@ -148,6 +154,8 @@ void Player::Debug()
 			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
 			ImGui::DragInt("bullet Num", &shotBulletNum_);
 			ImGui::DragFloat("bullet dispersion", &bulletDispersion_, 0.01f);
+
+			animation.DebugGUI();
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
 

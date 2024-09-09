@@ -93,7 +93,9 @@ private: // ** パラメータ ** //
 
 private: // ** 変数 ** //
 	//モデル
-	LWP::Resource::RigidModel model_;
+	LWP::Resource::SkinningModel model_;
+	LWP::Resource::Animation animation;
+
 	//プレイヤー本体のコライダー
 	LWP::Object::Collider::Collider collider_;
 
