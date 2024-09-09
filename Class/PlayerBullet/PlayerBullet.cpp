@@ -70,7 +70,7 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 		if (!data->isAlive) {
 			//使用フラグON
 			data->isAlive = true;
-			//data->collider.isActive = true;
+			data->collider.isActive = true;
 			data->model.isActive = true;
 			//初期座標指定
 			data->model.worldTF.translation = pos;
