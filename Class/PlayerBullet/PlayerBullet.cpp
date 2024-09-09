@@ -60,7 +60,7 @@ void PlayerBullets::Update()
 
 }
 
-void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo)
+void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo, const std::string& cName)
 {
 
 	float delta = Info::GetDeltaTimeF();
@@ -76,6 +76,8 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 			data->model.worldTF.translation = pos;
 			data->velo = velo;
 			data->deadCount = 0;
+
+			data->collider.name = cName;
 
 			//移動量の差を埋めるよう後ろを長くする
 			data->cap->end = (velo * -1) * delta;

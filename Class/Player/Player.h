@@ -58,7 +58,7 @@ private:// ** 処理をまとめた関数 ** //
 	void GlovalUpdate();
 
 	//弾の発射処理
-	void ShotBullet(const LWP::Math::Vector3&v,float shotNum =5);
+	void ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
 
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
@@ -73,14 +73,14 @@ private: // ** パラメータ ** //
 	int maxAmmoNum_ = 10;
 
 	//移動速度
-	float moveSpd_ = 100.0f;
+	float moveSpd_ = 10.0f;
 
 	//重力
-	float gravity_ = 200.0f;
+	float gravity_ = 50.0f;
 	float acceGravity_ = 0.0f;
 	  
 	//ジャンプの初期ベクトル量
-	float jumpVelo_ = 50.0f;
+	float jumpVelo_ = 15.0f;
 
 	//弾の速度
 	float bulletsSpd_ = 700;
@@ -123,13 +123,17 @@ private: // ** 変数 ** //
 		float length = 10.0f;
 
 		//速度
-		float spd = 100.0f;
+		float spd = 20.0f;
 
 		//減速量
-		float acceSpd = 1000.0f;
+		float acceSpd = 80.0f;
 
 	};
 	SlidingData slidingData_{};
+
+	//各射撃時の名前
+	std::string standShot = "StandBullet";
+	std::string slideShot = "SlidingBullet";
 
 
 	//状態リクエスト
@@ -147,6 +151,7 @@ private: // ** 変数 ** //
 		"Jump"
 	};
 
-
+	//デバッグ用無敵フラグ
+	bool isHit_ = true;
 
 };

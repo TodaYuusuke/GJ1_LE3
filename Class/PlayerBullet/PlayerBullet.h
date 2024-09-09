@@ -31,7 +31,7 @@ public:
 	/// </summary>
 	/// <param name="pos">出現座標</param>
 	/// <param name="velo">移動量/s</param>
-	void SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3&velo);
+	void SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3&velo, const std::string& cName);
 
 
 

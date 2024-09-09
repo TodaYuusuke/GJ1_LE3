@@ -6,14 +6,23 @@ using namespace LWP::Object;
 Player::Player()
 {
 	//model_.LoadCube();
-	model_.LoadFullPath("resources/Player/Player_Boned_IK.gltf");
+	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "player";
 
-	collider_.enterLambda = [=](Collider::Collider* data) {data; hp_--; };
+	//被弾処理
+	collider_.enterLambda = [=](Collider::Collider* data) {
+		data;
+
+		if (isHit_) {
+			hp_--;
+		}
+
+		};
+
 }
 
 Player::~Player()
@@ -22,11 +31,13 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	
+
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
 
 	bullets_->Initialize();
+
+
 }
 
 void Player::Update()
@@ -64,12 +75,12 @@ void Player::GlovalUpdate()
 
 
 	//加算処理
-	velo_ += acce_*delta;
-	model_.worldTF.translation += velo_*delta;
+	velo_ += acce_ * delta;
+	model_.worldTF.translation += velo_ * delta;
 
 	//0以下の時落下量を消す
- 	if (model_.worldTF.translation.y < 0) {
- 		model_.worldTF.translation.y = 0;
+	if (model_.worldTF.translation.y < 0) {
+		model_.worldTF.translation.y = 0;
 		velo_.y = 0;
 		acce_.y = 0;
 
@@ -86,12 +97,12 @@ void Player::GlovalUpdate()
 Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 	Math::Matrix3x3 data;
 	data.m[0][0] = std::cos(theta);
-	data.m[0][1] =-std::sin(theta);
+	data.m[0][1] = -std::sin(theta);
 	data.m[0][2] = 0;
 
-	data.m[1][0]= std::sin(theta);
-	data.m[1][1]= std::cos(theta);
-	data.m[1][2]= 0;
+	data.m[1][0] = std::sin(theta);
+	data.m[1][1] = std::cos(theta);
+	data.m[1][2] = 0;
 
 	data.m[2][0] = 0;
 	data.m[2][1] = 0;
@@ -100,17 +111,18 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 	return velo * data;
 };
 
-void Player::ShotBullet(const LWP::Math::Vector3& v,float shotNum)
+void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
 {
 
-	float theta = -bulletDispersion_/2;
+	float theta = -bulletDispersion_ / 2;
 
 	for (int i = 0; i < shotNum; i++) {
 		LWP::Math::Vector3 ve = rotateZ(v, theta);
+
 		//ひとまず仮で一発
-		bullets_->SetData(model_.worldTF.translation, { ve * bulletsSpd_ });
-		
-		theta += bulletDispersion_ / (shotNum-1.0f);
+		bullets_->SetData(model_.worldTF.translation, { ve * bulletsSpd_ }, cName);
+
+		theta += bulletDispersion_ / (shotNum - 1.0f);
 	}
 }
 
@@ -126,7 +138,8 @@ void Player::Debug()
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("Player")) {
 
-			ImGui::Text(behaName.c_str(),hp_);
+			ImGui::Text(behaName.c_str(), hp_);
+			ImGui::Checkbox("is Hit", &isHit_);
 			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
 			ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
 			ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
@@ -134,10 +147,10 @@ void Player::Debug()
 			ImGui::DragFloat("gravity", &gravity_, 0.01f);
 			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
 			ImGui::DragInt("bullet Num", &shotBulletNum_);
-			ImGui::DragFloat("bullet dispersion", &bulletDispersion_,0.01f);
+			ImGui::DragFloat("bullet dispersion", &bulletDispersion_, 0.01f);
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
-			
+
 		}
 
 		ImGui::EndTabBar();
@@ -219,21 +232,26 @@ void Player::UpdateMove()
 	}
 
 	//WorldTFに値追加
-	model_.worldTF.translation += move*delta;
+	model_.worldTF.translation += move * delta;
 
 
 #pragma region 各状態変化
 	//スライディングに移行
-	if (Input::Keyboard::GetTrigger(DIK_LSHIFT)) {
-		behaviorReq_ = Sliding;
-	}
 
-	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet(Math::Vector3{pVeloX_,0,0}.Normalize(),(float)shotBulletNum_);
-	}
+	if (!isJump_) {
 
-	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-		behaviorReq_ = Jump;
+		if (Input::Keyboard::GetTrigger(DIK_LSHIFT)) {
+			behaviorReq_ = Sliding;
+		}
+
+		if (Input::Keyboard::GetTrigger(DIK_C)) {
+			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)shotBulletNum_);
+		}
+
+		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+			behaviorReq_ = Jump;
+		}
+
 	}
 #pragma endregion
 
@@ -253,7 +271,7 @@ void Player::UpdateSlide()
 
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet({ 0,1,0 });
+		ShotBullet({ 0,1,0 }, slideShot, (float)shotBulletNum_);
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
 		behaviorReq_ = Jump;
@@ -268,7 +286,7 @@ void Player::UpdateQuitSlide()
 	//向きによって減速処理
 	if (pVeloX_ > 0) {
 		//xの量引く
-		velo_.x -= slidingData_.acceSpd *delta;
+		velo_.x -= slidingData_.acceSpd * delta;
 
 		//Pの向きが正の向き＆
 		//ベクトルが負の向きの時終了
