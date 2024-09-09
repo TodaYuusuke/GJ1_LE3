@@ -17,8 +17,6 @@ public:
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
 
-	//攻撃に被弾したときの処理
-	void OnCollision();
 
 private: // ** メンバ変数 ** //
 
