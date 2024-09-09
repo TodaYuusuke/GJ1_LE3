@@ -18,8 +18,10 @@ public:
 
 	// ** 純粋仮想関数 ** //
 
-	// 初期化
-	virtual void Initialize() = 0;
+	// 親クラスの初期化
+	void Init();
+	// 親クラスの初期化
+	virtual void ChildInit() = 0;
 	// 親クラスの更新
 	void Update();
 	// 子クラスの更新
@@ -38,6 +40,8 @@ public: // ** メンバ変数 ** //
 
 	// モデル
 	LWP::Resource::SkinningModel model_;
+	// 当たり判定
+	LWP::Object::Collider::Collider collider_;
 	// 速度
 	LWP::Math::Vector3 velocity_;
 

@@ -44,6 +44,11 @@ void EnemyManager::Update() {
 				}
 				ImGui::ListBox("List", &currentItem, itemText.data(), static_cast<int>(itemText.size()), 4);
 				enemies_[currentItem]->DebugGUI();
+				ImGui::Text("");
+				if (ImGui::Button("Delete This Enemy")) {
+					delete enemies_[currentItem];
+					enemies_.erase(enemies_.begin() + currentItem);
+				}
 			}
 			ImGui::EndTabItem();
 		}

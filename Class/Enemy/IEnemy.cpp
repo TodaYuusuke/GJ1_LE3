@@ -1,6 +1,26 @@
 #include "IEnemy.h"
 
+using namespace LWP;
 using namespace LWP::Math;
+using namespace LWP::Object;
+
+void IEnemy::Init() {
+	// コライダーの基本設定
+	collider_.SetFollowTarget(&model_.worldTF);
+	collider_.name = "Enemy";
+	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
+		// プレイヤーの弾だった場合
+		if (hitTarget->name == "StandBullet") {
+			behaviorReq_ = Knockback;
+		}
+		else if (hitTarget->name == "SlidingBullet") {
+			SlidingHit();	// 被弾
+		}
+	};
+	
+	// 子クラスの初期化
+	ChildInit();
+}
 
 void IEnemy::Update() {
 	//状態リクエストがある時実行
@@ -38,6 +58,10 @@ void IEnemy::DebugGUI() {
 	ImGui::Text(("State : " + behaviorStirng_[behavior_]).c_str());
 	if (ImGui::TreeNode("Model")) {
 		model_.DebugGUI();
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Collider")) {
+		collider_.DebugGUI();
 		ImGui::TreePop();
 	}
 	ImGui::Checkbox("isAlive:", &isAlive_);

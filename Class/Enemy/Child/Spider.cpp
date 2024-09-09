@@ -3,22 +3,14 @@
 using namespace LWP;
 using namespace LWP::Object;
 
-void Spider::Initialize() {
+void Spider::ChildInit() {
 	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");
 	animation_.LoadFullPath("resources/model/Enemy/SpiderEnemy/SpiderEnemy.gltf", &model_);
-	collider_.SetBroadShape(Collider::AABB());
-	collider_.worldTF.translation.y = 2.0f;
-	collider_.SetFollowTarget(&model_.worldTF);
-	collider_.name = "Enemy";
-	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
-		// プレイヤーの弾だった場合
-		if (hitTarget->name == "StandBullet") {
-			behaviorReq_ = Knockback;
-		}
-		else if (hitTarget->name == "SlidingBullet") {
-			SlidingHit();	// 被弾
-		}
-	};
+	// コライダー設定
+	collider_.worldTF.translation.y = 1.0f;
+	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
+	aabb.min.y = -1.0f;
+	aabb.max.y = 1.0f;
 }
 
 void Spider::ChildUpdate() {
