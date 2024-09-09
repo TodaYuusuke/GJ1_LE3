@@ -252,7 +252,7 @@ void Player::UpdateSlide()
 
 
 	//スライド中に攻撃
-	if (Input::Keyboard::GetPress(DIK_C)) {
+	if (Input::Keyboard::GetTrigger(DIK_C)) {
 		ShotBullet({ 0,1,0 });
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
