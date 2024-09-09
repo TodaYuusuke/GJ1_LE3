@@ -4,8 +4,7 @@ using namespace LWP;
 using namespace LWP::Object;
 
 void Slime::ChildInit() {
-	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");
-	//model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
+	model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
 	// コライダー設定
 	collider_.worldTF.translation.y = 1.0f;
 	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
