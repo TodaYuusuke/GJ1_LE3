@@ -1,6 +1,6 @@
 #pragma once
 #include "Child/Spider.h"
-//#include "Child/Slime.h"
+#include "Child/Slime.h"
 
 #include <vector>
 

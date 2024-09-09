@@ -148,6 +148,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Class\Enemy\Child\Slime.cpp" />
     <ClCompile Include="Class\Enemy\IEnemy.cpp" />
     <ClCompile Include="Class\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Class\Enemy\Child\Spider.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class\Enemy\Child\Slime.h" />
     <ClInclude Include="Class\Enemy\IEnemy.h" />
     <ClInclude Include="Class\Enemy\EnemyManager.h" />
     <ClInclude Include="Class\Enemy\Child\Spider.h" />

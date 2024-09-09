@@ -4,43 +4,40 @@
 class Slime final
 	: public IEnemy {
 public:
-	Slime(Player* ptr) : IEnemy(ptr) { Initialize(); }
+	Slime(Player* ptr) : IEnemy(ptr) { Init(); }
 	~Slime() = default;
 
 	// ** メンバ関数 ** //
 
 	// 初期化
-	void Initialize() override;
+	void ChildInit() override;
 	// 更新
-	void Update() override;
+	void ChildUpdate() override;
 
+	// デバッグ用GUI
+	void DebugGUI() override;
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Slime; }
 
-	void DebugGUI() override;
-private: // ** メンバ変数 ** //
 
-	LWP::Object::Collider::Collider collider_;
+private: // ** ステートパターン ** //
 
-	//飛ぶまでのカウント
-	float jumpCount_ = 0;
+	// 通常
+	void InitNormal() override;
+	void UpdateNormal() override;
+	// ノックバック
+	void InitKnockback() override;
 
-private: // ** パラメータ ** //
 
-	//飛んだかどうかのフラグ
-	bool isJump_ = false;
+private: // ** パラメーター ** //
 
-	LWP::Math::Vector3 velo_;
+	// 通常（ジャンプ用パラメータ）
+	struct Normal {
+		float jumpInterval = 0.0f;	// ジャンプインターバル
+		LWP::Math::Vector3 velocity = { 0.0f,0.0f,0.0f };	// 速度
 
-	//次飛ぶまでの秒数
-	float maxjumpTime_ = 2.0f;
-
-	//Y軸の傾きの強さ
-	float jumpYNum_ = 2.0f;
-
-	//
-	float jumpSpd_ = 50.0f;
-
-	//落ちる速度
-	float gravity_ = -90.0f;
+		float kJumpIntervalTime = 3.0f;	// ジャンプインターバル時間（秒）
+		LWP::Math::Vector3 kJumpVelocity = { 0.0f,0.5f,0.0f };	// ジャンプした瞬間の速度
+		float kGravity = -0.023;	// 重力
+	}normal_;
 };

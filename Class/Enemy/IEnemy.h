@@ -77,7 +77,7 @@ public: // ** メンバ変数 ** //
 	};
 
 
-private: // ** ステートパターン ** //
+protected: // ** ステートパターン ** //
 
 	//プレイヤーの初期化関数ポインタテーブル
 	static void (IEnemy::* BehaviorInitialize[])();
@@ -95,7 +95,7 @@ private: // ** ステートパターン ** //
 	virtual void UpdateDeadBody();
 #pragma endregion
 
-private: // ** パラメーター ** //
+protected: // ** パラメーター ** //
 
 	// 死亡アニメーション
 	struct Dying {

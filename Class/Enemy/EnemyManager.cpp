@@ -15,7 +15,7 @@ void EnemyManager::Update() {
 	// デバッグ用の召喚関数をセット
 	static std::vector<std::function<void()>> summonFunction {
 		[this]() { enemies_.push_back(new Spider(player_)); },
-		//[this]() { enemies_.push_back(new Slime(player_)); }
+		[this]() { enemies_.push_back(new Slime(player_)); }
 	};
 	// 名前もセット
 	static std::vector<const char*> classText {
