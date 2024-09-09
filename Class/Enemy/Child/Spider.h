@@ -27,6 +27,9 @@ private: // ** ステートパターン ** //
 
 private: // ** メンバ変数 ** //
 
+	// アニメーション
+	LWP::Resource::Animation animation_;
+	// 当たり判定
 	LWP::Object::Collider::Collider collider_;
 
 private: // ** パラメータ ** //
