@@ -12,10 +12,17 @@ public:
 	// 初期化
 	void Initialize() override;
 	// 更新
-	void Update() override;
+	void ChildUpdate() override;
 
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
+
+
+private: // ** ステートパターン ** //
+
+	// 通常
+	void InitNormal() override;
+	void UpdateNormal() override;
 
 
 private: // ** メンバ変数 ** //

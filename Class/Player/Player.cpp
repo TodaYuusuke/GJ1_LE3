@@ -6,7 +6,7 @@ using namespace LWP::Object;
 Player::Player()
 {
 	//model_.LoadCube();
-	model_.LoadFullPath("resources/Player/Player_Boned_IK.gltf");
+	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
@@ -119,7 +119,6 @@ void Player::ShotBullet(const LWP::Math::Vector3& v,float shotNum)
 void Player::Debug()
 {
 #ifdef DEMO
-
 	std::string behaName = "HP %d behavior : " + behaviorStirng_[behavior_];
 
 	ImGui::Begin("Game");
