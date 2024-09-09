@@ -60,7 +60,7 @@ void PlayerBullets::Update()
 
 }
 
-void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo)
+void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo, const std::string& cName)
 {
 
 	float delta = Info::GetDeltaTimeF();
@@ -70,12 +70,14 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 		if (!data->isAlive) {
 			//使用フラグON
 			data->isAlive = true;
-			//data->collider.isActive = true;
+			data->collider.isActive = true;
 			data->model.isActive = true;
 			//初期座標指定
 			data->model.worldTF.translation = pos;
 			data->velo = velo;
 			data->deadCount = 0;
+
+			data->collider.name = cName;
 
 			//移動量の差を埋めるよう後ろを長くする
 			data->cap->end = (velo * -1) * delta;

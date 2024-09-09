@@ -156,6 +156,7 @@
     <ClCompile Include="Class\Player\Player.cpp" />
     <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
+    <ClCompile Include="Class\SkillTree\SkillTree.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,10 @@
     <ClInclude Include="Class\Player\Player.h" />
     <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
+    <ClInclude Include="Class\SkillTree\SkillTree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Class\SkillTree\skilltreeData.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
