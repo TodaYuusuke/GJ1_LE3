@@ -4,13 +4,21 @@ using namespace LWP;
 using namespace LWP::Object;
 
 void Spider::Initialize() {
-	model_.LoadSphere();
+	model_.LoadShortPath("Enemy/Enemy.gltf");
 	collider_.SetBroadShape(Collider::Sphere());
 	collider_.SetFollowTarget(&model_.worldTF);
-	collider_.name = "player";
+	collider_.name = "enemy";
+	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
+		// プレイヤーの弾だった場合
+		if (hitTarget->name == "playerBullet") {
+			Hit();	// 被弾
+		}
+	};
 }
 
 void Spider::Update() {
+	// 死んでたら早期リターン
+	if (!isAlive_) { return; }
 
 	float delta = Info::GetDefaultDeltaTimeF();
 
@@ -19,6 +27,4 @@ void Spider::Update() {
 	velo.y = 0;
 	//移動速度をかけた分移動
 	model_.worldTF.translation += velo * (spd_ * delta);
-
-	//
 }

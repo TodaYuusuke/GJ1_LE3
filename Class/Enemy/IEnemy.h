@@ -22,6 +22,11 @@ public:
 	virtual void Initialize() = 0;
 	// 更新
 	virtual void Update() = 0;
+	// 死亡後の更新処理
+	virtual void DeadUpdate();
+
+	// 被弾時の処理
+	virtual void Hit();
 
 	// デバッグ用GUI
 	virtual void DebugGUI();
@@ -32,10 +37,21 @@ public:
 public: // ** メンバ変数 ** //
 
 	// モデル
-	LWP::Resource::RigidModel model_;
+	LWP::Resource::SkinningModel model_;
+
+	// 体力
+	int health_ = 1;
+	// 生存フラグ
+	bool isAlive_ = true;
 
 	// プレイヤーのポインタ
 	Player* player_ = nullptr;
-	// 生存フラグ
-	bool isAlive_ = true;
+
+
+private: // ** パラメーター ** //
+
+	// 天井の高さ
+	float kMaxY_ = 0;
+	// 死亡時の上昇速度
+	float kUpSpeed_ = 1.0f;
 };
