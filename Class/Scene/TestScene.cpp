@@ -11,6 +11,7 @@ void TestScene::Initialize() {
 
 	enemyManager_.Initialize(&player_);
 
+	followCamera_.Initialize(&mainCamera);
 	stage_.LoadShortPath("Stage/Stage.gltf");
 	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
 }
@@ -18,5 +19,6 @@ void TestScene::Initialize() {
 // 更新
 void TestScene::Update() {
 	player_.Update();
+	followCamera_.Update(player_.GetWorldPosition());
 	enemyManager_.Update();
 }
