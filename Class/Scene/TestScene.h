@@ -25,4 +25,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	Player player_;
 	EnemyManager enemyManager_;
 
+	LWP::Resource::RigidModel stage_;
+	LWP::Object::DirectionLight sun_;
 };
