@@ -96,6 +96,29 @@ private: // ** 変数 ** //
 	LWP::Resource::SkinningModel model_;
 	LWP::Resource::Animation animation;
 
+	enum AnimatinNameType {
+		A_Idle,
+		A_Run,
+		A_SlidingStart,
+		A_Sliding,
+		A_SlidingEnd,
+		A_StandShot,
+		A_SlidingShot,
+		_countAnimeType
+	};
+
+	std::string animeName_[_countAnimeType] = {
+		"00_Idle",
+		"01_Run",
+		"02_SlidingStart",
+		"03_Sliding",
+		"04_SlidingEnd",
+		"05_StandShot",
+		"06_SlidingShot"
+	};
+
+	std::string nowPlayAnimeName_;
+
 	//プレイヤー本体のコライダー
 	LWP::Object::Collider::Collider collider_;
 

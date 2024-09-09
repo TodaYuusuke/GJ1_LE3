@@ -7,7 +7,9 @@ Player::Player()
 {
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
-	animation.LoadAnimationLongPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
+	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
+	animation.Play(animeName_[A_Idle]);
+	nowPlayAnimeName_ = animeName_[A_Idle];
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	collider_.SetBroadShape(Collider::Capsule());
@@ -95,8 +97,12 @@ void Player::GlovalUpdate()
 	
 
 	//プレイヤーの向きの処理
-	model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,(float)std::numbers::pi / 2.0f ,0 });
-
+	if (pVeloX_ > 0) {
+		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,(float)std::numbers::pi / 2.0f ,0 });
+	}
+	else {
+		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,-(float)std::numbers::pi / 2.0f ,0 });
+	}
 	bullets_->Update();
 }
 
@@ -188,6 +194,10 @@ void Player::InitializeMove()
 {
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
+
+	animation.Play(animeName_[A_Run]);
+	nowPlayAnimeName_ = animeName_[A_Run];
+
 }
 void Player::InitializeSlide()
 {
@@ -196,11 +206,16 @@ void Player::InitializeSlide()
 
 	//ベクトルをスライディング初速度で設定
 	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * slidingData_.spd;
+
+
+	animation.Play(animeName_[A_SlidingStart]);
+	nowPlayAnimeName_ = animeName_[A_SlidingStart];
 }
 
 void Player::InitializeQuitSlide()
 {
-
+	animation.Play(animeName_[A_SlidingEnd]);
+	nowPlayAnimeName_ = animeName_[A_SlidingEnd];
 }
 
 
@@ -241,6 +256,26 @@ void Player::UpdateMove()
 
 	//WorldTFに値追加
 	model_.worldTF.translation += move * delta;
+
+#pragma region アニメーション変更処理
+	if (move.x == 0&&move.y==0&&move.z==0) {
+		if (nowPlayAnimeName_ != animeName_[A_Idle]) {
+			animation.Play(animeName_[A_Idle]);
+			nowPlayAnimeName_ = animeName_[A_Idle];
+
+		}
+	}
+	else {
+		if (nowPlayAnimeName_ != animeName_[A_Run]) {
+
+			animation.Play(animeName_[A_Run]);
+			nowPlayAnimeName_ = animeName_[A_Run];
+
+		}
+	}
+
+	
+#pragma endregion
 
 
 #pragma region 各状態変化
