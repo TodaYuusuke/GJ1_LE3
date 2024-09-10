@@ -1,6 +1,10 @@
 #pragma once
-#include <Adapter.h>
+#include "../Enemy/EnemyManager.h"
+
 #include "scene/IScene.h"
+
+#include"../Player/Player.h"
+#include"../FollowCamera/FollowCamera.h"
 
 class TestScene final
 	: public IScene {
@@ -17,5 +21,10 @@ public:
 
 
 private: //*** これより先に必要な処理や変数を記述 ***//
+	FollowCamera followCamera_;
+	Player player_;
+	EnemyManager enemyManager_;
 
+	LWP::Resource::RigidModel stage_;
+	LWP::Object::DirectionLight sun_;
 };
