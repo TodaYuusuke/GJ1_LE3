@@ -105,12 +105,11 @@ public://外部でほしいパラメータ
 	BulletData bulletData_;
 
 	//体力
-	int hp_ = 10;
+	int hp_ = 3;
 
 	//最大HP
-	int maxHp_ = 10;
+	int maxHp_ = 3;
 
-	
 
 	//プレイヤーアニメーションデータ
 	LWP::Resource::Animation animation;
