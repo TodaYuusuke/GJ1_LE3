@@ -24,6 +24,9 @@ private:
 
 	//プレイヤーポインタ
 	Player* player_;
+
+	//ドローンポインタ
+	Drone* drone_;
 };
 
 

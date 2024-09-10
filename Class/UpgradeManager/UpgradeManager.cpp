@@ -46,5 +46,5 @@ void UpgradeManager::AddUpgrade(const std::string& upgradeName, IUpgrade* upgrad
 
 void UpgradeManager::ApplyUpgrade(const std::string& upgradeName)
 {
-	upgradeDatas_[upgradeName]->Apply(player_);
+	upgradeDatas_[upgradeName]->Apply(player_,drone_);
 }
