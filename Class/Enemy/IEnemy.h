@@ -32,6 +32,8 @@ public:
 
 	// デバッグ用GUI
 	virtual void DebugGUI();
+	// ワールド座標を返す関数
+	LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 	// 自分のタイプを返す関数
 	virtual EnemyType GetType() = 0;
 
@@ -47,6 +49,9 @@ public: // ** メンバ変数 ** //
 
 	// 体力
 	int health_ = 1;
+	// 被弾後の無敵時間
+	float invincibleTime_ = 0.0f;
+	const float kInvincibleTime_ = 0.5f;
 	// 生存フラグ
 	bool isAlive_ = true;
 
@@ -99,8 +104,8 @@ protected: // ** パラメーター ** //
 
 	// 死亡アニメーション
 	struct Dying {
-		float kMaxY = 5.0f;	// 天井の高さ
-		float kUpSpeed = 2.5f;	// 死亡時の上昇速度
+		float kMaxY = 6.7f;	// 天井の高さ
+		float kUpSpeed = 1.5f;	// 死亡時の上昇速度
 	}dying_;
 	
 	// ノックバック

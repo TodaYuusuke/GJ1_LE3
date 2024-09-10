@@ -4,6 +4,7 @@
 #include "scene/IScene.h"
 
 #include"../Player/Player.h"
+#include"../Drone/Drone.h"
 #include"../FollowCamera/FollowCamera.h"
 #include"../SkillTree/SkillTree.h"
 #include "../UI/GameUIManager.h"
@@ -27,6 +28,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	Player player_;
 	SkillTree skilltree_;
 	EnemyManager enemyManager_;
+	Drone drone_;
 
 	// ゲーム内UIマネージャー
 	GameUIManager gameUIManager_;

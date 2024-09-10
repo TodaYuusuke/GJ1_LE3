@@ -14,6 +14,8 @@ public:
 	// 更新
 	void ChildUpdate() override;
 
+	// デバッグ用GUI
+	void DebugGUI() override;
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
 
@@ -23,7 +25,10 @@ private: // ** ステートパターン ** //
 	// 通常
 	void InitNormal() override;
 	void UpdateNormal() override;
-
+	// ノックバック
+	void InitKnockback() override;
+	// 死亡アニメーション
+	void InitDying();
 
 private: // ** メンバ変数 ** //
 

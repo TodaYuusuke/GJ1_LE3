@@ -61,3 +61,27 @@ void EnemyManager::Update() {
 		enemy->Update();
 	}
 }
+
+IEnemy* EnemyManager::GetNearDeadBody(LWP::Math::Vector3 pos) {
+	int index = -1; // 一番近いインデックス
+	int i = 0;
+	float distance = 99999999.0f;	// 距離
+	for (auto& enemy : enemies_) {
+		float d = Vector3::Distance(enemy->GetWorldPosition(), pos);
+		// 死体かつ最も近かった場合 -> 返す対象を変更
+		if (enemy->behavior_ == IEnemy::Behavior::DeadBody && d < distance) {
+			index = i;	// インデックスを保持
+			distance = d;
+		}
+		i++;
+	}
+
+	// 一番近かった死体のインスタンスを渡す
+	IEnemy* result = nullptr;
+	if (index != -1) {
+		result = enemies_[index];
+		enemies_.erase(enemies_.begin() + index);
+	}
+
+	return result;
+}
