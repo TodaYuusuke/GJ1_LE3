@@ -6,6 +6,7 @@
 #include"../Player/Player.h"
 #include"../FollowCamera/FollowCamera.h"
 #include"../SkillTree/SkillTree.h"
+#include "../UI/GameUIManager.h"
 
 class TestScene final
 	: public IScene {
@@ -26,6 +27,9 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	Player player_;
 	SkillTree skilltree_;
 	EnemyManager enemyManager_;
+
+	// ゲーム内UIマネージャー
+	GameUIManager gameUIManager_;
 
 	LWP::Resource::RigidModel stage_;
 	LWP::Object::DirectionLight sun_;

@@ -158,6 +158,7 @@
     <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
     <ClCompile Include="Class\SkillTree\SkillTree.cpp" />
+    <ClCompile Include="Class\UI\GameUIManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
     <ClInclude Include="Class\SkillTree\SkillTree.h" />
+    <ClInclude Include="Class\UI\GameUIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Class\SkillTree\skilltreeData.json" />
