@@ -40,6 +40,7 @@ private: // ** 初期化時に確定するデータ ** //
 	float screenOutDistance_ = 10.0f;
 
 	// 敵召喚間隔
+	bool isSummon = false;
 	float summonInterval_ = 0.0f;
-	float kSummonInterval_ = 3.5f;
+	float kSummonInterval_ = 4.5f;
 };

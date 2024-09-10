@@ -9,7 +9,11 @@ void Slime::ChildInit() {
 	collider_.worldTF.translation.y = 1.0f;
 	collider_.name = "Slime";
 	Collider::Sphere& sphere = collider_.SetBroadShape(Collider::Sphere());
-	sphere.radius = 1.0f;
+	sphere.position.y = -0.18f;
+	sphere.radius = 0.51f;
+
+	float s = 0.5f;
+	model_.worldTF.scale = { s,s,s };
 }
 
 void Slime::ChildUpdate() {

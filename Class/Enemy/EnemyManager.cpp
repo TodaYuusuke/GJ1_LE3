@@ -25,10 +25,21 @@ void EnemyManager::Update() {
 	ImGui::Begin("Game");
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("Enemy")) {
-			// 実験用召喚ボタン
+			ImGui::Text("--- Debug Menu ---");
+			if(ImGui::Button("Kill All Enemy")) {
+				for (auto& e : enemies_) {
+					delete e;
+				}
+				enemies_.clear();
+			}
+			ImGui::Checkbox("isSummon", &isSummon);
+
+			// パラメータ
+			ImGui::Text("--- Parameter ---");
 			ImGui::DragFloat("screenOutRange", &screenOutDistance_, 0.01f);
 			ImGui::DragFloat("summonInterval", &summonInterval_, 0.01f);
 			ImGui::DragFloat("kSummonInterval", &kSummonInterval_, 0.01f);
+			// 実験用召喚ボタン
 			ImGui::Text("--- Summon Enemy ---");
 			ImGui::Combo("Select Type", &selectedClass, classText.data(), static_cast<int>(EnemyType::Count));
 			if (ImGui::Button("Summon")) { summonFunction[selectedClass](Vector3{ 0.0f,0.0f,0.0f }); }
@@ -66,7 +77,7 @@ void EnemyManager::Update() {
 
 	// 一定時間ごとに敵を生成
 	summonInterval_ -= LWP::Info::GetDeltaTimeF();
-	if (summonInterval_ < 0.0f) {
+	if (isSummon && summonInterval_ < 0.0f) {
 		summonInterval_ = kSummonInterval_;
 		// 敵召喚
 		Vector3 summonPos = { player_->GetWorldPosition().x,0.0f,0.0f};
