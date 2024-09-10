@@ -63,7 +63,8 @@ private:// ** 処理をまとめた関数 ** //
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
 
-private: // ** パラメータ ** //
+public://外部でほしいパラメータ
+
 
 	//体力
 	int hp_ = 10;
@@ -71,6 +72,10 @@ private: // ** パラメータ ** //
 	int ammoNum_ = 10;
 	//最大弾薬数
 	int maxAmmoNum_ = 10;
+
+private: // ** パラメータ ** //
+
+
 
 	//移動速度
 	float moveSpd_ = 10.0f;

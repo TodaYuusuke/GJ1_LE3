@@ -8,7 +8,7 @@ Player::Player()
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
-	animation.Play(animeName_[A_Idle]);
+	animation.Play(animeName_[A_Idle],true);
 	nowPlayAnimeName_ = animeName_[A_Idle];
 	bullets_ = std::make_unique<PlayerBullets>();
 
@@ -194,7 +194,7 @@ void Player::InitializeMove()
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
 
-	animation.Play(animeName_[A_Run]);
+	animation.Play(animeName_[A_Run],true);
 	nowPlayAnimeName_ = animeName_[A_Run];
 
 }
@@ -258,8 +258,14 @@ void Player::UpdateMove()
 
 #pragma region アニメーション変更処理
 	if (move.x == 0&&move.y==0&&move.z==0) {
-		if (nowPlayAnimeName_ != animeName_[A_Idle]) {
-			animation.Play(animeName_[A_Idle]);
+
+		if (nowPlayAnimeName_==animeName_[A_StandShot]&&!animation.GetPlaying()) {
+			animation.Play(animeName_[A_Idle], true);
+			nowPlayAnimeName_ = animeName_[A_Idle];
+
+		}
+		else if (nowPlayAnimeName_ != animeName_[A_Idle]&&nowPlayAnimeName_!= animeName_[A_StandShot]) {
+			animation.Play(animeName_[A_Idle],true);
 			nowPlayAnimeName_ = animeName_[A_Idle];
 
 		}
@@ -267,7 +273,7 @@ void Player::UpdateMove()
 	else {
 		if (nowPlayAnimeName_ != animeName_[A_Run]) {
 
-			animation.Play(animeName_[A_Run]);
+			animation.Play(animeName_[A_Run],true);
 			nowPlayAnimeName_ = animeName_[A_Run];
 
 		}
@@ -288,6 +294,9 @@ void Player::UpdateMove()
 
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
 			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)shotBulletNum_);
+
+			animation.Play(animeName_[A_StandShot]);
+			nowPlayAnimeName_ = animeName_[A_StandShot];
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
@@ -314,6 +323,9 @@ void Player::UpdateSlide()
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
 		ShotBullet({ 0,1,0 }, slideShot, (float)shotBulletNum_);
+
+		animation.Play(animeName_[A_SlidingShot]);
+		nowPlayAnimeName_ = animeName_[A_SlidingShot];
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
 		behaviorReq_ = Jump;
