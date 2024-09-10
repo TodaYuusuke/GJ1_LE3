@@ -241,20 +241,20 @@ void Player::InitializeJump()
 	velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
 	velo.y = jumpSlope_;
 	velo = velo.Normalize();
-	if (preBehavior_ == Sliding) {
-		//ジャンプの向きベクトル計算
-		velo_.y = Math::Vector3{ velo * jumpVelo_ }.y;
-	}
-	else {
-		velo_ = velo * jumpVelo_;
-	}
+	//if (preBehavior_ == Sliding) {
+	//	//ジャンプの向きベクトル計算
+	//	velo_.y = Math::Vector3{ velo * jumpVelo_ }.y;
+	//}
+	//else {
+	//	velo_ = velo * jumpVelo_;
+	//}
 
-	//velo_ = velo * jumpVelo_;
-
+	velo_ = velo * jumpVelo_;
 	acce_.y = -gravity_;
 
 	isJump_ = true;
 
+	SetAnimation(A_Idle);
 	//ShotBullet({ 0,-1,0 });
 }
 #pragma endregion
@@ -391,7 +391,9 @@ void Player::UpdateQuitSlide()
 
 void Player::UpdateJump()
 {
-	behaviorReq_ = Moving;
+	if (!isJump_) {
+		behaviorReq_ = Moving;
+	}
 }
 
 
