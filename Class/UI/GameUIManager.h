@@ -55,6 +55,11 @@ private: // プライベートな関数
 	/// </summary>
 	void HPGaugeUpdate();
 
+	/// <summary>
+	/// 弾ゲージ更新関数
+	/// </summary>
+	void BulletGaugeUpdate();
+
 private: // メンバ変数
 
 	// プレイヤー本体
@@ -67,9 +72,16 @@ private: // メンバ変数
 	// 体力ゲージ
 	std::vector<LWP::Primitive::Sprite> hpGaugeBG_; // 背景
 	std::vector<LWP::Primitive::Sprite> hpGauge_;	// 本体
+	// 弾用
+	std::vector<LWP::Primitive::Sprite> BulletsUI_; // 弾ゲージ
 
+	/// UI用変数群
 	// 体力ゲージ変数群
 	float hpGaugeOffsetX_ = 85.0f; // HPゲージのX軸オフセット
 	LWP::Utility::Observer<int*> healthObserver_; // 体力ゲージ監視用
+	// 弾ゲージ変数群
+	LWP::Math::Vector2 bulletsAnchor_ = { 50.0f, 100.0f }; // 弾UIのアンカー
+	float BulletGaugeOffsetX_ = 5.0f; // 弾ゲージのX軸オフセット
+	LWP::Utility::Observer<int*> bulletObserver_; // 弾ゲージ監視用
 };
 
