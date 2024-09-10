@@ -22,12 +22,6 @@ void PlayerBullets::Initialize()
 void PlayerBullets::Update()
 {
 	//どうせ親子関係とらんだろという処理につき注意
-#ifdef DEMO
-	ImGui::Begin("bullet data");
-	ImGui::DragFloat3("offset pos", &offset_.x, 0.01f);
-	ImGui::End();
-#endif // DEMO
-
 
 	float delta = Info::GetDeltaTimeF();
 
@@ -62,10 +56,9 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 
 	float delta = Info::GetDeltaTimeF();
 
-
 	BulletData& newdata = bullets_.emplace_back() ;
 	newdata.model.LoadSphere();
-	newdata.model.worldTF.translation = pos+offset_;
+	newdata.model.worldTF.translation = pos;
 	newdata.collider.SetFollowTarget(&newdata.model.worldTF);
 	LWP::Object::Collider::Capsule& cap = newdata.collider.SetBroadShape(Collider::Capsule());
 	cap.end = (velo * -1) * delta;

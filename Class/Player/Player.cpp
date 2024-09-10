@@ -248,7 +248,7 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 		LWP::Math::Vector3 ve = rotateZ(v, theta);
 
 		//一発
-		bullets_->SetData(model_.worldTF.translation, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
+		bullets_->SetData(model_.worldTF.translation+parameters_.bulletData.offset_, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
 
 		theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
 
@@ -280,6 +280,10 @@ float Player::GetPlayerDirection()
 void Player::Debug()
 {
 #ifdef DEMO
+
+	//無限バンダナ
+	static bool isEndlessAmmo_ = false;
+
 	std::string behaName = "HP %d behavior : " + behaviorStirng_[behavior_];
 
 	ImGui::Begin("Game");
@@ -306,7 +310,8 @@ void Player::Debug()
 			}
 
 			if (ImGui::TreeNode("bullet")) {
-
+				ImGui::Checkbox("endless ammo", &isEndlessAmmo_);
+				ImGui::DragFloat3("offset pos", &parameters_.bulletData.offset_.x, 0.01f);
 				ImGui::Text("bullet remaining : %d", parameters_.bulletData.ammoRemaining_);
 				ImGui::DragInt("pellet count", &parameters_.bulletData.shotpelletNum_);
 				ImGui::DragInt("max ammo count", &parameters_.bulletData.maxAmmoNum_);
@@ -336,6 +341,10 @@ void Player::Debug()
 		ImGui::EndTabBar();
 	}
 	ImGui::End();
+
+	if (isEndlessAmmo_) {
+		parameters_.bulletData.ammoRemaining_ = parameters_.bulletData.maxAmmoNum_;
+	}
 #endif // DEMO
 
 }

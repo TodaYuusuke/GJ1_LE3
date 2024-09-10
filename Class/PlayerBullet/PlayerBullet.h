@@ -39,6 +39,6 @@ private:
 	//弾のmodel名
 	std::string modelname_ = "";
 
-	LWP::Math::Vector3 offset_{ 0,1.4f,0 };
+
 
 };

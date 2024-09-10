@@ -52,10 +52,7 @@
     <ClCompile Include="Class\Drone\Drone.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Class\SkillTree\ISkill\ISkill.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Class\SkillTree\SkillManager\SkillManager.cpp">
+    <ClCompile Include="Class\UpgradeManager\UpgradeManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,10 +93,10 @@
     <ClInclude Include="Class\Drone\Drone.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\SkillTree\ISkill\ISkill.h">
+    <ClInclude Include="Class\IUpgrade\IUpgrade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\SkillTree\SkillManager\SkillManager.h">
+    <ClInclude Include="Class\UpgradeManager\UpgradeManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,13 +19,17 @@ public://構造体＆enum群
 	//弾薬データ
 	struct BulletData
 	{
+		//弾発生位置のオフセット
+		LWP::Math::Vector3 offset_{ 0,1.4f,0 };
+
 		//弾の速度
-		float bulletsSpd_ = 700;
+		float bulletsSpd_ = 100;
 
 		//弾残弾
-		int ammoRemaining_ = 10;
+		int ammoRemaining_ = 4;
+
 		//最大弾薬数
-		int maxAmmoNum_ = 10;
+		int maxAmmoNum_ = 4;
 
 		//弾のばらつき度合い
 		float bulletDispersion_ = 0.17f;
