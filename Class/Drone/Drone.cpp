@@ -13,6 +13,10 @@ void Drone::Initialize(Player* playerPtr, EnemyManager* enemyPtr) {
 
 	light_.transform.Parent(&model_.worldTF);
 	light_.transform.translation.y = -0.72f;
+
+	light_.intensity = 0.5f;
+	light_.radius = 10.0f;
+	light_.color = { 202,255,208,255 };
 }
 
 void Drone::Update() {

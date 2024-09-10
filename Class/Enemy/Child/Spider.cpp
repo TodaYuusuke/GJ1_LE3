@@ -11,8 +11,8 @@ void Spider::ChildInit() {
 	collider_.worldTF.translation.y = 1.0f;
 	collider_.name = "Spider";
 	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
-	aabb.min.y = -1.0f;
-	aabb.max.y = 1.0f;
+	aabb.min.y = -0.17f;
+	aabb.max.y = 0.7f;
 }
 
 void Spider::ChildUpdate() {}
