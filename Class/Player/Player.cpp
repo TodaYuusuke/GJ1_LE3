@@ -8,6 +8,25 @@ float Lerp(const float start, const float end, float t) {
 	return(start * (1.0f - t) + end * t);
 }
 
+Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
+	Math::Matrix3x3 data;
+	data.m[0][0] = std::cos(theta);
+	data.m[0][1] = -std::sin(theta);
+	data.m[0][2] = 0;
+
+	data.m[1][0] = std::sin(theta);
+	data.m[1][1] = std::cos(theta);
+	data.m[1][2] = 0;
+
+	data.m[2][0] = 0;
+	data.m[2][1] = 0;
+	data.m[2][2] = 1;
+
+	return velo * data;
+};
+
+
+
 Player::Player()
 {
 	//model_.LoadCube();
@@ -28,8 +47,8 @@ Player::Player()
 			parameters_.hitData.isHit_ = false;
 			parameters_.hp--;
 			parameters_.hitData.hitDirection_ = (model_.worldTF.GetWorldPosition() - data->GetWorldPosition()).x;
-			bulletData_.currentPutBulletInSec_ = 0;
-			bulletData_.currentReloadStartSec_ = 0;
+			parameters_.bulletData.currentPutBulletInSec_ = 0;
+			parameters_.bulletData.currentReloadStartSec_ = 0;
 			behaviorReq_ = HitSomeone;
 		}
 
@@ -53,8 +72,10 @@ void Player::Initialize()
 	bullets_->Initialize();
 
 	//元の値に修正
-	slidingData_ = SlidingData{};
-	bulletData_ = BulletData{};
+	parameters_.bulletData = BulletData{};
+	parameters_.jumpData = JumpData{};
+	parameters_.slideData = SlidingData{};
+	parameters_.hitData = HitData{};
 
 	pVeloX_ = 1.0f;
 	//最小最大角度
@@ -160,76 +181,61 @@ void Player::GlovalUpdate()
 void Player::ReloadBullet(float delta)
 {
 	//弾が最大数以下で処理を行う
-	if (bulletData_.ammoRemaining_ < bulletData_.maxAmmoNum_) {
+	if (parameters_.bulletData.ammoRemaining_ < parameters_.bulletData.maxAmmoNum_) {
 		//リロード処理開始までの待機カウント
-		bulletData_.currentReloadStartSec_ += delta;
+		parameters_.bulletData.currentReloadStartSec_ += delta;
 		//待機時間満了で処理
-		if (bulletData_.currentReloadStartSec_ >= bulletData_.reloadStartSec_) {
-			bulletData_.currentReloadStartSec_ = bulletData_.reloadStartSec_;
+		if (parameters_.bulletData.currentReloadStartSec_ >= parameters_.bulletData.reloadStartSec_) {
+			parameters_.bulletData.currentReloadStartSec_ = parameters_.bulletData.reloadStartSec_;
 
 			//加算処理
-			bulletData_.currentPutBulletInSec_ += delta;
+			parameters_.bulletData.currentPutBulletInSec_ += delta;
 
 			//時間超えで弾増加
-			if (bulletData_.currentPutBulletInSec_ >= bulletData_.putBulletInSec_) {
-				bulletData_.currentPutBulletInSec_ = 0;
+			if (parameters_.bulletData.currentPutBulletInSec_ >= parameters_.bulletData.putBulletInSec_) {
+				parameters_.bulletData.currentPutBulletInSec_ = 0;
 
 				//弾増加
-				bulletData_.ammoRemaining_ += bulletData_.simultaneouslyLoaded_;
+				parameters_.bulletData.ammoRemaining_ += parameters_.bulletData.simultaneouslyLoaded_;
 
 				//最大量を超えたら修正
-				if (bulletData_.ammoRemaining_ > bulletData_.maxAmmoNum_) {
-					bulletData_.maxAmmoNum_;
+				if (parameters_.bulletData.ammoRemaining_ > parameters_.bulletData.maxAmmoNum_) {
+					parameters_.bulletData.maxAmmoNum_;
 				}
 			}
 		}
 	}
 	else {
 		//最大数なのでカウント初期化
-		bulletData_.currentReloadStartSec_ = 0;
-		bulletData_.currentPutBulletInSec_ = 0;
+		parameters_.bulletData.currentReloadStartSec_ = 0;
+		parameters_.bulletData.currentPutBulletInSec_ = 0;
 	}
 }
 
-Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
-	Math::Matrix3x3 data;
-	data.m[0][0] = std::cos(theta);
-	data.m[0][1] = -std::sin(theta);
-	data.m[0][2] = 0;
 
-	data.m[1][0] = std::sin(theta);
-	data.m[1][1] = std::cos(theta);
-	data.m[1][2] = 0;
-
-	data.m[2][0] = 0;
-	data.m[2][1] = 0;
-	data.m[2][2] = 1;
-
-	return velo * data;
-};
 
 void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
 {
 
-	float theta = -bulletData_.bulletDispersion_ / 2;
+	float theta = -parameters_.bulletData.bulletDispersion_ / 2;
 
-	if (bulletData_.ammoRemaining_ <= 0) {
+	if (parameters_.bulletData.ammoRemaining_ <= 0) {
 		return;
 	}
 
 	//弾減らす処理
-	bulletData_.ammoRemaining_--;
-	bulletData_.currentReloadStartSec_ = 0;
-	bulletData_.currentPutBulletInSec_ = 0;
+	parameters_.bulletData.ammoRemaining_--;
+	parameters_.bulletData.currentReloadStartSec_ = 0;
+	parameters_.bulletData.currentPutBulletInSec_ = 0;
 
 	for (int i = 0; i < shotNum; i++) {
 
 			LWP::Math::Vector3 ve = rotateZ(v, theta);
 
 			//一発
-			bullets_->SetData(model_.worldTF.translation, { ve * bulletData_.bulletsSpd_ }, cName);
+			bullets_->SetData(model_.worldTF.translation, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
 
-			theta += bulletData_.bulletDispersion_ / (shotNum - 1.0f);
+			theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
 
 
 		
@@ -271,9 +277,9 @@ void Player::Debug()
 			ImGui::DragFloat("turn sec", &parameters_.turnSec, 0.01f);
 
 			if (ImGui::TreeNode("slide")) {
-				ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
-				ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
-				ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
+				ImGui::DragFloat("slide leng", &parameters_.slideData.length, 0.01f);
+				ImGui::DragFloat("slide spd", &parameters_.slideData.spd, 0.01f);
+				ImGui::DragFloat("acceSlide spd", &parameters_.slideData.acceSpd, 0.01f);
 				ImGui::TreePop();
 			}
 
@@ -286,15 +292,15 @@ void Player::Debug()
 
 			if (ImGui::TreeNode("bullet")) {
 
-				ImGui::Text("bullet remaining : %d", bulletData_.ammoRemaining_);
-				ImGui::DragInt("pellet count", &bulletData_.shotBulletNum_);
-				ImGui::DragInt("max ammo count", &bulletData_.maxAmmoNum_);
-				ImGui::DragInt("reload bullet multiply ",& bulletData_.simultaneouslyLoaded_);
+				ImGui::Text("bullet remaining : %d", parameters_.bulletData.ammoRemaining_);
+				ImGui::DragInt("pellet count", &parameters_.bulletData.shotpelletNum_);
+				ImGui::DragInt("max ammo count", &parameters_.bulletData.maxAmmoNum_);
+				ImGui::DragInt("reload bullet multiply ",&parameters_.bulletData.simultaneouslyLoaded_);
 
-				ImGui::DragFloat("reload start sec", &bulletData_.reloadStartSec_,0.01f);
-				ImGui::DragFloat("reload ammo sec", &bulletData_.putBulletInSec_, 0.01f);
+				ImGui::DragFloat("reload start sec", &parameters_.bulletData.reloadStartSec_,0.01f);
+				ImGui::DragFloat("reload ammo sec", &parameters_.bulletData.putBulletInSec_, 0.01f);
 
-				ImGui::DragFloat("bullet dispersion", &bulletData_.bulletDispersion_, 0.01f);
+				ImGui::DragFloat("bullet dispersion", &parameters_.bulletData.bulletDispersion_, 0.01f);
 				
 				ImGui::TreePop();
 			}
@@ -344,10 +350,10 @@ void Player::InitializeMove()
 void Player::InitializeSlide()
 {
 	//スライディング開始地点を保存
-	slidingData_.startPos = model_.worldTF.GetWorldPosition();
+	parameters_.slideData.startPos = model_.worldTF.GetWorldPosition();
 
 	//ベクトルをスライディング初速度で設定
-	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * slidingData_.spd;
+	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * parameters_.slideData.spd;
 
 	SetAnimation(A_SlidingStart, false);
 
@@ -477,7 +483,7 @@ void Player::UpdateMove()
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
-			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)bulletData_.shotBulletNum_);
+			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)parameters_.bulletData.shotpelletNum_);
 			SetAnimation(A_StandShot,false);
 		}
 
@@ -494,10 +500,10 @@ void Player::UpdateSlide()
 {
 
 	//過去位置と現在（1F前)との距離を検索
-	float pLeng = (slidingData_.startPos - model_.worldTF.GetWorldPosition()).Length();
+	float pLeng = (parameters_.slideData.startPos - model_.worldTF.GetWorldPosition()).Length();
 
 	//指定した距離より離れた場合に減速処理
-	if (slidingData_.length < pLeng) {
+	if (parameters_.slideData.length < pLeng) {
 		behaviorReq_ = QuitSlide;
 	}
 
@@ -509,7 +515,7 @@ void Player::UpdateSlide()
 
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet({ 0,1,0 }, slideShot, (float)bulletData_.shotBulletNum_);
+		ShotBullet({ 0,1,0 }, slideShot, (float)parameters_.bulletData.shotpelletNum_);
 		SetAnimation(A_SlidingShot,false);
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
@@ -525,7 +531,7 @@ void Player::UpdateQuitSlide()
 	//向きによって減速処理
 	if (pVeloX_ > 0) {
 		//xの量引く
-		velo_.x -= slidingData_.acceSpd * delta;
+		velo_.x -= parameters_.slideData.acceSpd * delta;
 
 		//Pの向きが正の向き＆
 		//ベクトルが負の向きの時終了
@@ -536,7 +542,7 @@ void Player::UpdateQuitSlide()
 	}
 	else {
 		//xの量引く
-		velo_.x += slidingData_.acceSpd * delta;
+		velo_.x += parameters_.slideData.acceSpd * delta;
 
 		//Pの向きが負の向き＆
 		//ベクトルが正の向きの時終了
@@ -547,7 +553,7 @@ void Player::UpdateQuitSlide()
 	}
 
 	//アニメーション進行度(0-1)
-	float at = 1.0f - velo_.Length() / slidingData_.spd;
+	float at = 1.0f - velo_.Length() / parameters_.slideData.spd;
 	at;
 
 

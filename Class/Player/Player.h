@@ -40,7 +40,7 @@ public://構造体＆enum群
 		float putBulletInSec_ = 0.2f;
 
 		//弾の同時発射数
-		int shotBulletNum_ = 5;
+		int shotpelletNum_ = 5;
 
 		//リロード開始時間カウント
 		float currentReloadStartSec_ = 0;
@@ -190,16 +190,6 @@ private:// ** 処理をまとめた関数 ** //
 	//void OnCollision(Collider::Collider* hitT);
 
 public://外部でほしいパラメータ
-
-
-	//弾データ
-	BulletData bulletData_;
-
-	//スライディングデータ
-	SlidingData slidingData_{};
-
-
-
 
 
 	//プレイヤーアニメーションデータ
