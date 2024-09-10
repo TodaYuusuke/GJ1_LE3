@@ -54,6 +54,11 @@ void Spider::UpdateNormal() {
 	model_.worldTF.translation += velo * (spd_ * delta);
 }
 
+void Spider::InitKnockback() {
+	IEnemy::InitKnockback();
+	// アニメーション再生
+	animation_.Play("00_Idle", true);
+}
 void Spider::InitDying() {
 	IEnemy::InitDying();
 	// アニメーション再生

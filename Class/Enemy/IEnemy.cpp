@@ -9,12 +9,19 @@ void IEnemy::Init() {
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "Enemy";
 	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
+		// 無敵時間中ならば戻る
+		if (invincibleTime_ > 0.0f) {
+			return;
+		}
+
 		// プレイヤーの弾だった場合
 		if (hitTarget->name == "StandBullet") {
 			behaviorReq_ = Knockback;
+			invincibleTime_ = kInvincibleTime_;
 		}
 		else if (hitTarget->name == "SlidingBullet") {
 			SlidingHit();	// 被弾
+			invincibleTime_ = kInvincibleTime_;
 		}
 	};
 	
@@ -40,6 +47,12 @@ void IEnemy::Update() {
 
 	// 子クラスのアップデート
 	ChildUpdate();
+
+	// 被弾無敵フレームを現象
+	invincibleTime_ -= LWP::Info::GetDeltaTimeF();
+	if (invincibleTime_ < 0.0f) {
+		invincibleTime_ = 0.0f;
+	}
 }
 
 void IEnemy::SlidingHit() {
@@ -122,8 +135,6 @@ void IEnemy::UpdateDying() {
 	}
 }
 void IEnemy::InitDeadBody() {
-
 }
 void IEnemy::UpdateDeadBody() {
-	ImGui::Begin();
 }

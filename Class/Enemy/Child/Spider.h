@@ -29,8 +29,6 @@ private: // ** ステートパターン ** //
 	void InitKnockback() override;
 	// 死亡アニメーション
 	void InitDying();
-	// 死体
-	void InitDeadBody();
 
 private: // ** メンバ変数 ** //
 
