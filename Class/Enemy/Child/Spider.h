@@ -25,10 +25,12 @@ private: // ** ステートパターン ** //
 	// 通常
 	void InitNormal() override;
 	void UpdateNormal() override;
+	// ノックバック
+	void InitKnockback() override;
 	// 死亡アニメーション
-	void InitDying() override;
-	void UpdateDying() override;
-
+	void InitDying();
+	// 死体
+	void InitDeadBody();
 
 private: // ** メンバ変数 ** //
 

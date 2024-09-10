@@ -7,6 +7,7 @@ void Slime::ChildInit() {
 	model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
 	// コライダー設定
 	collider_.worldTF.translation.y = 1.0f;
+	collider_.name = "Slime";
 	Collider::Sphere& sphere = collider_.SetBroadShape(Collider::Sphere());
 	sphere.radius = 1.0f;
 

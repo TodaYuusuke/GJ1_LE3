@@ -5,56 +5,58 @@ using namespace LWP::Math;
 using namespace LWP::Object;
 
 void IEnemy::Init() {
-	// ƒRƒ‰ƒCƒ_[‚ÌŠî–{İ’è
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®åŸºæœ¬è¨­å®š
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "Enemy";
 	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
-		// ƒvƒŒƒCƒ„[‚Ì’e‚¾‚Á‚½ê‡
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å¼¾ã ã£ãŸå ´åˆ
 		if (hitTarget->name == "StandBullet") {
 			behaviorReq_ = Knockback;
 		}
 		else if (hitTarget->name == "SlidingBullet") {
-			SlidingHit();	// ”í’e
+			SlidingHit();	// è¢«å¼¾
 		}
 	};
 	
-	// qƒNƒ‰ƒX‚Ì‰Šú‰»
+	// å­ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–
 	ChildInit();
+	// çŠ¶æ…‹ã®åˆæœŸåŒ–
+	InitNormal();
 }
 
 void IEnemy::Update() {
-	//ó‘ÔƒŠƒNƒGƒXƒg‚ª‚ ‚éÀs
+	//çŠ¶æ…‹ãƒªã‚¯ã‚¨ã‚¹ãƒˆãŒã‚ã‚‹æ™‚å®Ÿè¡Œ
 	if (behaviorReq_) {
-		//‰ß‹‚Ìó‘Ô‚ğ•Û‘¶
+		//éå»ã®çŠ¶æ…‹ã‚’ä¿å­˜
 		preBehavior_ = behavior_;
-		//ó‘Ô‚ğXV
+		//çŠ¶æ…‹ã‚’æ›´æ–°
 		behavior_ = behaviorReq_.value();
 		behaviorReq_ = std::nullopt;
-		//‰Šú‰»ˆ—
+		//åˆæœŸåŒ–å‡¦ç†
 		(this->*BehaviorInitialize[(int)behavior_])();
 	}
-	//ó‘ÔXVˆ—
+	//çŠ¶æ…‹æ›´æ–°å‡¦ç†
 	(this->*BehaviorUpdate[behavior_])();
 
-	// qƒNƒ‰ƒX‚ÌƒAƒbƒvƒf[ƒg
+	// å­ã‚¯ãƒ©ã‚¹ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆ
 	ChildUpdate();
 }
 
 void IEnemy::SlidingHit() {
 	health_--;
 
-	// ‘Ì—Í‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç€‘Ì‚É
+	// ä½“åŠ›ãŒ0ä»¥ä¸‹ã«ãªã£ãŸã‚‰æ­»ä½“ã«
 	if (health_ <= 0) {
 		behaviorReq_ = Dying;
-		isAlive_ = false;	// €–S
+		isAlive_ = false;	// æ­»äº¡
 	}
 	else {
-		// ‘Ì—Í‚ªŒ¸‚Á‚½‰‰o‚ğ‚±‚±‚É
+		// ä½“åŠ›ãŒæ¸›ã£ãŸæ¼”å‡ºã‚’ã“ã“ã«
 	}
 }
 
 void IEnemy::DebugGUI() {
-	// ó‘Ô
+	// çŠ¶æ…‹
 	ImGui::Text(("State : " + behaviorStirng_[behavior_]).c_str());
 	if (ImGui::TreeNode("Model")) {
 		model_.DebugGUI();
@@ -72,14 +74,14 @@ void IEnemy::DebugGUI() {
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
 }
 
-//‰Šú‰»ŠÖ”ƒ|ƒ“ƒ^ƒe[ƒuƒ‹
+//åˆæœŸåŒ–é–¢æ•°ãƒãƒ³ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«
 void (IEnemy::* IEnemy::BehaviorInitialize[])() = {
 	&IEnemy::InitNormal,
 	&IEnemy::InitKnockback,
 	&IEnemy::InitDying,
 	&IEnemy::InitDeadBody
 };
-//XV‰Šú‰»ŠÖ”ƒ|ƒCƒ“ƒ^ƒe[ƒuƒ‹
+//æ›´æ–°åˆæœŸåŒ–é–¢æ•°ãƒã‚¤ãƒ³ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«
 void (IEnemy::* IEnemy::BehaviorUpdate[])() = {
 	&IEnemy::UpdateNormal,
 	&IEnemy::UpdateKnockback,
@@ -88,32 +90,32 @@ void (IEnemy::* IEnemy::BehaviorUpdate[])() = {
 };
 
 void IEnemy::InitKnockback() {
-	knockback_.time = 0.0f;	// ŠÔ‰Šú‰»
-	// •ûŒü‚ğŒˆ‚ß‚é
+	knockback_.time = 0.0f;	// æ™‚é–“åˆæœŸåŒ–
+	// æ–¹å‘ã‚’æ±ºã‚ã‚‹
 	float dir = model_.worldTF.translation.x - player_->GetWorldPosition().x;
-	knockback_.dir = dir / std::sqrtf(dir * dir);	// ³‹K‰»
+	knockback_.dir = dir / std::sqrtf(dir * dir);	// æ­£è¦åŒ–
 }
 void IEnemy::UpdateKnockback() {
-	// Œo‰ßŠÔXV
+	// çµŒéæ™‚é–“æ›´æ–°
 	float deltaTime = LWP::Info::GetDeltaTimeF();
 	knockback_.time += deltaTime;
 
-	// ƒmƒbƒNƒoƒbƒNŠÔ‚ğ’´‚¦‚½‚çI—¹
+	// ãƒãƒƒã‚¯ãƒãƒƒã‚¯æ™‚é–“ã‚’è¶…ãˆãŸã‚‰çµ‚äº†
 	if (knockback_.time >= knockback_.kTotalTime) {
 		deltaTime = knockback_.time - knockback_.kTotalTime;
 		behaviorReq_ = Normal;
 	}
-	// ˆÚ“®
+	// ç§»å‹•
 	model_.worldTF.translation.x += (knockback_.kDistance / knockback_.kTotalTime) * knockback_.dir * deltaTime;
 }
 void IEnemy::InitDying() {
-	// ‘¬“x‚Í”jŠü
+	// é€Ÿåº¦ã¯ç ´æ£„
 	velocity_ = { 0.0f,0.0f,0.0f };
 }
 void IEnemy::UpdateDying() {
-	// ˆê’è‚Ì‘¬“x‚Åã¸
+	// ä¸€å®šã®é€Ÿåº¦ã§ä¸Šæ˜‡
 	model_.worldTF.translation.y += dying_.kUpSpeed;
-	// “Vˆä‚É’…‚¢‚½‚ç’â~
+	// å¤©äº•ã«ç€ã„ãŸã‚‰åœæ­¢
 	if (model_.worldTF.translation.y >= dying_.kMaxY) {
 		model_.worldTF.translation.y = dying_.kMaxY;
 		behaviorReq_ = DeadBody;
@@ -123,5 +125,5 @@ void IEnemy::InitDeadBody() {
 
 }
 void IEnemy::UpdateDeadBody() {
-
+	ImGui::Begin();
 }

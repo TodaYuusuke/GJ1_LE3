@@ -6,19 +6,16 @@ using namespace LWP::Object;
 void Spider::ChildInit() {
 	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");
 	animation_.LoadFullPath("resources/model/Enemy/SpiderEnemy/SpiderEnemy.gltf", &model_);
+	animation_.name = "Spider";
 	// コライダー設定
 	collider_.worldTF.translation.y = 1.0f;
+	collider_.name = "Spider";
 	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
 	aabb.min.y = -1.0f;
 	aabb.max.y = 1.0f;
 }
 
-void Spider::ChildUpdate() {
-	// normal以外ならばアニメーション停止
-	if (behavior_ != Normal) {
-		animation_.Stop();
-	}
-}
+void Spider::ChildUpdate() {}
 
 void Spider::DebugGUI() {
 	// 状態
@@ -61,7 +58,4 @@ void Spider::InitDying() {
 	IEnemy::InitDying();
 	// アニメーション再生
 	animation_.Play("02_Die");
-}
-void Spider::UpdateDying() {
-	IEnemy::UpdateDying();
 }
