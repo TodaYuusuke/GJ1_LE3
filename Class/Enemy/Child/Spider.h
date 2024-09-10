@@ -4,23 +4,31 @@
 class Spider final
 	: public IEnemy {
 public:
-	Spider(Player* ptr) : IEnemy(ptr) { Initialize(); }
+	Spider(Player* ptr) : IEnemy(ptr) { Init(); }
 	~Spider() = default;
 
 	// ** メンバ関数 ** //
 
 	// 初期化
-	void Initialize() override;
+	void ChildInit() override;
 	// 更新
-	void Update() override;
+	void ChildUpdate() override;
 
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
 
 
+private: // ** ステートパターン ** //
+
+	// 通常
+	void InitNormal() override;
+	void UpdateNormal() override;
+
+
 private: // ** メンバ変数 ** //
 
-	LWP::Object::Collider::Collider collider_;
+	// アニメーション
+	LWP::Resource::Animation animation_;
 
 private: // ** パラメータ ** //
 

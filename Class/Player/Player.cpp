@@ -143,7 +143,6 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 void Player::Debug()
 {
 #ifdef DEMO
-
 	std::string behaName = "HP %d behavior : " + behaviorStirng_[behavior_];
 
 	ImGui::Begin("Game");

@@ -3,23 +3,28 @@
 using namespace LWP;
 using namespace LWP::Object;
 
-void Spider::Initialize() {
-	model_.LoadShortPath("Enemy/Enemy.gltf");
-	collider_.SetBroadShape(Collider::Sphere());
-	collider_.SetFollowTarget(&model_.worldTF);
-	collider_.name = "enemy";
-	collider_.enterLambda = [this](Collider::Collider* hitTarget) {
-		// プレイヤーの弾だった場合
-		if (hitTarget->name == "playerBullet") {
-			Hit();	// 被弾
-		}
-	};
+void Spider::ChildInit() {
+	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");
+	animation_.LoadFullPath("resources/model/Enemy/SpiderEnemy/SpiderEnemy.gltf", &model_);
+	// コライダー設定
+	collider_.worldTF.translation.y = 1.0f;
+	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
+	aabb.min.y = -1.0f;
+	aabb.max.y = 1.0f;
 }
 
-void Spider::Update() {
-	// 死んでたら早期リターン
-	if (!isAlive_) { return; }
+void Spider::ChildUpdate() {
+	// normal以外ならばアニメーション停止
+	if (behavior_ != Normal) {
+		animation_.Stop();
+	}
+}
 
+void Spider::InitNormal() {
+	// アニメーション再生
+	animation_.Play("01_Walk", true);
+}
+void Spider::UpdateNormal() {
 	float delta = Info::GetDefaultDeltaTimeF();
 
 	//プレイヤー方向への向きベクトルを計算
