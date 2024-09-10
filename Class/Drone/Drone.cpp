@@ -23,6 +23,7 @@ void Drone::Update() {
 				model_.DebugGUI();
 				ImGui::TreePop();
 			}
+			ImGui::Checkbox("isActive", &isActive);
 			ImGui::Text("----- Parameter -----");
 			ImGui::DragFloat("kSlerpT", &kSlerpT, 0.01f);
 			if (ImGui::TreeNode("PlayerFollow")) {
@@ -41,6 +42,9 @@ void Drone::Update() {
 	}
 	ImGui::End();
 #endif
+
+	// 早期リターン
+	if (!isActive) { return; }
 
 	//状態リクエストがある時実行
 	if (behaviorReq_) {

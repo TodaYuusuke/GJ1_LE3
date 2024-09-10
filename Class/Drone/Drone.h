@@ -36,6 +36,9 @@ private: // ** メンバ変数 ** //
 	LWP::Math::Vector3 goalPosition = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
 	float kSlerpT = 0.09f;	// Slerpの係数
 
+	// アクティブ切り替え
+	bool isActive = true;
+
 private: // ** ステートパターン ** //
 
 	//各状態

@@ -20,6 +20,29 @@ void Spider::ChildUpdate() {
 	}
 }
 
+void Spider::DebugGUI() {
+	// 状態
+	ImGui::Text(("State : " + behaviorStirng_[behavior_]).c_str());
+	if (ImGui::TreeNode("Model")) {
+		model_.DebugGUI();
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Animation")) {
+		animation_.DebugGUI();
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Collider")) {
+		collider_.DebugGUI();
+		ImGui::TreePop();
+	}
+	ImGui::Checkbox("isAlive:", &isAlive_);
+	ImGui::Text("----- State Change -----");
+	if (ImGui::Button("Normal")) { behaviorReq_ = Normal; }
+	if (ImGui::Button("Knockback")) { behaviorReq_ = Knockback; }
+	if (ImGui::Button("Dying")) { behaviorReq_ = Dying; }
+	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
+}
+
 void Spider::InitNormal() {
 	// アニメーション再生
 	animation_.Play("01_Walk", true);
@@ -32,4 +55,13 @@ void Spider::UpdateNormal() {
 	velo.y = 0;
 	//移動速度をかけた分移動
 	model_.worldTF.translation += velo * (spd_ * delta);
+}
+
+void Spider::InitDying() {
+	IEnemy::InitDying();
+	// アニメーション再生
+	animation_.Play("02_Die");
+}
+void Spider::UpdateDying() {
+	IEnemy::UpdateDying();
 }
