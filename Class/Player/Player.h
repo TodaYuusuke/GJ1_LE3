@@ -62,6 +62,8 @@ public://構造体＆enum群
 		float hitHeight_ = 1.0f;
 		//初速
 		float hitVelocity_ = 10.0f;
+
+		int animeCount_0;
 	};
 
 	//スライディングのデータ
@@ -203,11 +205,15 @@ public://外部でほしいパラメータ
 	//プレイヤーのパラメータ群
 	Parameters parameters_;
 private: // ** パラメータ ** //
+	struct MinMax {
+		LWP::Math::Vector3 min;
+		LWP::Math::Vector3 max;
 
-
-	LWP::Object::Collider::AABB standAABB_;
+	};
+	
+	MinMax standAABB_;
 	  
-	LWP::Object::Collider::AABB slideAABB_;
+	MinMax slideAABB_;
 
 private: // ** 変数 ** //
 	//モデル
@@ -233,13 +239,13 @@ private: // ** 変数 ** //
 	//プレイヤー本体のコライダー
 	struct AABBCollider {
 		LWP::Object::Collider::Collider collider;    // 当たり判定
-		LWP::Object::Collider::Capsule& aabb;    // 形状
+		LWP::Object::Collider::AABB& aabb;    // 形状
 
 		/// <summary>
 		/// コンストラクタ
 		/// <para>参照変数のために用意</para>
 		/// </summary>
-		AABBCollider() : aabb(collider.SetBroadShape(LWP::Object::Collider::Capsule())) {}
+		AABBCollider() : aabb(collider.SetBroadShape(LWP::Object::Collider::AABB())) {}
 	}aabb_;
 
 

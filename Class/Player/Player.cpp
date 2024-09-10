@@ -47,7 +47,7 @@ Player::Player()
 	//被弾処理
 	aabb_.collider.enterLambda = [=](Collider::Collider* data) {
 
-		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding])) {
+		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding])||data->name==standShot || data->name == slideShot) {
 			return;
 		}
 
@@ -74,8 +74,8 @@ void Player::Initialize()
 {
 
 	model_.worldTF.translation = { 0,0,0 };
-	//aabb_.aabb = standAABB_;
-
+	aabb_.aabb.min = standAABB_.min;
+	aabb_.aabb.max = standAABB_.max;
 
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
@@ -359,7 +359,9 @@ void Player::InitializeMove()
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
 	SetAnimation(A_Run);
-	//aabb_.aabb = standAABB_;
+	aabb_.aabb.min = standAABB_.min;
+	aabb_.aabb.max = standAABB_.max;
+
 
 }
 void Player::InitializeSlide()
@@ -371,16 +373,16 @@ void Player::InitializeSlide()
 	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * parameters_.slideData.spd;
 
 	SetAnimation(A_SlidingStart, false);
-	//aabb_.aabb = slideAABB_;
-
+	aabb_.aabb.min = slideAABB_.min;
+	aabb_.aabb.max = slideAABB_.max;
 
 }
 
 void Player::InitializeQuitSlide()
 {
 	SetAnimation(A_SlidingEnd, false);
-	//aabb_.aabb = standAABB_;
-
+	aabb_.aabb.min = standAABB_.min;
+	aabb_.aabb.max = standAABB_.max;
 
 }
 
@@ -408,7 +410,8 @@ void Player::InitializeJump()
 	parameters_.jumpData.isJump_ = true;
 
 	SetAnimation(A_Idle);
-	//aabb_.aabb = standAABB_;
+	aabb_.aabb.min = standAABB_.min;
+	aabb_.aabb.max = standAABB_.max;
 
 }
 void Player::InitializeHitSomeone()
@@ -421,6 +424,8 @@ void Player::InitializeHitSomeone()
 
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
+
+	model_.isActive = false;
 }
 
 #pragma endregion
@@ -596,6 +601,7 @@ void Player::UpdateHitSomeone()
 	if (parameters_.hitData.currentNoHit_ >= parameters_.hitData.noHitSec_) {
 		parameters_.hitData.currentNoHit_ = 0;
 		parameters_.hitData.isHit_ = true;
+		model_.isActive = true;
 		behaviorReq_ = Moving;
 	}
 }
