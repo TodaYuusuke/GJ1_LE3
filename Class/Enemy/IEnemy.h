@@ -32,6 +32,8 @@ public:
 
 	// デバッグ用GUI
 	virtual void DebugGUI();
+	// ワールド座標を返す関数
+	LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 	// 自分のタイプを返す関数
 	virtual EnemyType GetType() = 0;
 
