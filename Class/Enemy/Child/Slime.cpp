@@ -4,33 +4,32 @@ using namespace LWP;
 using namespace LWP::Object;
 
 void Slime::ChildInit() {
-	model_.LoadShortPath("Enemy/SpiderEnemy/SpiderEnemy.gltf");	// ‚¢‚Á‚½‚ñƒNƒ‚ƒ‚ƒfƒ‹‚Å•`‰æ
-	//model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
-	// ƒRƒ‰ƒCƒ_[İ’è
+	model_.LoadShortPath("Enemy/SlimeEnemy/SlimeEnemy.gltf");
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼è¨­å®š
 	collider_.worldTF.translation.y = 1.0f;
 	Collider::Sphere& sphere = collider_.SetBroadShape(Collider::Sphere());
 	sphere.radius = 1.0f;
 
-	// Šï–­‚È’l‚É‚È‚é‚Ì‚Å‰Šú‰»
+	// å¥‡å¦™ãªå€¤ã«ãªã‚‹ã®ã§åˆæœŸåŒ–
 	model_.worldTF.translation = { 0.0f,0.0f,0.0f };
 	normal_.velocity = { 0.0f,0.0f,0.0f };
 }
 
 void Slime::ChildUpdate() {
-	// €‚ñ‚¾‚çXV‚Í‚µ‚È‚¢
+	// æ­»ã‚“ã ã‚‰æ›´æ–°ã¯ã—ãªã„
 	if (!isAlive_) { return; }
 
 	normal_.velocity.y += normal_.kGravity;
 	model_.worldTF.translation += normal_.velocity;
 
-	// ƒXƒ‰ƒCƒ€‚ª’n–Ê‚É–„‚Ü‚ç‚È‚¢‚æ‚¤‚É
+	// ã‚¹ãƒ©ã‚¤ãƒ ãŒåœ°é¢ã«åŸ‹ã¾ã‚‰ãªã„ã‚ˆã†ã«
 	if (model_.worldTF.translation.y < 0.0f) {
 		model_.worldTF.translation.y = 0.0f;
 	}
 }
 
 void Slime::DebugGUI() {
-	// ó‘Ô
+	// çŠ¶æ…‹
 	ImGui::Text(("State : " + behaviorStirng_[behavior_]).c_str());
 	if (ImGui::TreeNode("Model")) {
 		model_.DebugGUI();
@@ -53,78 +52,78 @@ void Slime::DebugGUI() {
 }
 
 void Slime::InitNormal() {
-	// ƒCƒ“ƒ^[ƒoƒ‹ƒŠƒZƒbƒg
+	// ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«ãƒªã‚»ãƒƒãƒˆ
 	normal_.jumpInterval = normal_.kJumpIntervalTime;
 }
 void Slime::UpdateNormal() {
-	// ˆê’èˆÈ‰º‚Ì‚“x‚É‚È‚Á‚½‚çvelocity‚Ìx‚ğ0‚É
+	// ä¸€å®šä»¥ä¸‹ã®é«˜åº¦ã«ãªã£ãŸã‚‰velocityã®xã‚’0ã«
 	if (model_.worldTF.translation.y <= 0.2f) {
 		normal_.velocity.x = 0.0f;
 	}
 
-	// ƒCƒ“ƒ^[ƒoƒ‹Œ¸­
+	// ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«æ¸›å°‘
 	normal_.jumpInterval -= Info::GetDefaultDeltaTimeF();
-	// 0‚ğØ‚Á‚½‚çƒWƒƒƒ“ƒv
+	// 0ã‚’åˆ‡ã£ãŸã‚‰ã‚¸ãƒ£ãƒ³ãƒ—
 	if (normal_.jumpInterval < 0.0f) {
-		// ƒCƒ“ƒ^[ƒoƒ‹ƒŠƒZƒbƒg
+		// ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«ãƒªã‚»ãƒƒãƒˆ
 		normal_.jumpInterval = normal_.kJumpIntervalTime;
 
-		// •ûŒü‚ğŒˆ‚ß‚é
+		// æ–¹å‘ã‚’æ±ºã‚ã‚‹
 		float dir = model_.worldTF.translation.x - player_->GetWorldPosition().x;
-		dir = dir / std::sqrtf(dir * dir);	// ³‹K‰»
-		// ‘¬“x‰ÁZ
+		dir = dir / std::sqrtf(dir * dir);	// æ­£è¦åŒ–
+		// é€Ÿåº¦åŠ ç®—
 		normal_.velocity = normal_.kJumpVelocity;
 		normal_.velocity.x *= dir;
 	}
 }
 void Slime::InitKnockback() {
-	knockback_.time = 0.0f;	// ŠÔ‰Šú‰»
-	// •ûŒü‚ğŒˆ‚ß‚é
+	knockback_.time = 0.0f;	// æ™‚é–“åˆæœŸåŒ–
+	// æ–¹å‘ã‚’æ±ºã‚ã‚‹
 	float dir = model_.worldTF.translation.x - player_->GetWorldPosition().x;
-	knockback_.dir = dir / std::sqrtf(dir * dir);	// ³‹K‰»
+	knockback_.dir = dir / std::sqrtf(dir * dir);	// æ­£è¦åŒ–
 
-	// ƒWƒƒƒ“ƒv’†‚¾‚Á‚½ê‡—‰º‚³‚¹‚é‚½‚ßvelocity‚Ìy‚ğ0‚É
+	// ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã ã£ãŸå ´åˆè½ä¸‹ã•ã›ã‚‹ãŸã‚velocityã®yã‚’0ã«
 	normal_.velocity.y = 0.0f;
 }
 /*
 void Slime::Update() {
-	// €‚ñ‚Å‚½‚ç‘ŠúƒŠƒ^[ƒ“
+	// æ­»ã‚“ã§ãŸã‚‰æ—©æœŸãƒªã‚¿ãƒ¼ãƒ³
 	if (!isAlive_) { return; }
 
 	float delta = LWP::Info::GetDefaultDeltaTimeF();
 
-	//Ÿ‚ÌƒWƒƒƒ“ƒv‚Ü‚Å‚ÌƒJƒEƒ“ƒg
+	//æ¬¡ã®ã‚¸ãƒ£ãƒ³ãƒ—ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ
 	if (!isJump_) {
 		jumpCount_ += delta;
 	}
 
-	//ƒJƒEƒ“ƒgˆê’è‚ÅƒWƒƒƒ“ƒv
+	//ã‚«ã‚¦ãƒ³ãƒˆä¸€å®šã§ã‚¸ãƒ£ãƒ³ãƒ—
 	if (jumpCount_ >= maxjumpTime_) {
 		jumpCount_ -= maxjumpTime_;
 		isJump_ = true;
 
-		//ƒvƒŒƒCƒ„[•ûŒü‚ÉƒWƒƒƒ“ƒv
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘ã«ã‚¸ãƒ£ãƒ³ãƒ—
 		float direcX = player_->GetWorldPosition().x - model_.worldTF.GetWorldPosition().x;
 
-		//Œü‚«ƒxƒNƒgƒ‹
+		//å‘ããƒ™ã‚¯ãƒˆãƒ«
 		LWP::Math::Vector3 velo;
 		if (direcX > 0) {
-			//ƒvƒŒƒCƒ„[‚ª+•ûŒü
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒ+æ–¹å‘
 			velo = LWP::Math::Vector3{ 1,jumpYNum_,0 }.Normalize();
 
 		}
 		else {
-			//ƒvƒŒƒCƒ„[‚ª|•ûŒü
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒï¼æ–¹å‘
 			velo = LWP::Math::Vector3{ -1,jumpYNum_,0 }.Normalize();
 		}
-		//ƒWƒƒƒ“ƒv•ª‚©‚¯‚ÄƒxƒNƒgƒ‹‚É’Ç‰Á
+		//ã‚¸ãƒ£ãƒ³ãƒ—åˆ†ã‹ã‘ã¦ãƒ™ã‚¯ãƒˆãƒ«ã«è¿½åŠ 
 		velo *= jumpSpd_;
 		velo_ = velo;
 	}
 
 	velo_.y += gravity_ * delta;
 
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
 	model_.worldTF.translation += velo_ * delta;
 
 	if (model_.worldTF.translation.y < 0) {
