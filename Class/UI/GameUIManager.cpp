@@ -9,11 +9,11 @@ void GameUIManager::Initialize(Player* player)
 	player_ = player;
 
 	// オブザーバーに各変数を渡す
-	healthObserver_.Init(&player_->hp_); // HP
-	bulletObserver_.Init(&player_->bulletData_.ammoRemaining_); // 残弾数
+	healthObserver_.Init(&player_->parameters_.hp); // HP
+	bulletObserver_.Init(&player_->parameters_.bulletData.ammoRemaining_); // 残弾数
 
 	// スプライトを最大HP分生成
-	for (int i = 0; i < player_->maxHp_; i++) {
+	for (int i = 0; i < player_->parameters_.maxHp; i++) {
 		// 新規背景スプライト生成
 		Primitive::Sprite& b = hpGaugeBG_.emplace_back();
 		b.material.texture = Resource::LoadTexture("UI/HPGauge/HPGauge_BG.png");
@@ -33,7 +33,7 @@ void GameUIManager::Initialize(Player* player)
 	}
 
 	// 弾用スプライトを最大数分生成
-	for (int i = 0; i < player_->bulletData_.maxAmmoNum_; i++) {
+	for (int i = 0; i < player_->parameters_.bulletData.maxAmmoNum_; i++) {
 		// 新規背景スプライト生成
 		Primitive::Sprite& b = BulletsUI_.emplace_back();
 		b.material.texture = Resource::LoadTexture("UI/Bullet/Bullet.png");
@@ -110,7 +110,7 @@ void GameUIManager::DebugGUI()
 void GameUIManager::SetUp()
 {
 	/// HPゲージの大きさを最初のスプライトに合わせる
-	for (int i = 1; i < player_->maxHp_; i++) {
+	for (int i = 1; i < player_->parameters_.maxHp; i++) {
 		// 生成済みスプライトで足りない場合新しいスプライトを生成
 		if (hpGaugeBG_.size() <= i) {
 			// 新規背景スプライト生成
@@ -142,16 +142,16 @@ void GameUIManager::SetUp()
 		}
 	}
 	// スプライト数よりHP最大数の方が小さい場合
-	if (hpGaugeBG_.size() >= player_->maxHp_) {
+	if (hpGaugeBG_.size() >= player_->parameters_.maxHp) {
 		// HP最大数以外
-		for (int i = player_->maxHp_; i < hpGaugeBG_.size(); i++) {
+		for (int i = player_->parameters_.maxHp; i < hpGaugeBG_.size(); i++) {
 			hpGaugeBG_[i].isActive = false;
 			hpGauge_[i].isActive = false;
 		}
 	}
 
 	/// 弾ゲージの大きさを最初のスプライトに合わせる
-	for (int i = 1; i < player_->bulletData_.maxAmmoNum_; i++) {
+	for (int i = 1; i < player_->parameters_.bulletData.maxAmmoNum_; i++) {
 		// 生成済みスプライトで足りない場合新しいスプライトを生成
 		if (BulletsUI_.size() <= i) {
 			// 新規背景スプライト生成
@@ -173,9 +173,9 @@ void GameUIManager::SetUp()
 		}
 	}
 	// スプライト数より弾最大数の方が小さい場合
-	if (BulletsUI_.size() >= player_->bulletData_.maxAmmoNum_) {
+	if (BulletsUI_.size() >= player_->parameters_.bulletData.maxAmmoNum_) {
 		// 弾最大数以外
-		for (int i = player_->bulletData_.maxAmmoNum_; i < BulletsUI_.size(); i++) {
+		for (int i = player_->parameters_.bulletData.maxAmmoNum_; i < BulletsUI_.size(); i++) {
 			BulletsUI_[i].isActive = false;
 		}
 	}
@@ -200,9 +200,9 @@ void GameUIManager::HPGaugeUpdate()
 	// 現在HPと前フレームHPが一致していない場合
 	if (healthObserver_.GetChanged()) {
 		// HP分ゲージの表示非表示を切り替える
-		for (int i = 0; i < player_->maxHp_; i++) {
+		for (int i = 0; i < player_->parameters_.maxHp; i++) {
 			// iがプレイヤーのHPを上回っていれば
-			if (i + 1 > player_->hp_) {
+			if (i + 1 > player_->parameters_.hp) {
 				hpGauge_[i].isActive = false;
 			}
 			else {
@@ -217,9 +217,9 @@ void GameUIManager::BulletGaugeUpdate()
 	// 現在HPと前フレームHPが一致していない場合
 	if (bulletObserver_.GetChanged()) {
 		// HP分ゲージの表示非表示を切り替える
-		for (int i = 0; i < player_->bulletData_.maxAmmoNum_; i++) {
+		for (int i = 0; i < player_->parameters_.bulletData.maxAmmoNum_; i++) {
 			// iがプレイヤーのHPを上回っていれば
-			if (i + 1 > player_->bulletData_.ammoRemaining_) {
+			if (i + 1 > player_->parameters_.bulletData.ammoRemaining_) {
 				BulletsUI_[i].isActive = false;
 			}
 			else {
