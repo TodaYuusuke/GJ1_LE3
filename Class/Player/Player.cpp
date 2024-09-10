@@ -42,13 +42,28 @@ Player::~Player()
 void Player::Initialize()
 {
 
+	model_.worldTF.translation = { 0,0,0 };
+
+
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
 
 	bullets_->Initialize();
 
 	//元の値に修正
+	slidingData_ = SlidingData{};
 	bulletData_ = BulletData{};
+
+	pVeloX_ = 1.0f;
+
+
+	isJump_ = false;
+
+	behaviorReq_ = std::nullopt;
+	//状態
+	behavior_ = Moving;
+	//変更前の状態
+	preBehavior_ = Moving;
 }
 
 void Player::Update()
@@ -193,10 +208,17 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 	float theta = -bulletData_.bulletDispersion_ / 2;
 
+	if (bulletData_.ammoRemaining_ <= 0) {
+		return;
+	}
+
+	//弾減らす処理
+	bulletData_.ammoRemaining_--;
+	bulletData_.currentReloadStartSec_ = 0;
+	bulletData_.currentPutBulletInSec_ = 0;
+
 	for (int i = 0; i < shotNum; i++) {
-		if (bulletData_.ammoRemaining_ <= 0) {
-			break;
-		}
+
 			LWP::Math::Vector3 ve = rotateZ(v, theta);
 
 			//一発
@@ -204,10 +226,7 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 			theta += bulletData_.bulletDispersion_ / (shotNum - 1.0f);
 
-			//弾減らす処理
-			bulletData_.ammoRemaining_--;
-			bulletData_.currentReloadStartSec_ = 0;
-			bulletData_.currentPutBulletInSec_ = 0;
+
 		
 	}
 }
@@ -275,15 +294,11 @@ void Player::Debug()
 				ImGui::TreePop();
 			}
 
-
-
-
-
-
-
-			
 			model_.DebugGUI();
-			animation.DebugGUI();
+			if (ImGui::TreeNode("animation")) {
+				animation.DebugGUI();
+				ImGui::TreePop();
+			}
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
 
