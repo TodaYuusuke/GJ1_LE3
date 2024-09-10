@@ -8,6 +8,9 @@ void GameUIManager::Initialize(Player* player)
 	// メンバ変数にプレイヤーを格納
 	player_ = player;
 
+	// オブザーバーにHPを渡す
+	healthObserver_.Init(&player_->hp_);
+
 	// スプライトを最大HP分生成
 	for (int i = 0; i < player->maxHp_; i++) {
 		// 新規背景スプライト生成
@@ -31,6 +34,9 @@ void GameUIManager::Initialize(Player* player)
 
 void GameUIManager::Update()
 {
+	// デバッグ
+	Debug();
+
 	// UI関係のセットアップが終わっていない場合セットアップを行う
 	if (!isSetUpUI_) {
 		SetUp();
@@ -38,31 +44,8 @@ void GameUIManager::Update()
 		isSetUpUI_ = true;
 	}
 
-	// デバッグ時のみ実行
-	#ifdef _DEBUG
-	
-	// デバッグ時のみHPゲージを最初の座標に合わせる
-	for (int i = 1; i < player_->maxHp_; i++) {
-		// 0のスプライトから位置を合わせる
-		hpGaugeBG_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
-		hpGaugeBG_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
-		hpGaugeBG_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
-		hpGauge_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
-		hpGauge_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
-		hpGauge_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
-
-		// 最初のスプライトのみ個別に設定
-		if (i == 1) {
-			hpGauge_[0].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
-			hpGauge_[0].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
-		}
-	}
-
-	// デバッグGUIの表示
-	DebugGUI();
-
-	#endif // _DEBUG
-
+	// HPゲージ更新
+	HPGaugeUpdate();
 }
 
 void GameUIManager::DebugGUI()
@@ -98,13 +81,27 @@ void GameUIManager::DebugGUI()
 void GameUIManager::SetUp()
 {
 	/// HPゲージの大きさを最初のスプライトに合わせる
-	// デバッグ時のみHPゲージを最初の座標に合わせる
 	for (int i = 1; i < player_->maxHp_; i++) {
+		// 生成済みスプライトで足りない場合新しいスプライトを生成
+		if (hpGaugeBG_.size() <= i) {
+			// 新規背景スプライト生成
+			Primitive::Sprite& b = hpGaugeBG_.emplace_back();
+			b.material.texture = Resource::LoadTexture("UI/HPGauge/HPGauge_BG.png");
+			b.isUI = true;
+			b.material.enableLighting = false;
+			// 新規本体スプライト生成
+			Primitive::Sprite& s = hpGauge_.emplace_back();
+			s.material.texture = Resource::LoadTexture("UI/HPGauge/HPGauge.png");
+			s.isUI = true;
+			s.isActive = false;
+			s.material.enableLighting = false;
+		}
 
 		// 0のスプライトから位置を合わせる
 		hpGaugeBG_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
 		hpGaugeBG_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
 		hpGaugeBG_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
+		hpGaugeBG_[i].isActive = true;
 		hpGauge_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
 		hpGauge_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
 		hpGauge_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
@@ -115,4 +112,82 @@ void GameUIManager::SetUp()
 			hpGauge_[0].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
 		}
 	}
+	// スプライト数よりHP最大数の方が小さい場合
+	if (hpGaugeBG_.size() >= player_->maxHp_) {
+		// HP最大数以外
+		for (int i = player_->maxHp_; i < hpGaugeBG_.size(); i++) {
+			hpGaugeBG_[i].isActive = false;
+			hpGauge_[i].isActive = false;
+		}
+	}
 }
+
+void GameUIManager::Debug()
+{
+	// デバッグ時のみ実行
+#ifdef _DEBUG
+
+	/// HPゲージの大きさを最初のスプライトに合わせる
+	for (int i = 1; i < player_->maxHp_; i++) {
+		// 生成済みスプライトで足りない場合新しいスプライトを生成
+		if (hpGaugeBG_.size() <= i) {
+			// 新規背景スプライト生成
+			Primitive::Sprite& b = hpGaugeBG_.emplace_back();
+			b.material.texture = Resource::LoadTexture("UI/HPGauge/HPGauge_BG.png");
+			b.isUI = true;
+			b.material.enableLighting = false;
+			// 新規本体スプライト生成
+			Primitive::Sprite& s = hpGauge_.emplace_back();
+			s.material.texture = Resource::LoadTexture("UI/HPGauge/HPGauge.png");
+			s.isUI = true;
+			s.isActive = false;
+			s.material.enableLighting = false;
+		}
+
+		// 0のスプライトから位置を合わせる
+		hpGaugeBG_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
+		hpGaugeBG_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
+		hpGaugeBG_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
+		hpGaugeBG_[i].isActive = true;
+		hpGauge_[i].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
+		hpGauge_[i].worldTF.translation.x += (hpGaugeBG_[0].worldTF.scale.x * hpGaugeBG_[0].size.t.x) * i - (hpGaugeOffsetX_ * i * hpGaugeBG_[0].worldTF.scale.x);
+		hpGauge_[i].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
+
+		// 最初のスプライトのみ個別に設定
+		if (i == 1) {
+			hpGauge_[0].worldTF.translation = hpGaugeBG_[0].worldTF.translation;
+			hpGauge_[0].worldTF.scale = hpGaugeBG_[0].worldTF.scale;
+		}
+	}
+	// スプライト数よりHP最大数の方が小さい場合
+	if (hpGaugeBG_.size() >= player_->maxHp_) {
+		// HP最大数以外
+		for (int i = player_->maxHp_; i < hpGaugeBG_.size(); i++) {
+			hpGaugeBG_[i].isActive = false;
+			hpGauge_[i].isActive = false;
+		}
+	}
+
+	// デバッグGUIの表示
+	DebugGUI();
+
+#endif // _DEBUG
+}
+
+void GameUIManager::HPGaugeUpdate()
+{
+	// 現在HPと前フレームHPが一致していない場合
+	if (healthObserver_.GetChanged()) {
+		// HP分ゲージの表示非表示を切り替える
+		for (int i = 0; i < player_->maxHp_; i++) {
+			// iがプレイヤーのHPを上回っていれば
+			if (i + 1 > player_->hp_) {
+				hpGauge_[i].isActive = false;
+			}
+			else {
+				hpGauge_[i].isActive = true;
+			}
+		}
+	}
+}
+

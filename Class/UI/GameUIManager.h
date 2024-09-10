@@ -42,7 +42,19 @@ public: // メンバ関数
 	/// セットアップ関数
 	/// </summary>
 	void SetUp();
-	
+
+private: // プライベートな関数
+
+	/// <summary>
+	/// デバッグ関数
+	/// </summary>
+	void Debug();
+
+	/// <summary>
+	/// HPゲージ更新関数
+	/// </summary>
+	void HPGaugeUpdate();
+
 private: // メンバ変数
 
 	// プレイヤー本体
@@ -58,5 +70,6 @@ private: // メンバ変数
 
 	// 体力ゲージ変数群
 	float hpGaugeOffsetX_ = 85.0f; // HPゲージのX軸オフセット
+	LWP::Utility::Observer<int*> healthObserver_; // 体力ゲージ監視用
 };
 

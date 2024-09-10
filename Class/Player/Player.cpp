@@ -260,7 +260,8 @@ void Player::Debug()
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("Player")) {
 
-			ImGui::Text(behaName.c_str(), hp_);
+			ImGui::DragInt("HP", &hp_, 1, 0, maxHp_);
+			ImGui::DragInt("MaxHP", &maxHp_, 1, 1);
 			ImGui::Checkbox("is Hit", &isHit_);
 			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
 			ImGui::DragFloat("turn sec", &turnSec_, 0.01f);
