@@ -160,12 +160,16 @@ void Player::GlovalUpdate()
 		float t = parameters_.currentTurnSec / parameters_.turnSec;
 		//最小最大角度
 		float pi = (float)std::numbers::pi / 2.0f;
+
+		float min = pi;
+		float max = pi * 3;
+
 		float rotateY;
 		if (pVeloX_ > 0) {
-			rotateY = Lerp(-pi, pi, t);
+			rotateY = Lerp(max, min, t);
 		}
 		else {
-			rotateY = Lerp(pi, -pi, t);
+			rotateY = Lerp(min, max, t);
 		}
 		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
 
@@ -408,10 +412,13 @@ void Player::InitializeJump()
 	acce_.y = -parameters_.gravity;
 
 	parameters_.jumpData.isJump_ = true;
+	parameters_.bulletData.currentPutBulletInSec_ = 0;
+	parameters_.bulletData.currentReloadStartSec_ = 0;
 
 	SetAnimation(A_Idle);
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
+
 
 }
 void Player::InitializeHitSomeone()
@@ -513,7 +520,11 @@ void Player::UpdateMove()
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-			behaviorReq_ = Jump;
+			//残弾がある時のみ処理
+			if (parameters_.bulletData.ammoRemaining_ > 0) {
+				parameters_.bulletData.ammoRemaining_--;
+				behaviorReq_ = Jump;
+			}
 		}
 
 	}
