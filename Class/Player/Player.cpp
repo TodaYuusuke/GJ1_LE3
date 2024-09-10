@@ -27,7 +27,7 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 
 
 
-Player::Player()
+Player::Player() 
 {
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
@@ -35,15 +35,24 @@ Player::Player()
 	SetAnimation(A_Idle);
 	bullets_ = std::make_unique<PlayerBullets>();
 
-	collider_.SetBroadShape(Collider::AABB());
-	collider_.SetFollowTarget(&model_.worldTF);
-	collider_.name = "player";
+	aabb_.collider.SetFollowTarget(&model_.worldTF);
+	aabb_.collider.name = "player";
+
+	standAABB_.min = { -0.4f,0.0f,-0.4f };
+	standAABB_.max = { 0.3f,1.66f,0.5f };
+
+	slideAABB_.min = { -0.37f,0.0f,-0.5f };
+	slideAABB_.max = { 0.6f,0.55f,0.5f };
 
 	//被弾処理
-	collider_.enterLambda = [=](Collider::Collider* data) {
+	aabb_.collider.enterLambda = [=](Collider::Collider* data) {
+
+		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding])) {
+			return;
+		}
 
 		//ヒットフラグが有効の時
-		if (isHitOnDebug_&&parameters_.hitData.isHit_) {
+		if (isHitOnDebug_ && parameters_.hitData.isHit_) {
 			parameters_.hitData.isHit_ = false;
 			parameters_.hp--;
 			parameters_.hitData.hitDirection_ = (model_.worldTF.GetWorldPosition() - data->GetWorldPosition()).x;
@@ -53,6 +62,7 @@ Player::Player()
 		}
 
 		};
+
 
 }
 
@@ -64,6 +74,7 @@ void Player::Initialize()
 {
 
 	model_.worldTF.translation = { 0,0,0 };
+	//aabb_.aabb = standAABB_;
 
 
 	velo_ = { 0,0,0 };
@@ -230,19 +241,19 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 	for (int i = 0; i < shotNum; i++) {
 
-			LWP::Math::Vector3 ve = rotateZ(v, theta);
+		LWP::Math::Vector3 ve = rotateZ(v, theta);
 
-			//一発
-			bullets_->SetData(model_.worldTF.translation, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
+		//一発
+		bullets_->SetData(model_.worldTF.translation, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
 
-			theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
+		theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
 
 
-		
+
 	}
 }
 
-void Player::SetAnimation(AnimatinNameType type,bool loop )
+void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
 	animation.Play(animeName_[type], loop);
 	nowPlayAnimeName_ = animeName_[type];
@@ -295,22 +306,25 @@ void Player::Debug()
 				ImGui::Text("bullet remaining : %d", parameters_.bulletData.ammoRemaining_);
 				ImGui::DragInt("pellet count", &parameters_.bulletData.shotpelletNum_);
 				ImGui::DragInt("max ammo count", &parameters_.bulletData.maxAmmoNum_);
-				ImGui::DragInt("reload bullet multiply ",&parameters_.bulletData.simultaneouslyLoaded_);
+				ImGui::DragInt("reload bullet multiply ", &parameters_.bulletData.simultaneouslyLoaded_);
 
-				ImGui::DragFloat("reload start sec", &parameters_.bulletData.reloadStartSec_,0.01f);
+				ImGui::DragFloat("reload start sec", &parameters_.bulletData.reloadStartSec_, 0.01f);
 				ImGui::DragFloat("reload ammo sec", &parameters_.bulletData.putBulletInSec_, 0.01f);
 
 				ImGui::DragFloat("bullet dispersion", &parameters_.bulletData.bulletDispersion_, 0.01f);
-				
+
 				ImGui::TreePop();
 			}
-
+			if (ImGui::TreeNode("AABB")) {
+				aabb_.aabb.DebugGUI();
+				ImGui::TreePop();
+			}
 			model_.DebugGUI();
 			if (ImGui::TreeNode("animation")) {
 				animation.DebugGUI();
 				ImGui::TreePop();
 			}
-			collider_.DebugGUI();
+			aabb_.collider.DebugGUI();
 			ImGui::EndTabItem();
 
 		}
@@ -345,6 +359,7 @@ void Player::InitializeMove()
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
 	SetAnimation(A_Run);
+	//aabb_.aabb = standAABB_;
 
 }
 void Player::InitializeSlide()
@@ -356,12 +371,17 @@ void Player::InitializeSlide()
 	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * parameters_.slideData.spd;
 
 	SetAnimation(A_SlidingStart, false);
+	//aabb_.aabb = slideAABB_;
+
 
 }
 
 void Player::InitializeQuitSlide()
 {
 	SetAnimation(A_SlidingEnd, false);
+	//aabb_.aabb = standAABB_;
+
+
 }
 
 
@@ -388,7 +408,8 @@ void Player::InitializeJump()
 	parameters_.jumpData.isJump_ = true;
 
 	SetAnimation(A_Idle);
-	//ShotBullet({ 0,-1,0 });
+	//aabb_.aabb = standAABB_;
+
 }
 void Player::InitializeHitSomeone()
 {
@@ -400,7 +421,6 @@ void Player::InitializeHitSomeone()
 
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
-
 }
 
 #pragma endregion
@@ -484,7 +504,7 @@ void Player::UpdateMove()
 
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
 			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)parameters_.bulletData.shotpelletNum_);
-			SetAnimation(A_StandShot,false);
+			SetAnimation(A_StandShot, false);
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
@@ -507,7 +527,7 @@ void Player::UpdateSlide()
 		behaviorReq_ = QuitSlide;
 	}
 
-//スライディング中のアニメーション切り替え
+	//スライディング中のアニメーション切り替え
 	if (animeName_[A_SlidingStart] == nowPlayAnimeName_ && !animation.GetPlaying()) {
 		SetAnimation(A_Sliding);
 	}
@@ -516,7 +536,7 @@ void Player::UpdateSlide()
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
 		ShotBullet({ 0,1,0 }, slideShot, (float)parameters_.bulletData.shotpelletNum_);
-		SetAnimation(A_SlidingShot,false);
+		SetAnimation(A_SlidingShot, false);
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
 		behaviorReq_ = Jump;

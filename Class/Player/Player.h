@@ -205,9 +205,9 @@ public://外部でほしいパラメータ
 private: // ** パラメータ ** //
 
 
+	LWP::Object::Collider::AABB standAABB_;
 	  
-	
-
+	LWP::Object::Collider::AABB slideAABB_;
 
 private: // ** 変数 ** //
 	//モデル
@@ -231,7 +231,17 @@ private: // ** 変数 ** //
 	std::string nowPlayAnimeName_;
 
 	//プレイヤー本体のコライダー
-	LWP::Object::Collider::Collider collider_;
+	struct AABBCollider {
+		LWP::Object::Collider::Collider collider;    // 当たり判定
+		LWP::Object::Collider::Capsule& aabb;    // 形状
+
+		/// <summary>
+		/// コンストラクタ
+		/// <para>参照変数のために用意</para>
+		/// </summary>
+		AABBCollider() : aabb(collider.SetBroadShape(LWP::Object::Collider::Capsule())) {}
+	}aabb_;
+
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
