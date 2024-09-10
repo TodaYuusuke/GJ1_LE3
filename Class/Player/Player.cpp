@@ -3,6 +3,11 @@
 using namespace LWP;
 using namespace LWP::Object;
 
+float Lerp(const float start, const float end, float t) {
+	// 線形補間した値を返す
+	return(start * (1.0f - t) + end * t);
+}
+
 Player::Player()
 {
 	//model_.LoadCube();
@@ -19,8 +24,11 @@ Player::Player()
 	collider_.enterLambda = [=](Collider::Collider* data) {
 		data;
 
+		//ヒットフラグが有効の時
 		if (isHit_) {
 			hp_--;
+			bulletData_.currentPutBulletInSec_ = 0;
+			bulletData_.currentReloadStartSec_ = 0;
 		}
 
 		};
@@ -39,7 +47,8 @@ void Player::Initialize()
 
 	bullets_->Initialize();
 
-
+	//元の値に修正
+	bulletData_ = BulletData{};
 }
 
 void Player::Update()
@@ -61,7 +70,6 @@ void Player::Update()
 
 	GlovalUpdate();
 
-	model_.DebugGUI();
 }
 
 void Player::GlovalUpdate()
@@ -93,16 +101,74 @@ void Player::GlovalUpdate()
 		}
 	}
 
-	
 
-	//プレイヤーの向きの処理
-	if (pVeloX_ > 0) {
-		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,(float)std::numbers::pi / 2.0f ,0 });
+	//回転処理
+	if (isturn_) {
+		currentTurnSec_ += delta;
+		float t = currentTurnSec_ / turnSec_;
+		//最小最大角度
+		float pi = (float)std::numbers::pi / 2.0f;
+		float rotateY;
+		if (pVeloX_ > 0) {
+			rotateY = Lerp(-pi, pi, t);
+		}
+		else {
+			rotateY = Lerp(pi, -pi, t);
+		}
+		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
+
+		//終わる時の処理
+		if (t >= 1.0f) {
+			t = 1.0f;
+			if (pVeloX_ > 0) {
+				rotateY = Lerp(-pi, pi, t);
+			}
+			else {
+				rotateY = Lerp(pi, -pi, t);
+			}
+			model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
+
+			isturn_ = false;
+		}
+	}
+
+	ReloadBullet(delta);
+
+	bullets_->Update();
+}
+
+void Player::ReloadBullet(float delta)
+{
+	//弾が最大数以下で処理を行う
+	if (bulletData_.ammoRemaining_ < bulletData_.maxAmmoNum_) {
+		//リロード処理開始までの待機カウント
+		bulletData_.currentReloadStartSec_ += delta;
+		//待機時間満了で処理
+		if (bulletData_.currentReloadStartSec_ >= bulletData_.reloadStartSec_) {
+			bulletData_.currentReloadStartSec_ = bulletData_.reloadStartSec_;
+
+			//加算処理
+			bulletData_.currentPutBulletInSec_ += delta;
+
+			//時間超えで弾増加
+			if (bulletData_.currentPutBulletInSec_ >= bulletData_.putBulletInSec_) {
+				bulletData_.currentPutBulletInSec_ = 0;
+
+				//弾増加
+				bulletData_.ammoRemaining_ += bulletData_.simultaneouslyLoaded_;
+
+				//最大量を超えたら修正
+				if (bulletData_.ammoRemaining_ > bulletData_.maxAmmoNum_) {
+					bulletData_.maxAmmoNum_;
+				}
+			}
+		}
 	}
 	else {
-		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,-(float)std::numbers::pi / 2.0f ,0 });
+		//最大数なのでカウント初期化
+		bulletData_.currentReloadStartSec_ = 0;
+		bulletData_.currentPutBulletInSec_ = 0;
 	}
-	bullets_->Update();
 }
 
 Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
@@ -125,15 +191,24 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
 {
 
-	float theta = -bulletDispersion_ / 2;
+	float theta = -bulletData_.bulletDispersion_ / 2;
 
 	for (int i = 0; i < shotNum; i++) {
-		LWP::Math::Vector3 ve = rotateZ(v, theta);
+		if (bulletData_.ammoRemaining_ <= 0) {
+			break;
+		}
+			LWP::Math::Vector3 ve = rotateZ(v, theta);
 
-		//ひとまず仮で一発
-		bullets_->SetData(model_.worldTF.translation, { ve * bulletsSpd_ }, cName);
+			//一発
+			bullets_->SetData(model_.worldTF.translation, { ve * bulletData_.bulletsSpd_ }, cName);
 
-		theta += bulletDispersion_ / (shotNum - 1.0f);
+			theta += bulletData_.bulletDispersion_ / (shotNum - 1.0f);
+
+			//弾減らす処理
+			bulletData_.ammoRemaining_--;
+			bulletData_.currentReloadStartSec_ = 0;
+			bulletData_.currentPutBulletInSec_ = 0;
+		
 	}
 }
 
@@ -169,15 +244,45 @@ void Player::Debug()
 			ImGui::Text(behaName.c_str(), hp_);
 			ImGui::Checkbox("is Hit", &isHit_);
 			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
-			ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
-			ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
-			ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
-			ImGui::DragFloat("gravity", &gravity_, 0.01f);
-			ImGui::DragFloat("Jump slope", &jumpSlope_, 0.01f);
-			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
-			ImGui::DragInt("bullet Num", &shotBulletNum_);
-			ImGui::DragFloat("bullet dispersion", &bulletDispersion_, 0.01f);
+			ImGui::DragFloat("turn sec", &turnSec_, 0.01f);
 
+			if (ImGui::TreeNode("slide")) {
+				ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
+				ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
+				ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("jump")) {
+				ImGui::DragFloat("gravity", &gravity_, 0.01f);
+				ImGui::DragFloat("Jump slope", &jumpSlope_, 0.01f);
+				ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("bullet")) {
+
+				ImGui::Text("bullet remaining : %d", bulletData_.ammoRemaining_);
+				ImGui::DragInt("pellet count", &bulletData_.shotBulletNum_);
+				ImGui::DragInt("max ammo count", &bulletData_.maxAmmoNum_);
+				ImGui::DragInt("reload bullet multiply ",& bulletData_.simultaneouslyLoaded_);
+
+				ImGui::DragFloat("reload start sec", &bulletData_.reloadStartSec_,0.01f);
+				ImGui::DragFloat("reload ammo sec", &bulletData_.putBulletInSec_, 0.01f);
+
+				ImGui::DragFloat("bullet dispersion", &bulletData_.bulletDispersion_, 0.01f);
+				
+				ImGui::TreePop();
+			}
+
+
+
+
+
+
+
+			
+			model_.DebugGUI();
 			animation.DebugGUI();
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
@@ -237,25 +342,37 @@ void Player::InitializeJump()
 {
 	//初期加速度を渡す
 	//acceGravity_ = jumpVelo_;
-
-	//ジャンプの向きベクトル計算
-	Math::Vector3 velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
+	Math::Vector3 velo;
+	velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
 	velo.y = jumpSlope_;
 	velo = velo.Normalize();
+	//if (preBehavior_ == Sliding) {
+	//	//ジャンプの向きベクトル計算
+	//	velo_.y = Math::Vector3{ velo * jumpVelo_ }.y;
+	//}
+	//else {
+	//	velo_ = velo * jumpVelo_;
+	//}
 
-	velo_ = velo* jumpVelo_;
+	velo_ = velo * jumpVelo_;
 	acce_.y = -gravity_;
 
 	isJump_ = true;
 
+	SetAnimation(A_Idle);
 	//ShotBullet({ 0,-1,0 });
 }
 #pragma endregion
+
+
 
 #pragma region 各状態の更新
 void Player::UpdateMove()
 {
 	float delta = LWP::Info::GetDefaultDeltaTimeF();
+
+	//プレイヤーの過去の向きを保存
+	float pv = pVeloX_;
 
 	//入力による移動処理
 	LWP::Math::Vector3 move{ 0,0,0 };
@@ -289,8 +406,20 @@ void Player::UpdateMove()
 			SetAnimation(A_Run);
 		}
 	}
+#pragma endregion
 
-	
+#pragma region プレイヤー向きの切り替え処理
+	if ((pv < 0 && pVeloX_ < 0) || (pv > 0 && pVeloX_ > 0)) {
+		//特になし
+	}
+	else {
+		isturn_ = true;
+		currentTurnSec_ = 0;
+	}
+
+
+
+
 #pragma endregion
 
 
@@ -304,7 +433,7 @@ void Player::UpdateMove()
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
-			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)shotBulletNum_);
+			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)bulletData_.shotBulletNum_);
 			SetAnimation(A_StandShot,false);
 		}
 
@@ -336,7 +465,7 @@ void Player::UpdateSlide()
 
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet({ 0,1,0 }, slideShot, (float)shotBulletNum_);
+		ShotBullet({ 0,1,0 }, slideShot, (float)bulletData_.shotBulletNum_);
 		SetAnimation(A_SlidingShot,false);
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
@@ -384,7 +513,9 @@ void Player::UpdateQuitSlide()
 
 void Player::UpdateJump()
 {
-	behaviorReq_ = Moving;
+	if (!isJump_) {
+		behaviorReq_ = Moving;
+	}
 }
 
 
