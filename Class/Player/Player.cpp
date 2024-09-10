@@ -237,13 +237,20 @@ void Player::InitializeJump()
 {
 	//初期加速度を渡す
 	//acceGravity_ = jumpVelo_;
-
-	//ジャンプの向きベクトル計算
-	Math::Vector3 velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
+	Math::Vector3 velo;
+	velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
 	velo.y = jumpSlope_;
 	velo = velo.Normalize();
+	if (preBehavior_ == Sliding) {
+		//ジャンプの向きベクトル計算
+		velo_.y = Math::Vector3{ velo * jumpVelo_ }.y;
+	}
+	else {
+		velo_ = velo * jumpVelo_;
+	}
 
-	velo_ = velo* jumpVelo_;
+	//velo_ = velo * jumpVelo_;
+
 	acce_.y = -gravity_;
 
 	isJump_ = true;

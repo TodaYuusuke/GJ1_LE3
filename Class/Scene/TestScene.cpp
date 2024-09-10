@@ -7,8 +7,6 @@ using namespace LWP::Math;
 void TestScene::Initialize() {
 	player_.Initialize();
 	//skilltree_.Initialize();
-	mainCamera.transform.translation.z = -22;
-	mainCamera.transform.translation.y = 10;
 
 	enemyManager_.Initialize(&player_);
 
