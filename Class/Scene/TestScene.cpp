@@ -7,8 +7,7 @@ using namespace LWP::Input;
 // 初期化
 void TestScene::Initialize() {
 	player_.Initialize();
-	mainCamera.transform.translation.z = -22;
-	mainCamera.transform.translation.y = 10;
+	//skilltree_.Initialize();
 
 	enemyManager_.Initialize(&player_);
 
@@ -22,6 +21,7 @@ void TestScene::Initialize() {
 // 更新
 void TestScene::Update() {
 	player_.Update();
+	//skilltree_.Update();
 	followCamera_.Update(player_.GetWorldPosition());
 	enemyManager_.Update();
 	drone_.Update();
