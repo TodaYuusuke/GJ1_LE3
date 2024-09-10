@@ -20,6 +20,12 @@ public:
 	// 更新
 	void Update();
 
+	/// <summary>
+	/// 一番近い死体を取得する
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns>敵の実態</returns>
+	IEnemy* GetNearDeadBody(LWP::Math::Vector3 pos);
 
 private: // ** メンバ変数 ** //
 
