@@ -3,6 +3,11 @@
 using namespace LWP;
 using namespace LWP::Object;
 
+float Lerp(const float start, const float end, float t) {
+	// 線形補間した値を返す
+	return(start * (1.0f - t) + end * t);
+}
+
 Player::Player()
 {
 	//model_.LoadCube();
@@ -61,7 +66,6 @@ void Player::Update()
 
 	GlovalUpdate();
 
-	model_.DebugGUI();
 }
 
 void Player::GlovalUpdate()
@@ -93,15 +97,38 @@ void Player::GlovalUpdate()
 		}
 	}
 
-	
 
-	//プレイヤーの向きの処理
-	if (pVeloX_ > 0) {
-		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,(float)std::numbers::pi / 2.0f ,0 });
+	//回転処理
+	if (isturn_) {
+		currentTurnSec_ += delta;
+		float t = currentTurnSec_ / turnSec_;
+		//最小最大角度
+		float pi = (float)std::numbers::pi / 2.0f;
+		float rotateY;
+		if (pVeloX_ > 0) {
+			rotateY = Lerp(-pi, pi, t);
+		}
+		else {
+			rotateY = Lerp(pi, -pi, t);
+		}
+		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
+
+		//終わる時の処理
+		if (t >= 1.0f) {
+			t = 1.0f;
+			if (pVeloX_ > 0) {
+				rotateY = Lerp(-pi, pi, t);
+			}
+			else {
+				rotateY = Lerp(pi, -pi, t);
+			}
+			model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
+
+			isturn_ = false;
+		}
 	}
-	else {
-		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,-(float)std::numbers::pi / 2.0f ,0 });
-	}
+
+
 	bullets_->Update();
 }
 
@@ -169,6 +196,7 @@ void Player::Debug()
 			ImGui::Text(behaName.c_str(), hp_);
 			ImGui::Checkbox("is Hit", &isHit_);
 			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
+			ImGui::DragFloat("turn sec", &turnSec_, 0.01f);
 			ImGui::DragFloat("slide leng", &slidingData_.length, 0.01f);
 			ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
 			ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
@@ -177,7 +205,8 @@ void Player::Debug()
 			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
 			ImGui::DragInt("bullet Num", &shotBulletNum_);
 			ImGui::DragFloat("bullet dispersion", &bulletDispersion_, 0.01f);
-
+			
+			model_.DebugGUI();
 			animation.DebugGUI();
 			collider_.DebugGUI();
 			ImGui::EndTabItem();
@@ -259,10 +288,15 @@ void Player::InitializeJump()
 }
 #pragma endregion
 
+
+
 #pragma region 各状態の更新
 void Player::UpdateMove()
 {
 	float delta = LWP::Info::GetDefaultDeltaTimeF();
+
+	//プレイヤーの過去の向きを保存
+	float pv = pVeloX_;
 
 	//入力による移動処理
 	LWP::Math::Vector3 move{ 0,0,0 };
@@ -296,8 +330,20 @@ void Player::UpdateMove()
 			SetAnimation(A_Run);
 		}
 	}
+#pragma endregion
 
-	
+#pragma region プレイヤー向きの切り替え処理
+	if ((pv < 0 && pVeloX_ < 0) || (pv > 0 && pVeloX_ > 0)) {
+		//特になし
+	}
+	else {
+		isturn_ = true;
+		currentTurnSec_ = 0;
+	}
+
+
+
+
 #pragma endregion
 
 

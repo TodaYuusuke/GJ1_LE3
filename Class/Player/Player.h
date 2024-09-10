@@ -130,6 +130,13 @@ private: // ** パラメータ ** //
 	//リロード開始時間カウント
 	float currentReloadStartSec_ = 0;
 
+	//向き切り替え処理
+	bool isturn_ = false;
+
+	//振り向き速度
+	float turnSec_ = 0.1f;
+
+	float currentTurnSec_ = 0;
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
