@@ -63,7 +63,8 @@ public://構造体＆enum群
 		//初速
 		float hitVelocity_ = 10.0f;
 
-		int animeCount_0;
+		int animeCount_= 0;
+		int tenmetuCount_ = 10;
 	};
 
 	//スライディングのデータ
