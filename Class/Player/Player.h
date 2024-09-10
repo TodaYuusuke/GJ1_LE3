@@ -69,6 +69,24 @@ private:// ** 処理をまとめた関数 ** //
 
 public://外部でほしいパラメータ
 
+	struct BulletData
+	{
+		//弾残弾
+		int ammoRemaining_ = 10;
+		//最大弾薬数
+		int maxAmmoNum_ = 10;
+
+		//同時リロード数
+		int simultaneouslyLoaded_ = 1;
+
+		//リロード開始時間
+		float reloadStartSec_ = 1;
+
+		//一発のリロードにかかる時間
+		float putBulletInSec_ = 0.5f;
+	};
+
+	BulletData bulletData;
 
 	//体力
 	int hp_ = 10;
@@ -76,19 +94,7 @@ public://外部でほしいパラメータ
 	//最大HP
 	int maxHp_ = 10;
 
-	//弾残弾
-	int ammoRemaining_ = 10;
-	//最大弾薬数
-	int maxAmmoNum_ = 10;
-
-	//同時リロード数
-	int simultaneouslyLoaded_ = 1;
-
-	//リロード開始時間
-	float reloadStartSec_ = 1;
-
-	//一発のリロードにかかる時間
-	float putBulletInSec_ = 0.5f;
+	
 
 	//プレイヤーアニメーションデータ
 	LWP::Resource::Animation animation;
