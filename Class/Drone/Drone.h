@@ -31,6 +31,8 @@ private: // ** メンバ変数 ** //
 	// モデル
 	LWP::Resource::SkinningModel model_;
 	LWP::Resource::Animation animation_;
+	// 光源
+	LWP::Object::PointLight light_;
 
 	// なめらかな移動用の変数
 	LWP::Math::Vector3 goalPosition = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
@@ -84,7 +86,7 @@ private: // ** ステートパターン ** //
 private: // ** パラメータ ** //
 
 	struct PlayerFollow {
-		LWP::Math::Vector3 kOffset = { 1.2f, 4.0f, 0.0f };	// プレイヤー追従時のオフセット
+		LWP::Math::Vector3 kOffset = {-1.2f, 4.0f, 0.0f };	// プレイヤー追従時のオフセット
 		float kSearchRange = 5.0f;	// 死体検知範囲
 	}playerFollow_;
 
