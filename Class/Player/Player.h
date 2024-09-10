@@ -140,7 +140,7 @@ private: // ** パラメータ ** //
 	bool isturn_ = false;
 
 	//振り向き速度
-	float turnSec_ = 0.1f;
+	float turnSec_ = 0.2f;
 	float currentTurnSec_ = 0;
 private: // ** 変数 ** //
 	//モデル

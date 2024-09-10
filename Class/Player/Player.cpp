@@ -263,7 +263,13 @@ void Player::Debug()
 			if (ImGui::TreeNode("bullet")) {
 
 				ImGui::Text("bullet remaining : %d", bulletData_.ammoRemaining_);
-				ImGui::DragInt("bullet Num", &bulletData_.shotBulletNum_);
+				ImGui::DragInt("pellet count", &bulletData_.shotBulletNum_);
+				ImGui::DragInt("max ammo count", &bulletData_.maxAmmoNum_);
+				ImGui::DragInt("reload bullet multiply ",& bulletData_.simultaneouslyLoaded_);
+
+				ImGui::DragFloat("reload start sec", &bulletData_.reloadStartSec_,0.01f);
+				ImGui::DragFloat("reload ammo sec", &bulletData_.putBulletInSec_, 0.01f);
+
 				ImGui::DragFloat("bullet dispersion", &bulletData_.bulletDispersion_, 0.01f);
 				
 				ImGui::TreePop();
