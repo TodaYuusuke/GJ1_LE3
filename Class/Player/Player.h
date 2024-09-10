@@ -68,10 +68,17 @@ public://外部でほしいパラメータ
 
 	//体力
 	int hp_ = 10;
+
+	//最大HP
+	int maxHp_ = 10;
+
 	//弾残弾
-	int ammoNum_ = 10;
+	int ammoRemaining_ = 10;
 	//最大弾薬数
 	int maxAmmoNum_ = 10;
+
+	//リロード開始時間
+	float reloadStartSec_ = 1;
 
 private: // ** パラメータ ** //
 
@@ -96,6 +103,8 @@ private: // ** パラメータ ** //
 	//弾の同時発射数
 	int shotBulletNum_ = 5;
 
+	//リロード開始時間カウント
+	float currentReloadStartSec_ = 0;
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
