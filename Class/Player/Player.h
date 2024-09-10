@@ -20,6 +20,7 @@ public:
 		Sliding,	//スライド状態
 		QuitSlide,	//スライド終了
 		Jump,		//ジャンプ処理
+		HitSomeone,//ヒット時処理
 		_countBehavior
 	};
 
@@ -45,13 +46,14 @@ private:// ** 処理をまとめた関数 ** //
 	void InitializeMove();			//移動初期化
 	void InitializeSlide();			//スライド初期化
 	void InitializeQuitSlide();		//スライドやめる初期化
-
 	void InitializeJump();
+	void InitializeHitSomeone();
 
 	void UpdateMove();				//移動更新
 	void UpdateSlide();				//スライド更新
 	void UpdateQuitSlide();			//スライドやめる更新
 	void UpdateJump();
+	void UpdateHitSomeone();
 #pragma endregion
 
 	//各状態関係なく更新
@@ -122,6 +124,16 @@ public://外部でほしいパラメータ
 
 private: // ** パラメータ ** //
 
+	//ヒット時の無敵時間
+	bool isHit_ = true;
+	float noHitSec_=1.0f;
+	float currentNoHit_ = 0;
+	float hitDirection_;
+
+	//吹っ飛ぶときの角度
+	float hitHeight_ = 1.0f;
+	//初速
+	float hitVelocity_ = 10;
 
 	//移動速度
 	float moveSpd_ = 10.0f;
@@ -222,10 +234,11 @@ private: // ** 変数 ** //
 		"Moving",
 		"Sliding",
 		"QuitSlide",
-		"Jump"
+		"Jump",
+		"HitSomeone"
 	};
 
 	//デバッグ用無敵フラグ
-	bool isHit_ = true;
+	bool isHitOnDebug_ = true;
 
 };

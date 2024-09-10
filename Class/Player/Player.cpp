@@ -22,13 +22,15 @@ Player::Player()
 
 	//被弾処理
 	collider_.enterLambda = [=](Collider::Collider* data) {
-		data;
 
 		//ヒットフラグが有効の時
-		if (isHit_) {
+		if (isHitOnDebug_&&isHit_) {
+			isHit_ = false;
 			hp_--;
+			hitDirection_ = (model_.worldTF.GetWorldPosition() - data->GetWorldPosition()).x;
 			bulletData_.currentPutBulletInSec_ = 0;
 			bulletData_.currentReloadStartSec_ = 0;
+			behaviorReq_ = HitSomeone;
 		}
 
 		};
@@ -55,7 +57,10 @@ void Player::Initialize()
 	bulletData_ = BulletData{};
 
 	pVeloX_ = 1.0f;
+	//最小最大角度
+	float pi = (float)std::numbers::pi / 2.0f;
 
+	model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,pi ,0 });
 
 	isJump_ = false;
 
@@ -261,7 +266,7 @@ void Player::Debug()
 		if (ImGui::BeginTabItem("Player")) {
 
 			ImGui::Text(behaName.c_str(), hp_);
-			ImGui::Checkbox("is Hit", &isHit_);
+			ImGui::Checkbox("is Hit", &isHitOnDebug_);
 			ImGui::DragFloat("move spd", &moveSpd_, 0.01f);
 			ImGui::DragFloat("turn sec", &turnSec_, 0.01f);
 
@@ -316,14 +321,16 @@ void (Player::* Player::BehaviorInitialize[])() = {
 	&Player::InitializeMove,
 	&Player::InitializeSlide,
 	&Player::InitializeQuitSlide,
-	&Player::InitializeJump
+	&Player::InitializeJump,
+	&Player::InitializeHitSomeone
 };
 //更新初期化関数ポインタテーブル
 void (Player::* Player::BehaviorUpdate[])() = {
 	&Player::UpdateMove,
 	&Player::UpdateSlide,
 	&Player::UpdateQuitSlide,
-	&Player::UpdateJump
+	&Player::UpdateJump,
+	&Player::UpdateHitSomeone
 };
 
 #pragma region 各状態の初期化
@@ -377,6 +384,19 @@ void Player::InitializeJump()
 	SetAnimation(A_Idle);
 	//ShotBullet({ 0,-1,0 });
 }
+void Player::InitializeHitSomeone()
+{
+	Math::Vector3 ve = Math::Vector3{ hitDirection_,0,0 }.Normalize();
+	ve.y = hitHeight_;
+
+	velo_ = ve * hitVelocity_;
+	acce_.y = -gravity_;
+
+	//多分上に吹っ飛ぶので一応
+	isJump_ = true;
+
+}
+
 #pragma endregion
 
 
@@ -407,18 +427,27 @@ void Player::UpdateMove()
 	model_.worldTF.translation += move * delta;
 
 #pragma region アニメーション変更処理
-	if (move.x == 0&&move.y==0&&move.z==0) {
 
-		if (nowPlayAnimeName_==animeName_[A_StandShot]&&!animation.GetPlaying()) {
-			SetAnimation(A_Idle);
+	if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
+
+		if (move.x == 0 && move.y == 0 && move.z == 0) {
+
+			if (nowPlayAnimeName_ == animeName_[A_StandShot] && !animation.GetPlaying()) {
+				SetAnimation(A_Idle);
+			}
+			else if (nowPlayAnimeName_ != animeName_[A_Idle] && nowPlayAnimeName_ != animeName_[A_StandShot]) {
+				SetAnimation(A_Idle);
+			}
 		}
-		else if (nowPlayAnimeName_ != animeName_[A_Idle]&&nowPlayAnimeName_!= animeName_[A_StandShot]) {
-			SetAnimation(A_Idle);
+		else {
+			if (nowPlayAnimeName_ != animeName_[A_Run]) {
+				SetAnimation(A_Run);
+			}
 		}
 	}
 	else {
-		if (nowPlayAnimeName_ != animeName_[A_Run]) {
-			SetAnimation(A_Run);
+		if (!animation.GetPlaying()) {
+			SetAnimation(A_Idle);
 		}
 	}
 #pragma endregion
@@ -529,6 +558,18 @@ void Player::UpdateQuitSlide()
 void Player::UpdateJump()
 {
 	if (!isJump_) {
+		behaviorReq_ = Moving;
+	}
+}
+
+void Player::UpdateHitSomeone()
+{
+	float delta = Info::GetDeltaTimeF();
+	currentNoHit_ += delta;
+
+	if (currentNoHit_ >= noHitSec_) {
+		currentNoHit_ = 0;
+		isHit_ = true;
 		behaviorReq_ = Moving;
 	}
 }
