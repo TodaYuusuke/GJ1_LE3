@@ -32,6 +32,8 @@ public:
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 
+	//-1,1で向きを返却
+	float GetPlayerDirection();
 private:// ** 処理をまとめた関数 ** //
 	//デバッグ処理
 	void Debug();
@@ -60,6 +62,8 @@ private:// ** 処理をまとめた関数 ** //
 	//弾の発射処理
 	void ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
 
+
+
 	//攻撃ヒット時の処理
 	//void OnCollision(Collider::Collider* hitT);
 
@@ -80,8 +84,16 @@ public://外部でほしいパラメータ
 	//リロード開始時間
 	float reloadStartSec_ = 1;
 
-private: // ** パラメータ ** //
+	//プレイヤーアニメーションデータ
+	LWP::Resource::Animation animation;
 
+	//プレイヤーの弾データ
+	std::unique_ptr<PlayerBullets>bullets_;
+
+	//ジャンプフラグ
+	bool isJump_ = false;
+
+private: // ** パラメータ ** //
 
 
 	//移動速度
@@ -105,10 +117,10 @@ private: // ** パラメータ ** //
 
 	//リロード開始時間カウント
 	float currentReloadStartSec_ = 0;
+
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
-	LWP::Resource::Animation animation;
 
 	enum AnimatinNameType {
 		A_Idle,
@@ -131,14 +143,13 @@ private: // ** 変数 ** //
 		"06_SlidingShot"
 	};
 
+	//アニメーションセット
+	void SetAnimation(AnimatinNameType type, bool loop=true);
+
 	std::string nowPlayAnimeName_;
 
 	//プレイヤー本体のコライダー
 	LWP::Object::Collider::Collider collider_;
-
-	//プレイヤーの弾データ
-	std::unique_ptr<PlayerBullets>bullets_;
-
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
@@ -146,8 +157,10 @@ private: // ** 変数 ** //
 	//加速度
 	LWP::Math::Vector3 acce_;
 
-	//ジャンプフラグ
-	bool isJump_ = false;
+	//ジャンプ時の傾きの量
+	float jumpSlope_ = 1.0f;
+
+
 
 	//向き(変更しない
 	float pVeloX_ = 1.0f;
@@ -173,7 +186,6 @@ private: // ** 変数 ** //
 	//各射撃時の名前
 	std::string standShot = "StandBullet";
 	std::string slideShot = "SlidingBullet";
-
 
 	//状態リクエスト
 	std::optional<Behavior> behaviorReq_ = std::nullopt;

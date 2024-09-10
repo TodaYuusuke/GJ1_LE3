@@ -10,7 +10,7 @@ struct BulletData {
 
 	//一応時間制限で死亡
 	float deadCount=0;
-	float maxDeadCount = 30;
+	float maxDeadCount = 5;
 
 	bool isAlive = false;
 };
@@ -42,7 +42,7 @@ private:
 	//弾のデータ群
 	std::vector<BulletData*>bullets_;
 	//使いまわしの数
-	int maxBullet_=50;
+	int maxBullet_=10;
 
 	//弾のmodel名
 	std::string modelname_ = "";

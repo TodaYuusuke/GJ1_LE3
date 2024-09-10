@@ -8,11 +8,10 @@ Player::Player()
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
-	animation.Play(animeName_[A_Idle],true);
-	nowPlayAnimeName_ = animeName_[A_Idle];
+	SetAnimation(A_Idle);
 	bullets_ = std::make_unique<PlayerBullets>();
 
-	collider_.SetBroadShape(Collider::Capsule());
+	collider_.SetBroadShape(Collider::AABB());
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "player";
 
@@ -138,7 +137,25 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 	}
 }
 
+void Player::SetAnimation(AnimatinNameType type,bool loop )
+{
+	animation.Play(animeName_[type], loop);
+	nowPlayAnimeName_ = animeName_[type];
 
+
+}
+
+
+
+float Player::GetPlayerDirection()
+{
+	if (pVeloX_ < 0) {
+		return -1;
+	}
+	else {
+		return 1;
+	}
+}
 
 void Player::Debug()
 {
@@ -156,6 +173,7 @@ void Player::Debug()
 			ImGui::DragFloat("slide spd", &slidingData_.spd, 0.01f);
 			ImGui::DragFloat("acceSlide spd", &slidingData_.acceSpd, 0.01f);
 			ImGui::DragFloat("gravity", &gravity_, 0.01f);
+			ImGui::DragFloat("Jump slope", &jumpSlope_, 0.01f);
 			ImGui::DragFloat("jump Velo", &jumpVelo_, 0.01f);
 			ImGui::DragInt("bullet Num", &shotBulletNum_);
 			ImGui::DragFloat("bullet dispersion", &bulletDispersion_, 0.01f);
@@ -193,9 +211,7 @@ void Player::InitializeMove()
 {
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
-
-	animation.Play(animeName_[A_Run],true);
-	nowPlayAnimeName_ = animeName_[A_Run];
+	SetAnimation(A_Run);
 
 }
 void Player::InitializeSlide()
@@ -206,15 +222,13 @@ void Player::InitializeSlide()
 	//ベクトルをスライディング初速度で設定
 	velo_ = Math::Vector3(pVeloX_, 0, 0).Normalize() * slidingData_.spd;
 
+	SetAnimation(A_SlidingStart, false);
 
-	animation.Play(animeName_[A_SlidingStart]);
-	nowPlayAnimeName_ = animeName_[A_SlidingStart];
 }
 
 void Player::InitializeQuitSlide()
 {
-	animation.Play(animeName_[A_SlidingEnd]);
-	nowPlayAnimeName_ = animeName_[A_SlidingEnd];
+	SetAnimation(A_SlidingEnd, false);
 }
 
 
@@ -223,15 +237,19 @@ void Player::InitializeJump()
 {
 	//初期加速度を渡す
 	//acceGravity_ = jumpVelo_;
-	velo_.y += jumpVelo_;
+
+	//ジャンプの向きベクトル計算
+	Math::Vector3 velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
+	velo.y = jumpSlope_;
+	velo = velo.Normalize();
+
+	velo_ = velo* jumpVelo_;
 	acce_.y = -gravity_;
 
 	isJump_ = true;
 
 	//ShotBullet({ 0,-1,0 });
 }
-
-
 #pragma endregion
 
 #pragma region 各状態の更新
@@ -260,22 +278,15 @@ void Player::UpdateMove()
 	if (move.x == 0&&move.y==0&&move.z==0) {
 
 		if (nowPlayAnimeName_==animeName_[A_StandShot]&&!animation.GetPlaying()) {
-			animation.Play(animeName_[A_Idle], true);
-			nowPlayAnimeName_ = animeName_[A_Idle];
-
+			SetAnimation(A_Idle);
 		}
 		else if (nowPlayAnimeName_ != animeName_[A_Idle]&&nowPlayAnimeName_!= animeName_[A_StandShot]) {
-			animation.Play(animeName_[A_Idle],true);
-			nowPlayAnimeName_ = animeName_[A_Idle];
-
+			SetAnimation(A_Idle);
 		}
 	}
 	else {
 		if (nowPlayAnimeName_ != animeName_[A_Run]) {
-
-			animation.Play(animeName_[A_Run],true);
-			nowPlayAnimeName_ = animeName_[A_Run];
-
+			SetAnimation(A_Run);
 		}
 	}
 
@@ -294,9 +305,7 @@ void Player::UpdateMove()
 
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
 			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)shotBulletNum_);
-
-			animation.Play(animeName_[A_StandShot]);
-			nowPlayAnimeName_ = animeName_[A_StandShot];
+			SetAnimation(A_StandShot,false);
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
@@ -319,13 +328,16 @@ void Player::UpdateSlide()
 		behaviorReq_ = QuitSlide;
 	}
 
+//スライディング中のアニメーション切り替え
+	if (animeName_[A_SlidingStart] == nowPlayAnimeName_ && !animation.GetPlaying()) {
+		SetAnimation(A_Sliding);
+	}
+
 
 	//スライド中に攻撃
 	if (Input::Keyboard::GetTrigger(DIK_C)) {
 		ShotBullet({ 0,1,0 }, slideShot, (float)shotBulletNum_);
-
-		animation.Play(animeName_[A_SlidingShot]);
-		nowPlayAnimeName_ = animeName_[A_SlidingShot];
+		SetAnimation(A_SlidingShot,false);
 	}
 	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
 		behaviorReq_ = Jump;
