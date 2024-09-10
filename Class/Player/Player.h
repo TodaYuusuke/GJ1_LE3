@@ -4,6 +4,125 @@
 #include"../PlayerBullet/PlayerBullet.h"
 
 class Player {
+public://構造体＆enum群
+	enum AnimatinNameType {
+		A_Idle,
+		A_Run,
+		A_SlidingStart,
+		A_Sliding,
+		A_SlidingEnd,
+		A_StandShot,
+		A_SlidingShot,
+		_countAnimeType
+	};
+
+	//弾薬データ
+	struct BulletData
+	{
+		//弾の速度
+		float bulletsSpd_ = 700;
+
+		//弾残弾
+		int ammoRemaining_ = 10;
+		//最大弾薬数
+		int maxAmmoNum_ = 10;
+
+		//弾のばらつき度合い
+		float bulletDispersion_ = 0.17f;
+
+		//同時リロード数
+		int simultaneouslyLoaded_ = 1;
+
+		//リロード開始時間
+		float reloadStartSec_ = 1;
+
+		//一発のリロードにかかる時間
+		float putBulletInSec_ = 0.2f;
+
+		//弾の同時発射数
+		int shotpelletNum_ = 5;
+
+		//リロード開始時間カウント
+		float currentReloadStartSec_ = 0;
+
+		//リロードの時間
+		float currentPutBulletInSec_ = 0;
+	};
+
+	//ヒット関連
+	struct HitData {
+		//ヒットフラグ
+		bool isHit_ = true;
+		//ヒット時の無敵時間
+		float noHitSec_ = 1.0f;
+		float currentNoHit_ = 0;
+		//ヒット時の吹っ飛ぶX方向
+		float hitDirection_;
+		//吹っ飛ぶときの角度
+		float hitHeight_ = 1.0f;
+		//初速
+		float hitVelocity_ = 10.0f;
+	};
+
+	//スライディングのデータ
+	struct SlidingData
+	{
+		//初期位置
+		LWP::Math::Vector3 startPos;
+
+		//減速開始の長さ
+		float length = 10.0f;
+
+		//速度
+		float spd = 20.0f;
+
+		//減速量
+		float acceSpd = 80.0f;
+
+	};
+
+	struct JumpData {
+		//ジャンプフラグ
+		bool isJump_ = false;
+
+		//ジャンプの初期ベクトル量
+		float jumpVelo_ = 28.0f;
+
+		//ジャンプ時の傾きの量
+		float jumpSlope_ = 1.5f;
+	};
+
+	//パラメータまとめ
+	struct Parameters
+	{
+		//体力
+		int hp = 3;
+
+		//最大HP
+		int maxHp = 3;
+
+		//移動速度
+		float moveSpd = 10.0f;
+
+		//重力
+		float gravity = 60.0f;
+
+		//向き切り替え処理
+		bool isturn = false;
+
+		//振り向き速度
+		float turnSec = 0.2f;
+		float currentTurnSec = 0;
+
+		//ジャンプ関連
+		JumpData jumpData;
+		//スライディング関連
+		SlidingData slideData;
+		//ヒット関連
+		HitData hitData;
+		//弾関連
+		BulletData bulletData;
+	};
 public:
 
 	Player();
@@ -72,46 +191,6 @@ private:// ** 処理をまとめた関数 ** //
 
 public://外部でほしいパラメータ
 
-	struct BulletData
-	{
-		//弾の速度
-		float bulletsSpd_ = 700;
-
-		//弾残弾
-		int ammoRemaining_ = 10;
-		//最大弾薬数
-		int maxAmmoNum_ = 10;
-
-		//弾のばらつき度合い
-		float bulletDispersion_ = 0.17f;
-
-		//同時リロード数
-		int simultaneouslyLoaded_ = 1;
-
-		//リロード開始時間
-		float reloadStartSec_ = 1;
-
-		//一発のリロードにかかる時間
-		float putBulletInSec_ = 0.2f;
-
-		//弾の同時発射数
-		int shotBulletNum_ = 5;
-
-		//リロード開始時間カウント
-		float currentReloadStartSec_ = 0;
-
-		//リロードの時間
-		float currentPutBulletInSec_ = 0;
-	};
-
-	BulletData bulletData_;
-
-	//体力
-	int hp_ = 3;
-
-	//最大HP
-	int maxHp_ = 3;
-
 
 	//プレイヤーアニメーションデータ
 	LWP::Resource::Animation animation;
@@ -119,54 +198,22 @@ public://外部でほしいパラメータ
 	//プレイヤーの弾データ
 	std::unique_ptr<PlayerBullets>bullets_;
 
-	//ジャンプフラグ
-	bool isJump_ = false;
+	
 
+	//プレイヤーのパラメータ群
+	Parameters parameters_;
 private: // ** パラメータ ** //
 
-	//ヒット時の無敵時間
-	bool isHit_ = true;
-	float noHitSec_=1.0f;
-	float currentNoHit_ = 0;
-	float hitDirection_;
 
-	//吹っ飛ぶときの角度
-	float hitHeight_ = 1.0f;
-	//初速
-	float hitVelocity_ = 10;
-
-	//移動速度
-	float moveSpd_ = 10.0f;
-
-	//重力
-	float gravity_ = 60.0f;
-	float acceGravity_ = 0.0f;
+	LWP::Object::Collider::AABB standAABB_;
 	  
-	//ジャンプの初期ベクトル量
-	float jumpVelo_ = 28.0f;
+	LWP::Object::Collider::AABB slideAABB_;
 
-
-
-	//向き切り替え処理
-	bool isturn_ = false;
-
-	//振り向き速度
-	float turnSec_ = 0.2f;
-	float currentTurnSec_ = 0;
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
 
-	enum AnimatinNameType {
-		A_Idle,
-		A_Run,
-		A_SlidingStart,
-		A_Sliding,
-		A_SlidingEnd,
-		A_StandShot,
-		A_SlidingShot,
-		_countAnimeType
-	};
+
 
 	std::string animeName_[_countAnimeType] = {
 		"00_Idle",
@@ -184,7 +231,17 @@ private: // ** 変数 ** //
 	std::string nowPlayAnimeName_;
 
 	//プレイヤー本体のコライダー
-	LWP::Object::Collider::Collider collider_;
+	struct AABBCollider {
+		LWP::Object::Collider::Collider collider;    // 当たり判定
+		LWP::Object::Collider::Capsule& aabb;    // 形状
+
+		/// <summary>
+		/// コンストラクタ
+		/// <para>参照変数のために用意</para>
+		/// </summary>
+		AABBCollider() : aabb(collider.SetBroadShape(LWP::Object::Collider::Capsule())) {}
+	}aabb_;
+
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
@@ -192,31 +249,9 @@ private: // ** 変数 ** //
 	//加速度
 	LWP::Math::Vector3 acce_;
 
-	//ジャンプ時の傾きの量
-	float jumpSlope_ = 1.5f;
-
-
-
 	//向き(変更しない
 	float pVeloX_ = 1.0f;
 
-	//スライディングのデータ
-	struct SlidingData
-	{
-		//初期位置
-		LWP::Math::Vector3 startPos;
-
-		//減速開始の長さ
-		float length = 10.0f;
-
-		//速度
-		float spd = 20.0f;
-
-		//減速量
-		float acceSpd = 80.0f;
-
-	};
-	SlidingData slidingData_{};
 
 	//各射撃時の名前
 	std::string standShot = "StandBullet";
@@ -228,6 +263,8 @@ private: // ** 変数 ** //
 	Behavior behavior_ = Moving;
 	//変更前の状態
 	Behavior preBehavior_=Moving;
+
+
 
 	//ImGui用
 	std::string behaviorStirng_[_countBehavior] = {
