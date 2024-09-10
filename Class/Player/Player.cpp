@@ -424,7 +424,7 @@ void Player::InitializeHitSomeone()
 
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
-
+	parameters_.hitData.animeCount_ = 0;
 	model_.isActive = false;
 }
 
@@ -597,6 +597,16 @@ void Player::UpdateHitSomeone()
 {
 	float delta = Info::GetDeltaTimeF();
 	parameters_.hitData.currentNoHit_ += delta;
+
+	parameters_.hitData.animeCount_++;
+	if (parameters_.hitData.animeCount_ % parameters_.hitData.tenmetuCount_ == 0) {
+		if (model_.isActive) {
+			model_.isActive = false;
+		}
+		else {
+			model_.isActive = true;
+		}
+	}
 
 	if (parameters_.hitData.currentNoHit_ >= parameters_.hitData.noHitSec_) {
 		parameters_.hitData.currentNoHit_ = 0;
