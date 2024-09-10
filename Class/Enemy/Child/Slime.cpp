@@ -10,10 +10,6 @@ void Slime::ChildInit() {
 	collider_.name = "Slime";
 	Collider::Sphere& sphere = collider_.SetBroadShape(Collider::Sphere());
 	sphere.radius = 1.0f;
-
-	// 奇妙な値になるので初期化
-	model_.worldTF.translation = { 0.0f,0.0f,0.0f };
-	normal_.velocity = { 0.0f,0.0f,0.0f };
 }
 
 void Slime::ChildUpdate() {

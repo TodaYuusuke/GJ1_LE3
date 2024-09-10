@@ -4,7 +4,7 @@
 class Spider final
 	: public IEnemy {
 public:
-	Spider(Player* ptr) : IEnemy(ptr) { Init(); }
+	Spider(Player* ptr, LWP::Math::Vector3 summonPos) : IEnemy(ptr, summonPos) { Init(); }
 	~Spider() = default;
 
 	// ** メンバ関数 ** //
@@ -38,5 +38,5 @@ private: // ** メンバ変数 ** //
 private: // ** パラメータ ** //
 
 	//移動速度
-	float spd_ = 5.0f;
+	float spd_ = 1.8f;
 };

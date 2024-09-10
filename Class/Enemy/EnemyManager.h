@@ -36,5 +36,10 @@ private: // ** 初期化時に確定するデータ ** //
 
 	// プレイヤーのポインタ
 	Player* player_ = nullptr;
+	// プレイヤーから画面外への距離
+	float screenOutDistance_ = 10.0f;
 
+	// 敵召喚間隔
+	float summonInterval_ = 0.0f;
+	float kSummonInterval_ = 3.5f;
 };

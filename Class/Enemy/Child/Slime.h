@@ -4,7 +4,7 @@
 class Slime final
 	: public IEnemy {
 public:
-	Slime(Player* ptr) : IEnemy(ptr) { Init(); }
+	Slime(Player* ptr, LWP::Math::Vector3 summonPos) : IEnemy(ptr, summonPos) { Init(); }
 	~Slime() = default;
 
 	// ** メンバ関数 ** //
