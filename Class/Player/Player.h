@@ -13,6 +13,12 @@ public://構造体＆enum群
 		A_SlidingEnd,
 		A_StandShot,
 		A_SlidingShot,
+		A_JumpStart,
+		A_Jumping,
+		A_Land,		//着地
+		A_Damage,
+		A_Recovery,
+		A_Dead,
 		_countAnimeType
 	};
 
@@ -58,17 +64,17 @@ public://構造体＆enum群
 		//ヒットフラグ
 		bool isHit_ = true;
 		//ヒット時の無敵時間
-		float noHitSec_ = 1.0f;
+		float noHitSec_ = 3.0f;
 		float currentNoHit_ = 0;
 		//ヒット時の吹っ飛ぶX方向
 		float hitDirection_;
 		//吹っ飛ぶときの角度
 		float hitHeight_ = 1.0f;
 		//初速
-		float hitVelocity_ = 10.0f;
+		float hitVelocity_ = 20.0f;
 
 		int animeCount_= 0;
-		int tenmetuCount_ = 10;
+		int tenmetuCount_ = 5;
 	};
 
 	//スライディングのデータ
@@ -87,13 +93,13 @@ public://構造体＆enum群
 		float acceSpd = 80.0f;
 
 		//発射のが描く
-		float shotSlope = 1.0f;
+		float shotSlope = 0.0f;
 
 		//反動の角度
-		float jumpSlope_ = 1.0f;
+		float jumpSlope_ = 0.3f;
 
 		//反動初期ベクトル
-		float startVelo = 10.0f;
+		float startVelo = 20.0f;
 	};
 
 	struct JumpData {
@@ -219,11 +225,15 @@ private:// ** 処理をまとめた関数 ** //
 	//各状態関係なく更新
 	void GlovalUpdate();
 
+	//無敵時間の処理
+	void HitUpdate();
+
 	//弾のリロード処理
 	void ReloadBullet(float delta);
 
 	//弾の発射処理
 	bool ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
+
 
 
 	//各入力による処理
@@ -269,7 +279,13 @@ private: // ** 変数 ** //
 		"03_Sliding",
 		"04_SlidingEnd",
 		"05_StandShot",
-		"06_SlidingShot"
+		"06_SlidingShot",
+		"07_JumpStart",
+		"08_Jumping",
+		"09_Land",
+		"10_Damage",
+		"11_Recovery",
+		"12_Dead"
 	};
 
 	//アニメーションセット
