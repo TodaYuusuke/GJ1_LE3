@@ -4,12 +4,11 @@
 // LWPを短縮
 using namespace LWP;
 
-void UpgradeManager::Initialize(Player* player, Drone* drone, GameUIManager* ui)
+void UpgradeManager::Initialize(Player* player, Drone* drone)
 {
 	// ポインタを取得する
-	player_		= player; // プレイヤー
-	drone_		= drone;  // ドローン
-	uiManager_	= ui;	  // UIマネージャー
+	player_ = player; // プレイヤー
+	drone_ = drone;  // ドローン
 
 	// 背景用スプライトのリセット
 	SpriteReset(backGround_, "UI/Upgrade/BackGround.png");
@@ -58,18 +57,37 @@ void UpgradeManager::Initialize(Player* player, Drone* drone, GameUIManager* ui)
 
 	// アップグレードの追加
 	AddUpgrades();
+
+	// カーソル
+	SpriteReset(cursorSprite_, "UI/Upgrade/Cursor.png");
+	cursorSprite_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
+	cursorSprite_.worldTF.translation = {
+		960.0f,
+		450.0f,
+		0.0f,
+	}; // 座標を設定
+	cursorSprite_.worldTF.scale = { 0.25f, 0.25f }; // スケール調整
+	cursorSprite_.isActive = false;
 }
 
 void UpgradeManager::Update()
 {
+	// デバッグ表示
+	DebugGUI();
+
 	// 表示状態が切り替えられているか確認する
 	if (isOpenObserver_.GetChanged()) {
 		// フラグが切り替えられている場合、表示状態を切り替える
 		SwitchDisplayUI(isOpenObserver_.t);
 	}
 
-	// デバッグ表示
-	DebugGUI();
+	// 表示中の場合
+	if (isOpenObserver_.t) {
+		// カーソル座標の更新
+		CursorInput();
+		// 全てのアップグレードとカーソルの当たり判定を検証する
+		CheckCollisionUpgrades();
+	}
 }
 
 void UpgradeManager::DebugGUI()
@@ -82,6 +100,9 @@ void UpgradeManager::DebugGUI()
 		if (ImGui::BeginTabItem("UpgradeManager")) {
 			// ウィンドウ表示の切り替えフラグ
 			ImGui::Checkbox("isOpen Window", &isOpenObserver_.t);
+
+			// スキルポイント
+			ImGui::InputInt("SkilPoint", &skillPoint_);
 
 			// 背景スプライトのデバッグ情報表示
 			if (ImGui::TreeNode("BackGround")) {
@@ -99,6 +120,12 @@ void UpgradeManager::DebugGUI()
 			}
 			if (ImGui::TreeNode("DroneCategroy")) {
 				droneParent_.DebugGUI("DroneCategroy");
+				ImGui::TreePop();
+			}
+
+			// カーソルのデバッグ情報表示
+			if (ImGui::TreeNode("Cursor")) {
+				droneParent_.DebugGUI("Cursor");
 				ImGui::TreePop();
 			}
 
@@ -220,9 +247,112 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 		data.ui.isActive = isDisplay;
 	}
 
+	// カーソル表示を切り替える
+	cursorSprite_.isActive = isDisplay;
+
 	// アップグレードUIの表示状態が切り替えフラグの状態を変更
 	isOpenUpgradeWindow_ = isDisplay;
+}
 
-	// プレイヤーのUIの表示非表示を切り替える
-	uiManager_.
+void UpgradeManager::CheckCollisionUpgrades()
+{
+	// カーソルのワールド座標を取得する
+	Math::Vector2 cursorPos = {
+		cursorSprite_.worldTF.GetWorldPosition().x,
+		cursorSprite_.worldTF.GetWorldPosition().y
+	};
+	// カーソルの当たり判定半径
+	float cursorRadius = 20.0f;
+	// アップグレートの当たり判定半径
+	float upgradeRadius = 40.0f;
+
+	// 全アップグレートとカーソルとの当たり判定を取る
+	for (auto it = upgrades_.begin(); it != upgrades_.end(); it++) {
+		// アップグレートのアイコンのワールド座標を取得する
+		Math::Vector2 upgradePos = {
+			it->second.ui.worldTF.GetWorldPosition().x,
+			it->second.ui.worldTF.GetWorldPosition().y
+		};
+
+		// 衝突判定を検証する
+		if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
+			// スキルポイントが1以上かつ、適用していない状態であれば
+			if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
+				// スケールを線形補間で大きくする
+				it->second.ui.worldTF.scale =
+					Utility::Interp::Lerp(
+						it->second.ui.worldTF.scale, Math::Vector3(0.75f, 0.75f, 1.0f), 0.25f
+					);
+
+				// スペースキーが押されたら
+				if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+					// 適用関数を呼び出す
+					it->second.upgrade->Apply(player_, drone_);
+					// スプライトの色を少し薄くする
+					it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+					// スキルポイントを - 1
+					skillPoint_--;
+				}
+			}
+			else { // それ以外であれば
+				// スケールを線形補間で小さくする
+				it->second.ui.worldTF.scale =
+					Utility::Interp::Lerp(
+						it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+					);
+			}
+		}
+		else { // 選択されていない場合
+			// スケールを線形補間で小さくする
+			it->second.ui.worldTF.scale =
+				Utility::Interp::Lerp(
+					it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+				);
+		}
+	}
+}
+
+bool UpgradeManager::CheckCollision2Upgrade(const LWP::Math::Vector2& p1, const float r1, const LWP::Math::Vector2& p2, const float r2)
+{
+	// それぞれの中心点との距離を計算する
+	float d = std::sqrtf(std::powf(p2.x - p1.x, 2) + std::powf(p2.y - p1.y, 2));
+
+	// 半径より小さければ衝突している
+	return d <= (r1 + r2);
+}
+
+void UpgradeManager::CursorInput()
+{
+	Math::Vector2 input = {
+		0.0f, 0.0f
+	};
+
+	// キーボード入力によってカーソルの移動ベクトルを設定する
+	if (Input::Keyboard::GetPress(DIK_UPARROW)) {
+		input.y = -1.0f;
+	}
+	if (Input::Keyboard::GetPress(DIK_DOWNARROW)) {
+		input.y = 1.0f;
+	}
+	if (Input::Keyboard::GetPress(DIK_LEFTARROW)) {
+		input.x = -1.0f;
+	}
+	if (Input::Keyboard::GetPress(DIK_RIGHTARROW)) {
+		input.x = 1.0f;
+	}
+
+	// 入力を正規化する
+	input = input.Normalize();
+
+	// カーソルの座標を移動させる
+	cursorSprite_.worldTF.translation += Math::Vector3(input.x, input.y, 0.0f) * 5.0f;
+
+	// カーソルの移動範囲を画面内に制限する
+	if (cursorSprite_.worldTF.translation.x > (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f)) {
+		cursorSprite_.worldTF.translation.x = (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f);
+	}
+	else if (cursorSprite_.worldTF.translation.x < ((cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f)){
+		cursorSprite_.worldTF.translation.x = ((cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f);
+	}
 }

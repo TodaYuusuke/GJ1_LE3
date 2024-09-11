@@ -47,8 +47,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="player">プレイヤー</param>
 	/// <param name="drone">ドローン</param>
-	/// <param name="ui">UIマネージャー</param>
-	void Initialize(Player* player, Drone* drone, GameUIManager* ui);
+	void Initialize(Player* player, Drone* drone);
 
 	/// <summary>
 	/// 更新関数
@@ -66,13 +65,24 @@ public: // アクセッサ等
 	/// スキルポイント追加関数
 	/// </summary>
 	/// <param name="addingPoint">追加されるスキルポイント</param>
-	void AddSkilPoint(uint32_t addingPoint = 1) { skilPoint_ += addingPoint; }
+	void AddSkilPoint(uint32_t addingPoint = 1) { skillPoint_ += addingPoint; }
 
 	/// <summary>
 	/// 表示トリガーセッター
 	/// </summary>
 	/// <param name="isDisplay">表示するか</param>
 	void SetIsDisplay(bool isDisplay) { isOpenObserver_.t = isDisplay; }
+	/// <summary>
+	/// 表示トリガーゲッター
+	/// </summary>
+	/// <returns>表示トリガー</returns>
+	bool GetIsDisplay() { return isOpenObserver_.t; }
+
+	/// <summary>
+	/// 表示トリガー変更状態ゲッター
+	/// </summary>
+	/// <returns>表示トリガー</returns>
+	bool GetIsChangeDisplay() { return isOpenObserver_.GetChanged(); }
 
 private: // プライベートな関数
 
@@ -104,6 +114,26 @@ private: // プライベートな関数
 	/// <param name="isDisplay">表示、非表示フラグ</param>
 	void SwitchDisplayUI(bool isDisplay);
 
+	/// <summary>
+	/// 全てのアップグレードとの当たり判定を確認する関数
+	/// </summary>
+	void CheckCollisionUpgrades();
+
+	/// <summary>
+	/// カーソルとアップグレート1つの当たり判定を検証する関数
+	/// </summary>
+	/// <param name="p1">カーソル座標</param>
+	/// <param name="r1">カーソル半径</param>
+	/// <param name="p2">アップグレート座標</param>
+	/// <param name="r2">アップグレートサイズ</param>
+	/// <returns>衝突しているか</returns>
+	bool CheckCollision2Upgrade(const LWP::Math::Vector2& p1, const float r1, const LWP::Math::Vector2& p2, const float r2);
+
+	/// <summary>
+	/// カーソル移動関数
+	/// </summary>
+	void CursorInput();
+
 private: // メンバ変数
 
 	// アップグレード格納配列
@@ -124,7 +154,7 @@ private: // メンバ変数
 	bool isOpenUpgradeWindow_ = false;
 	
 	// 所持中のスキルポイント
-	uint32_t skilPoint_ = 0;
+	int skillPoint_ = 0;
 
 	// 背景用スプライト
 	LWP::Primitive::Sprite backGround_;
@@ -132,6 +162,9 @@ private: // メンバ変数
 	LWP::Primitive::Sprite bodyParent_;		// 身体
 	LWP::Primitive::Sprite gunParent_;		// 銃
 	LWP::Primitive::Sprite droneParent_;	// ドローン
+
+	// カーソルスプライト
+	LWP::Primitive::Sprite cursorSprite_;
 };
 
 

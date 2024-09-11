@@ -43,6 +43,19 @@ public: // メンバ関数
 	/// </summary>
 	void SetUp();
 
+public: // アクセッサ等
+
+	/// <summary>
+	/// 表示トリガーゲッター
+	/// </summary>
+	/// <returns>表示トリガー</returns>
+	bool GetIsDisplay() { return isDisplayObserver_.t; }
+	/// <summary>
+	/// 表示トリガーセッター
+	/// </summary>
+	/// <param name="isDisplay">表示するか</param>
+	void SetIsDisplay(bool isDisplay) { isDisplayObserver_.t = isDisplay; }
+
 private: // プライベートな関数
 
 	/// <summary>

@@ -243,8 +243,13 @@ void GameUIManager::BulletGaugeUpdate()
 void GameUIManager::SwitchDisplayUI(bool isDisplay)
 {
 	//　HPゲージの表示を非表示
-	for (int i = 0; i < player_->parameters_.maxHp; i++) {
+	for (int i = 0; i < player_->parameters_.hp; i++) {
 		hpGauge_[i].isActive = isDisplay;
+	}
+
+	//　HPゲージ背景の表示を非表示
+	for (int i = 0; i < player_->parameters_.maxHp; i++) {
+		hpGaugeBG_[i].isActive = isDisplay;
 	}
 
 	//　弾ゲージの表示を非表示
