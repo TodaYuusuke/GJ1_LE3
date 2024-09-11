@@ -101,8 +101,12 @@ public://構造体＆enum群
 
 	struct  ActiveFlag
 	{
-
+		//ジャンプできるか
 		bool jump = false;
+
+		//弾を消費でスライド停止
+		bool slidingStopShot = false;
+
 	};
 
 	//パラメータまとめ
