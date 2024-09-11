@@ -5,6 +5,15 @@
 /// アイテム生成までの敵数減少Lv3
 /// </summary>
 class GenerateItemCountDownLv3 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "GenerateItemCountDownLv3";
+	};
 
 	/// <summary>
 	/// 適用関数

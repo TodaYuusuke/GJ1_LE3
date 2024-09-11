@@ -5,6 +5,15 @@
 /// ’e‚ÌŠgU‘‰ÁLv2
 /// </summary>
 class SpreadUPLv2 : public IUpgrade {
+public: // ƒƒ“ƒoŠÖ”
+
+	/// <summary>
+	/// ‰Šú‰»ŠÖ”
+	/// </summary>
+	void Init() override {
+		// –¼Ìİ’è
+		name_ = "SpreadUPLv2";
+	};
 
 	/// <summary>
 	/// “K—pŠÖ”

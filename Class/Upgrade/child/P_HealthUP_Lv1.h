@@ -5,6 +5,15 @@
 /// ‘Ì—Í‘‰ÁLv1
 /// </summary>
 class HealthUPLv1 : public IUpgrade {
+public: // ƒƒ“ƒoŠÖ”
+
+	/// <summary>
+	/// ‰Šú‰»ŠÖ”
+	/// </summary>
+	void Init() override {
+		// –¼Ìİ’è
+		name_ = "HealthUPLv1";
+	};
 
 	/// <summary>
 	/// “K—pŠÖ”

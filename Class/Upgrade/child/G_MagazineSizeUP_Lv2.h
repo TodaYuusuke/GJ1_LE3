@@ -5,6 +5,15 @@
 ///　装弾数増加Lv2
 /// </summary>
 class MagazineSizeUPLv2 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "MagazineSizeUPLv2";
+	};
 
 	/// <summary>
 	/// 適用関数

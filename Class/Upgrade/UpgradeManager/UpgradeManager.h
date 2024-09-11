@@ -1,32 +1,75 @@
 #pragma once
 #include<Adapter.h>
 #include"../IUpgrade/IUpgrade.h"
+#include "UpGradeList.h"
 
+/// <summary>
+/// アップグレードマネージャー
+/// </summary>
 class UpgradeManager {
+private: // サブクラス
 
-public:
-	UpgradeManager(Player*player);
-	~UpgradeManager();
+	/// <summary>
+	/// 単体のアップグレードデータ
+	/// </summary>
+	struct UpgradeData {
+		LWP::Primitive::Sprite ui;		// UI用スプライト
+		IUpgrade*			   upgrade; // アップグレード
+	};
 
-	void Initialize();
+public: // コンストラクタ等
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	UpgradeManager() = default;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~UpgradeManager() = default;
+
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	/// <param name="player">プレイヤー</param>
+	/// <param name="drone">ドローン</param>
+	void Initialize(Player* player, Drone* drone);
+
+	/// <summary>
+	/// 更新関数
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// デバッグ情報表示関数
+	/// </summary>
 	void DebugGUI();
 
-	//アップグレード追加
-	void AddUpgrade(const std::string& upgradeName, IUpgrade* upgrade);
+private: // プライベートな関数
 
-	//アップグレードを使用
-	void ApplyUpgrade(const std::string& upgradeName);
-private:
+	/// <summary>
+	/// 配列にアップグレードを追加する
+	/// </summary>
+	void AddUpgrades();
 
-	//
-	std::map<std::string, IUpgrade*>upgradeDatas_;
+	/// <summary>
+	/// 引数の対象スプライトをリセットする関数
+	/// </summary>
+	/// <param name="s">対象スプライト</param>
+	void SpriteReset(LWP::Primitive::Sprite& s, const std::string FileName);
+
+private: // メンバ変数
+
+	// アップグレード格納配列
+	std::map<std::string, UpgradeData> upgrades_;
 
 	//プレイヤーポインタ
-	Player* player_;
+	Player* player_ = nullptr;
 
 	//ドローンポインタ
-	Drone* drone_;
+	Drone* drone_ = nullptr;
 };
 
 

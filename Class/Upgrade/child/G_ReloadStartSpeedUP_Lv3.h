@@ -5,6 +5,15 @@
 /// リロード開始時間短縮Lv3
 /// </summary>
 class ReloadStartSpeedUPLv3 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "ReloadStartSpeedUPLv3";
+	};
 
 	/// <summary>
 	/// 適用関数

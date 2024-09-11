@@ -1,29 +1,22 @@
 #include "UpgradeManager.h"
 
-UpgradeManager::UpgradeManager(Player* player)
+void UpgradeManager::Initialize(Player* player, Drone* drone)
 {
-	player_ = player;
+	// ポインタを取得する
+	player_ = player; // プレイヤー
+	drone_	= drone;  // ドローン
 }
 
-UpgradeManager::~UpgradeManager()
+void UpgradeManager::Update()
 {
-	//データ削除
-	upgradeDatas_.clear();
-}
 
-void UpgradeManager::Initialize()
-{
-	//取得フラグをすべてfalseに
-	for (auto& data : upgradeDatas_) {
-		data.second->isUsed_ = false;
-	}
 }
 
 void UpgradeManager::DebugGUI()
 {
 #ifdef DEMO
 
-
+	// ImGui開始
 	ImGui::Begin("Game");
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("UpgradeManager")) {
@@ -34,17 +27,20 @@ void UpgradeManager::DebugGUI()
 		}
 		ImGui::EndTabBar();
 	}
+	// ImGui終了
 	ImGui::End();
+
 #endif // DEMO
 
 }
 
-void UpgradeManager::AddUpgrade(const std::string& upgradeName, IUpgrade* upgrade)
+void UpgradeManager::AddUpgrades()
 {
-	upgradeDatas_[upgradeName] = upgrade;
-}
+	/// プレイヤー系のアップグレード追加
+	// ジャンプ有効化アップグレード
+	UpgradeData data0;
+	data0.upgrade = new ActiveCutBack(); // 新規生成
+	data0.upgrade->Init();				 // 初期化
+	data0.ui.isUI = 
 
-void UpgradeManager::ApplyUpgrade(const std::string& upgradeName)
-{
-	upgradeDatas_[upgradeName]->Apply(player_,drone_);
 }

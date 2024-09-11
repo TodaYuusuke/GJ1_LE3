@@ -5,6 +5,15 @@
 /// 一度のリロードで込める弾数増加Lv3
 /// </summary>
 class ReloadCountUpLv3 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "ReloadCountUpLv3";
+	};
 
 	/// <summary>
 	/// 適用関数

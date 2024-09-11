@@ -5,6 +5,15 @@
 /// ジャンプ有効化アップグレード
 /// </summary>
 class ActiveJump : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "ActiveJump";
+	};
 
 	/// <summary>
 	/// 適用関数

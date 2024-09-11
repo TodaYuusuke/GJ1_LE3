@@ -22,6 +22,11 @@ public: // コンストラクタ等
 public: // 純粋仮想関数
 	
 	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	virtual void Init() = 0;
+
+	/// <summary>
 	/// 適用関数
 	/// </summary>
 	/// <param name="player_">プレイヤー本体</param>
@@ -29,6 +34,9 @@ public: // 純粋仮想関数
 	virtual void Apply(Player* player_,Drone*drone) = 0;
 
 public:
+
+	// アップグレード名称
+	std::string name_ = "";
 
 	//使用フラグ
 	bool isApplied_ = false;

@@ -5,6 +5,15 @@
 /// リロード速度短縮Lv2
 /// </summary>
 class ReloadSpeedUPLv2 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "ReloadSpeedUPLv2";
+	};
 
 	/// <summary>
 	/// 適用関数

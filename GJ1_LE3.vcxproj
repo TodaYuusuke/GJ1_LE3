@@ -203,6 +203,7 @@
     <ClInclude Include="Class\Upgrade\child\P_SlidingUpgrade_Lv2.h" />
     <ClInclude Include="Class\Upgrade\child\P_SlidingUpgrade_Lv3.h" />
     <ClInclude Include="Class\Upgrade\IUpgrade\IUpgrade.h" />
+    <ClInclude Include="Class\Upgrade\UpgradeManager\UpGradeList.h" />
     <ClInclude Include="Class\Upgrade\UpgradeManager\UpgradeManager.h" />
     <ClInclude Include="Class\UI\GameUIManager.h" />
   </ItemGroup>

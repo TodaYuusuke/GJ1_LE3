@@ -5,6 +5,15 @@
 /// スライディング距離増加Lv2
 /// </summary>
 class SlindingUpGradeLv2 : public IUpgrade {
+public: // メンバ関数
+
+	/// <summary>
+	/// 初期化関数
+	/// </summary>
+	void Init() override {
+		// 名称設定
+		name_ = "SlindingUpGradeLv2";
+	};
 
 	/// <summary>
 	/// 適用関数
