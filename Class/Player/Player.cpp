@@ -256,6 +256,41 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 	}
 }
+#pragma region 各入力
+
+void Player::ToSliding()
+{
+	if (Input::Keyboard::GetTrigger(DIK_LSHIFT) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_B)) {
+		behaviorReq_ = Sliding;
+	}
+}
+
+void Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
+{
+	if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
+		ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
+
+		//状態に
+		if (ammoName == standShot) {
+			SetAnimation(A_StandShot, false);
+		}
+		else {
+			SetAnimation(A_SlidingShot, false);
+		}
+	}
+}
+
+void Player::ToJump() {
+	if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_A)) {
+		//残弾がある時のみ処理
+		if (parameters_.bulletData.ammoRemaining_ > 0) {
+			parameters_.bulletData.ammoRemaining_--;
+			behaviorReq_ = Jump;
+		}
+	}
+}
+#pragma endregion
+
 
 void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
@@ -464,11 +499,16 @@ void Player::UpdateMove()
 	//入力による移動処理
 	LWP::Math::Vector3 move{ 0,0,0 };
 	if (LWP::Input::Keyboard::GetPress(DIK_A)) {
-		move.x -= parameters_.moveSpd;
+		move.x -= 1;
 	}
 	if (LWP::Input::Keyboard::GetPress(DIK_D)) {
-		move.x += parameters_.moveSpd;
+		move.x += 1;
 	}
+
+	//パッドのX入力のみ反映
+	move.x += Input::Pad::GetLStick().x;
+	move = move.Normalize();
+	move *= parameters_.moveSpd;
 
 	//プレイヤーの向きを保存
 	if (move.x != 0) {
@@ -545,22 +585,12 @@ void Player::UpdateMove()
 
 	if (!parameters_.jumpData.isJump_) {
 
-		if (Input::Keyboard::GetTrigger(DIK_LSHIFT)) {
-			behaviorReq_ = Sliding;
-		}
+		ToSliding();
 
-		if (Input::Keyboard::GetTrigger(DIK_C)) {
-			ShotBullet(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot, (float)parameters_.bulletData.shotpelletNum_);
-			SetAnimation(A_StandShot, false);
-		}
+		ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(),standShot);
 
-		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-			//残弾がある時のみ処理
-			if (parameters_.bulletData.ammoRemaining_ > 0) {
-				parameters_.bulletData.ammoRemaining_--;
-				behaviorReq_ = Jump;
-			}
-		}
+		ToJump();
+
 
 	}
 #pragma endregion
@@ -585,13 +615,10 @@ void Player::UpdateSlide()
 
 
 	//スライド中に攻撃
-	if (Input::Keyboard::GetTrigger(DIK_C)) {
-		ShotBullet({ 0,1,0 }, slideShot, (float)parameters_.bulletData.shotpelletNum_);
-		SetAnimation(A_SlidingShot, false);
-	}
-	if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-		behaviorReq_ = Jump;
-	}
+	ToShot({ 0,1,0 }, slideShot);
+
+
+	ToJump();
 }
 
 void Player::UpdateQuitSlide()

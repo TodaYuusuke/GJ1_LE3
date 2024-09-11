@@ -202,9 +202,11 @@ private:// ** 処理をまとめた関数 ** //
 	void ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
 
 
-
-	//攻撃ヒット時の処理
-	//void OnCollision(Collider::Collider* hitT);
+	//各入力による処理
+	void ToSliding();
+	void ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName);
+	void ToJump();
+	
 
 public://外部でほしいパラメータ
 
