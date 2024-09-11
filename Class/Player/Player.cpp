@@ -294,8 +294,10 @@ void Player::Debug()
 			ImGui::Checkbox("is Hit", &isHitOnDebug_);
 			ImGui::DragFloat("move spd", &parameters_.moveSpd, 0.01f);
 			ImGui::DragFloat("turn sec", &parameters_.turnSec, 0.01f);
-
+			ImGui::Text("inertia count : %4.1f", parameters_.currentInertia);
 			ImGui::DragFloat("max move sec", &parameters_.movingInertiaSec, 0.01f);
+			ImGui::DragFloat("stop deceleation double", &parameters_.stopDecelerationDouble_,0.1f);
+			ImGui::DragFloat("standShot deceleation double", &parameters_.standShotDecelerationDouble_, 0.1f);
 
 			if (ImGui::TreeNode("slide")) {
 				ImGui::DragFloat("slide leng", &parameters_.slideData.length, 0.01f);
@@ -475,12 +477,12 @@ void Player::UpdateMove()
 		parameters_.currentInertia += delta;
 	}
 	else {
-		parameters_.currentInertia -= delta * 2.0f;;
+		parameters_.currentInertia -= delta * parameters_.stopDecelerationDouble_;
 	}
 
 	//たち射撃の場合さらにカウント減少
 	if (nowPlayAnimeName_ == animeName_[A_StandShot]) {
-		parameters_.currentInertia -= delta * 3.0f;
+		parameters_.currentInertia -= delta * parameters_.standShotDecelerationDouble_;
 	}
 
 	//0から最大値に値を合わせる

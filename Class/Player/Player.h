@@ -125,6 +125,11 @@ public://構造体＆enum群
 		float movingInertiaSec = 1.0f;
 		float currentInertia = 0.0f;
 
+		//止まった時の減速処理の増加量
+		float stopDecelerationDouble_ = 2.0f;
+
+		//立ち射撃時の減速処理の増加量
+		float standShotDecelerationDouble_ = 3.0f;
 
 		//ジャンプ関連
 		JumpData jumpData;
