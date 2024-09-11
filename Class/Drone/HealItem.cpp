@@ -22,11 +22,6 @@ void HealItem::Init(LWP::Math::Vector3 pos) {
 	};
 }
 void HealItem::Update() {
-	ImGui::Begin("Test");
-	ImGui::DragFloat("kRotationSpeed", &kRotationSpeed_, 0.01f);
-	ImGui::DragFloat("kFallSpeed", &kFallSpeed_, 0.01f);
-	ImGui::End();
-
 	// アニメーション
 	model_.worldTF.translation.y -= kFallSpeed_;
 	if (model_.worldTF.translation.y < 0.0f) {
