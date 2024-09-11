@@ -13,6 +13,12 @@ public://構造体＆enum群
 		A_SlidingEnd,
 		A_StandShot,
 		A_SlidingShot,
+		A_JumpStart,
+		A_Jumping,
+		A_Land,
+		A_Damage,
+		A_Recovery,
+		A_Dead,
 		_countAnimeType
 	};
 
@@ -273,7 +279,13 @@ private: // ** 変数 ** //
 		"03_Sliding",
 		"04_SlidingEnd",
 		"05_StandShot",
-		"06_SlidingShot"
+		"06_SlidingShot",
+		"07_JumpStart",
+		"08_Jumping",
+		"09_Land",
+		"10_Damage",
+		"11_Recovery",
+		"12_Dead"
 	};
 
 	//アニメーションセット

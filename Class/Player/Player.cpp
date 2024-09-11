@@ -339,6 +339,8 @@ void Player::ToJump() {
 		if (parameters_.bulletData.ammoRemaining_ > 0) {
 			parameters_.bulletData.ammoRemaining_--;
 			behaviorReq_ = Jump;
+
+			SetAnimation(A_JumpStart, false);
 		}
 	}
 }
@@ -535,7 +537,7 @@ void Player::InitializeJump()
 	parameters_.bulletData.currentPutBulletInSec_ = 0;
 	parameters_.bulletData.currentReloadStartSec_ = 0;
 
-	SetAnimation(A_Idle);
+	//SetAnimation(A_Idle);
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
@@ -798,6 +800,12 @@ void Player::UpdateQuitSlide()
 
 void Player::UpdateJump()
 {
+	//ジャンプ開始処理と
+	if (nowPlayAnimeName_ == animeName_[A_JumpStart]&&!animation.GetPlaying()) {
+   		SetAnimation(A_Jumping, true);
+	}
+
+
 	if (!parameters_.jumpData.isJump_) {
 		behaviorReq_ = Moving;
 	}
