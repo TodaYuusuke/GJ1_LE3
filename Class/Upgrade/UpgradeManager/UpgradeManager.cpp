@@ -74,6 +74,16 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	}; // 座標を設定
 	cursorSprite_->worldTF.scale = { 0.25f, 0.25f }; // スケール調整
 	cursorSprite_->isActive = false;
+
+	// アップグレード説明テキスト
+	SpriteReset(upgradeText_, "UI/Upgrade/Text/NoneText.png");
+	upgradeText_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
+	upgradeText_.worldTF.translation = {
+		960.0f,
+		900.0f
+	}; // 座標を設定
+	upgradeText_.worldTF.scale = { 1.0f, 1.0f }; // スケール調整
+	upgradeText_.isActive = false;
 }
 
 void UpgradeManager::Update()
@@ -129,6 +139,11 @@ void UpgradeManager::DebugGUI()
 				ImGui::TreePop();
 			}
 
+			if (ImGui::TreeNode("UpgradeText")) {
+				upgradeText_.DebugGUI("UpgradeText");
+				ImGui::TreePop();
+			}
+
 			// カーソルのデバッグ情報表示
 			if (ImGui::TreeNode("Cursor")) {
 				droneParent_.DebugGUI("Cursor");
@@ -170,86 +185,86 @@ void UpgradeManager::AddUpgrades()
 	/// プレイヤー関係のアップグレードの追加
 	// プレイヤーのジャンプ有効化
 	ActiveJump* data0 = new ActiveJump(); // インスタンス生成
-	AddUI(data0, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data0, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/ActiveJumpIcon.png", "UI/Upgrade/Text/ActiveJump.png");
 	// プレイヤーの切り返し有効化
 	ActiveCutBack* data1 = new ActiveCutBack(); // インスタンス生成
-	AddUI(data1, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "ActiveJump");
+	AddUI(data1, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "UI/Upgrade/Text/ActiveCutBack.png", "ActiveJump");
 	// プレイヤーの体力増加Lv1
 	HealthUPLv1* data2 = new HealthUPLv1(); // インスタンス生成
-	AddUI(data2, BODY, Math::Vector2(-0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data2, BODY, Math::Vector2(-0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png");
 	// プレイヤーの体力増加Lv2
 	HealthUPLv2* data3 = new HealthUPLv2(); // インスタンス生成
-	AddUI(data3, BODY, Math::Vector2(0.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "HealthUPLv1");
+	AddUI(data3, BODY, Math::Vector2(0.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png", "HealthUPLv1");
 	// プレイヤーの体力増加Lv3
 	HealthUPLv3* data4 = new HealthUPLv3(); // インスタンス生成
-	AddUI(data4, BODY, Math::Vector2(0.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "HealthUPLv2");
+	AddUI(data4, BODY, Math::Vector2(0.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png", "HealthUPLv2");
 	// プレイヤーのスライディング距離増加Lv1
 	SlindingUpGradeLv1* data5 = new SlindingUpGradeLv1(); // インスタンス生成
-	AddUI(data5, BODY, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data5, BODY, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/SlidingUpgradeIcon.png", "UI/Upgrade/Text/SlidingUpgrade.png");
 	// プレイヤーのスライディング距離増加Lv2
 	SlindingUpGradeLv2* data6 = new SlindingUpGradeLv2(); // インスタンス生成
-	AddUI(data6, BODY, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "SlindingUpGradeLv1");
+	AddUI(data6, BODY, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/SlidingUpgradeIcon.png", "UI/Upgrade/Text/SlidingUpgrade.png", "SlindingUpGradeLv1");
 	// プレイヤーのスライディング距離増加Lv3
 	SlindingUpGradeLv3* data7 = new SlindingUpGradeLv3(); // インスタンス生成
-	AddUI(data7, BODY, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "SlindingUpGradeLv2");
+	AddUI(data7, BODY, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/SlidingUpgradeIcon.png", "UI/Upgrade/Text/SlidingUpgrade.png", "SlindingUpGradeLv2");
 
 	/// 銃関係のアップグレードの追加
 	// 銃のマガジンサイズ増加Lv1
 	MagazineSizeUPLv1* data8 = new MagazineSizeUPLv1(); // インスタンス生成
-	AddUI(data8, GUN, Math::Vector2(600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	AddUI(data8, GUN, Math::Vector2(600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/MagazineSizeUPIcon.png", "UI/Upgrade/Text/MagazineSizeUP.png");
 	// 銃のマガジンサイズ増加Lv2
 	MagazineSizeUPLv2* data9 = new MagazineSizeUPLv2(); // インスタンス生成
-	AddUI(data9, GUN, Math::Vector2(600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "MagazineSizeUPLv1");
+	AddUI(data9, GUN, Math::Vector2(600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/MagazineSizeUPIcon.png", "UI/Upgrade/Text/MagazineSizeUP.png", "MagazineSizeUPLv1");
 	// 銃のマガジンサイズ増加Lv3
 	MagazineSizeUPLv3* data10 = new MagazineSizeUPLv3(); // インスタンス生成
-	AddUI(data10, GUN, Math::Vector2(600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "MagazineSizeUPLv2");
+	AddUI(data10, GUN, Math::Vector2(600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/MagazineSizeUPIcon.png", "UI/Upgrade/Text/MagazineSizeUP.png", "MagazineSizeUPLv2");
 	// リロード時の弾込め数増加Lv1
 	ReloadCountUpLv1* data11 = new ReloadCountUpLv1(); // インスタンス生成
-	AddUI(data11, GUN, Math::Vector2(200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	AddUI(data11, GUN, Math::Vector2(200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/ReloadCountUPIcon.png", "UI/Upgrade/Text/ReloadCountUP.png");
 	// リロード時の弾込め数増加Lv2
 	ReloadCountUpLv2* data12 = new ReloadCountUpLv2(); // インスタンス生成
-	AddUI(data12, GUN, Math::Vector2(200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadCountUpLv1");
+	AddUI(data12, GUN, Math::Vector2(200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/ReloadCountUPIcon.png", "UI/Upgrade/Text/ReloadCountUP.png", "ReloadCountUpLv1");
 	// リロード時の弾込め数増加Lv3
 	ReloadCountUpLv3* data13 = new ReloadCountUpLv3(); // インスタンス生成
-	AddUI(data13, GUN, Math::Vector2(200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadCountUpLv2");
+	AddUI(data13, GUN, Math::Vector2(200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/ReloadCountUPIcon.png", "UI/Upgrade/Text/ReloadCountUP.png", "ReloadCountUpLv2");
 	// リロード時間短縮Lv1
 	ReloadSpeedUPLv1* data14 = new ReloadSpeedUPLv1(); // インスタンス生成
-	AddUI(data14, GUN, Math::Vector2(-200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	AddUI(data14, GUN, Math::Vector2(-200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/ReloadSpeedUPIcon.png", "UI/Upgrade/Text/ReloadSpeedUP.png");
 	// リロード時間短縮Lv2
 	ReloadSpeedUPLv2* data15 = new ReloadSpeedUPLv2(); // インスタンス生成
-	AddUI(data15, GUN, Math::Vector2(-200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadSpeedUPLv1");
+	AddUI(data15, GUN, Math::Vector2(-200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/ReloadSpeedUPIcon.png", "UI/Upgrade/Text/ReloadSpeedUP.png", "ReloadSpeedUPLv1");
 	// リロード時間短縮Lv3
 	ReloadSpeedUPLv3* data16 = new ReloadSpeedUPLv3(); // インスタンス生成
-	AddUI(data16, GUN, Math::Vector2(-200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadSpeedUPLv2");
+	AddUI(data16, GUN, Math::Vector2(-200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/ReloadSpeedUPIcon.png", "UI/Upgrade/Text/ReloadSpeedUP.png", "ReloadSpeedUPLv2");
 	// 拡散率増加Lv1
 	SpreadUPLv1* data17 = new SpreadUPLv1(); // インスタンス生成
-	AddUI(data17, GUN, Math::Vector2(-600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	AddUI(data17, GUN, Math::Vector2(-600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/SpredUPIcon.png", "UI/Upgrade/Text/SpreadUP.png");
 	//  拡散率増加Lv2
 	SpreadUPLv2* data18 = new SpreadUPLv2(); // インスタンス生成
-	AddUI(data18, GUN, Math::Vector2(-600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "SpreadUPLv1");
+	AddUI(data18, GUN, Math::Vector2(-600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/SpredUPIcon.png", "UI/Upgrade/Text/SpreadUP.png", "SpreadUPLv1");
 	//  拡散率増加Lv3
 	SpreadUPLv3* data19 = new SpreadUPLv3(); // インスタンス生成
-	AddUI(data19, GUN, Math::Vector2(-600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "SpreadUPLv2");
+	AddUI(data19, GUN, Math::Vector2(-600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/SpredUPIcon.png", "UI/Upgrade/Text/SpreadUP.png", "SpreadUPLv2");
 
 	/// ドローン関係のアップグレード
 	// ドローンの回収速度アップLv1
 	CorrectSpeedUPLv1* data20 = new CorrectSpeedUPLv1(); // インスタンス生成
-	AddUI(data20, DRONE, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png");
+	AddUI(data20, DRONE, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/CorrectSpeedUPIcon.png", "UI/Upgrade/Text/CorrectSpeedUP.png");
 	// ドローンの回収速度アップLv2
 	CorrectSpeedUPLv2* data21 = new CorrectSpeedUPLv2(); // インスタンス生成
-	AddUI(data21, DRONE, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "CorrectSpeedUPLv1");
+	AddUI(data21, DRONE, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/CorrectSpeedUPIcon.png", "UI/Upgrade/Text/CorrectSpeedUP.png", "CorrectSpeedUPLv1");
 	// ドローンの回収速度アップLv3
 	CorrectSpeedUPLv3* data22 = new CorrectSpeedUPLv3(); // インスタンス生成
-	AddUI(data22, DRONE, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "CorrectSpeedUPLv2");
+	AddUI(data22, DRONE, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/CorrectSpeedUPIcon.png", "UI/Upgrade/Text/CorrectSpeedUP.png", "CorrectSpeedUPLv2");
 	// ドローンのアイテム生成敵数ダウンLv1
 	GenerateItemCountDownLv1* data23 = new GenerateItemCountDownLv1(); // インスタンス生成
-	AddUI(data23, DRONE, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png");
+	AddUI(data23, DRONE, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GenerateItemCoutDownIcon.png", "UI/Upgrade/Text/GenerateItemCountDown.png");
 	// ドローンのアイテム生成敵数ダウンLv2
 	GenerateItemCountDownLv2* data24 = new GenerateItemCountDownLv2(); // インスタンス生成
-	AddUI(data24, DRONE, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "GenerateItemCountDownLv1");
+	AddUI(data24, DRONE, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GenerateItemCoutDownIcon.png", "UI/Upgrade/Text/GenerateItemCountDown.png", "GenerateItemCountDownLv1");
 	// ドローンのアイテム生成敵数ダウンLv3
 	GenerateItemCountDownLv3* data25 = new GenerateItemCountDownLv3(); // インスタンス生成
-	AddUI(data25, DRONE, Math::Vector2(400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "GenerateItemCountDownLv2");
+	AddUI(data25, DRONE, Math::Vector2(400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GenerateItemCoutDownIcon.png", "UI/Upgrade/Text/GenerateItemCountDown.png", "GenerateItemCountDownLv2");
 
 }
 
@@ -265,7 +280,7 @@ void UpgradeManager::SpriteReset(LWP::Primitive::Sprite& s, const std::string& t
 	s.anchorPoint = { 0.5f, 0.5f };
 }
 
-void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& prevUpgradeName)
+void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& textTexName, const std::string& prevUpgradeName)
 {
 	/// アップグレードの初期化
 	upgrade->Init(prevUpgradeName);
@@ -292,6 +307,9 @@ void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math
 	upgrades_[upgrade->name_].ui.anchorPoint = { 0.5f, 0.5f };
 	upgrades_[upgrade->name_].ui.isActive = false;
 
+	// テキスト用テクスチャ名を取得
+	upgrades_[upgrade->name_].textTex = textTexName;
+
 	// 対象データを追加
 	upgrades_[upgrade->name_].upgrade = std::move(upgrade);
 }
@@ -313,6 +331,8 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 
 	// カーソル表示を切り替える
 	cursorSprite_->isActive = isDisplay;
+	// 説明テキスト表示を切り替える
+	upgradeText_.isActive = isDisplay;
 
 	// アップグレードUIの表示状態が切り替えフラグの状態を変更
 	isOpenUpgradeWindow_ = isDisplay;
@@ -342,6 +362,9 @@ void UpgradeManager::CheckCollisionUpgrades()
 		if (it->second.upgrade->prevUpgradeName_ == "" && !it->second.upgrade->isApplied_) {
 			// 衝突判定を検証する
 			if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
+				// テキストを選択した説明のモノに変更する
+				upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
+				
 				// スキルポイントが1以上なら
 				if (skillPoint_ >= 1) {
 					// スケールを線形補間で大きくする
@@ -355,7 +378,7 @@ void UpgradeManager::CheckCollisionUpgrades()
 						// 適用関数を呼び出す
 						it->second.upgrade->Apply(player_, drone_);
 						// スプライトの色を少し薄くする
-						it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+						it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
 
 						// スキルポイントを - 1
 						skillPoint_--;
@@ -385,6 +408,9 @@ void UpgradeManager::CheckCollisionUpgrades()
 
 				// 衝突判定を検証する
 				if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
+					// テキストを選択した説明のモノに変更する
+					upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
+					
 					// スキルポイントが1以上かつ、適用していない状態であれば
 					if (skillPoint_ >= 1) {
 						// スケールを線形補間で大きくする
@@ -398,7 +424,7 @@ void UpgradeManager::CheckCollisionUpgrades()
 							// 適用関数を呼び出す
 							it->second.upgrade->Apply(player_, drone_);
 							// スプライトの色を少し薄くする
-							it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+							it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
 
 							// スキルポイントを - 1
 							skillPoint_--;
@@ -422,7 +448,7 @@ void UpgradeManager::CheckCollisionUpgrades()
 			}
 			else { // 解放されていない場合
 				// スプライトの色を少し薄くする
-				it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+				it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
 
 				// スケールを線形補間で小さくする
 				it->second.ui.worldTF.scale =
@@ -432,6 +458,9 @@ void UpgradeManager::CheckCollisionUpgrades()
 			}
 		}
 		else { // 選択されていない場合
+			// テキストを選択した説明のモノに変更する
+			upgradeText_.material.texture = LWP::Resource::LoadTexture("UI/Upgrade/Text/NoneText.png");
+
 			// スケールを線形補間で小さくする
 			it->second.ui.worldTF.scale =
 				Utility::Interp::Lerp(

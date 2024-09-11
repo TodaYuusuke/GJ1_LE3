@@ -18,6 +18,7 @@ private: // サブクラス
 	struct UpgradeData {
 		LWP::Primitive::Sprite ui;		// UI用スプライト
 		IUpgrade*			   upgrade; // アップグレード
+		std::string			   textTex; // テキスト用テクスチャ
 	};
 
 	/// <summary>
@@ -106,8 +107,9 @@ private: // プライベートな関数
 	/// <param name="position">アップグレードの座標</param>
 	/// <param name="scale">スケール</param>
 	/// <param name="texName">テクスチャ名</param>
+	/// <param name="textTexName">テキスト用テクスチャ名</param>
 	/// <param name="prevUpgradeName">前提アップグレード名</param>
-	void AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& prevUpgradeName = "");
+	void AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& textTexName, const std::string& prevUpgradeName = "");
 
 	/// <summary>
 	/// UIの表示、非表示の切り替え関数
@@ -167,8 +169,8 @@ private: // メンバ変数
 	// カーソルスプライト
 	LWP::Primitive::Sprite* cursorSprite_;
 
-	// ツリー管理用名前配列
-	std::vector<std::string> hpCategory_;
+	// アップグレードテキストスプライト
+	LWP::Primitive::Sprite upgradeText_;
 };
 
 
