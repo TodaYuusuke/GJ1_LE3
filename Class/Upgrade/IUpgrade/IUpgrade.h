@@ -2,23 +2,35 @@
 #include"../../Player/Player.h"
 #include"../../Drone/Drone.h"
 
+/// <summary>
+/// アップグレード基底クラス
+/// </summary>
 class IUpgrade {
 
-public:
+public: // コンストラクタ等
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	IUpgrade() = default;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~IUpgrade() = default;
 
-	//初期化処理（何かるなら用
-	virtual void Initialize()=0;
+public: // 純粋仮想関数
 	
 	/// <summary>
-	/// プレイヤーに実行処理
+	/// 適用関数
 	/// </summary>
-	/// <param name="player_">プレイヤーポインタ</param>
-	/// <param name="drone">ドローンポインタ</param>
+	/// <param name="player_">プレイヤー本体</param>
+	/// <param name="drone">ドローン本体</param>
 	virtual void Apply(Player* player_,Drone*drone) = 0;
+
 public:
+
 	//使用フラグ
-	bool isUsed_ = false;
+	bool isApplied_ = false;
+
 };
