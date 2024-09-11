@@ -173,6 +173,8 @@
     <ClInclude Include="Class\Enemy\EnemyManager.h" />
     <ClInclude Include="Class\Enemy\Child\Spider.h" />
     <ClInclude Include="Class\FollowCamera\FollowCamera.h" />
+    <ClInclude Include="Class\Mask\Mask.h" />
+    <ClInclude Include="Class\Particle\StageFragment.h" />
     <ClInclude Include="Class\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Class\Player\Player.h" />
     <ClInclude Include="Class\Scene\GameScene.h" />

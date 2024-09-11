@@ -13,10 +13,6 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 	/// <param name="newData">生成された実体の参照（mに基準となるmodelは既にコピーされている）</param>
 	/// <returns></returns>
 	void Generate(Data& newData) override {
-		newData.m.worldTF.translation = lwp::Vector3{ 0.0f,1.0f,0.0f } + model.worldTF.GetWorldPosition();
-		//newData.m.worldTF.rotation = model.worldTF.rotation;	// 既にコピー済みなので意味なし
-		newData.m.worldTF.scale = { 0.15f,0.15f, 0.15f };
-
 		// 速度ベクトルを生成
 		int dir1 = LWP::Utility::GenerateRandamNum<int>(-200, 200);
 		int dir2 = LWP::Utility::GenerateRandamNum<int>(-200, 200);
