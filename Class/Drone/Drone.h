@@ -50,7 +50,7 @@ public: // ** アップグレードされるパブリックな変数 ** //
 		// アイテム生成に必要な敵の数
 		int kNeedDeadBody = 10;
 		// 吸収に必要な時間
-		float kSuctionNeedTime = 3.0f;
+		float kSuctionNeedTime = 120.0f;
 	}upgradeParamater;
 
 private: // ** ステートパターン ** //

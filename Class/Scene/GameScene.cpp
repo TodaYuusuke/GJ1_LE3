@@ -7,6 +7,13 @@ using namespace LWP::Input;
 
 // 初期化
 void GameScene::Initialize() {
+	// 黒背景
+	backGround_.worldTF.translation.z = 1000.0f;
+	backGround_.worldTF.scale = { 3000.0f,3000.0f,1.0f };
+	backGround_.worldTF.Parent(&mainCamera.transform);
+	backGround_.material.enableLighting = false;
+	backGround_.material.color = Utility::ColorPattern::BLACK;
+
 	player_.Initialize();
 	followCamera_.Initialize(&mainCamera);
 	enemyManager_.Initialize(&player_);
