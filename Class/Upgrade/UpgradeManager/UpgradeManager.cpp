@@ -169,11 +169,11 @@ void UpgradeManager::AddUpgrades()
 {
 	/// プレイヤー関係のアップグレードの追加
 	// プレイヤーのジャンプ有効化
-	ActiveJump* data1 = new ActiveJump(); // インスタンス生成
-	AddUI(data1, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	ActiveJump* data0 = new ActiveJump(); // インスタンス生成
+	AddUI(data0, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
 	// プレイヤーの切り返し有効化
-	ActiveCutBack* data0 = new ActiveCutBack(); // インスタンス生成
-	AddUI(data0, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "ActiveJump");
+	ActiveCutBack* data1 = new ActiveCutBack(); // インスタンス生成
+	AddUI(data1, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "ActiveJump");
 	// プレイヤーの体力増加Lv1
 	HealthUPLv1* data2 = new HealthUPLv1(); // インスタンス生成
 	AddUI(data2, BODY, Math::Vector2(-0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
@@ -192,6 +192,64 @@ void UpgradeManager::AddUpgrades()
 	// プレイヤーのスライディング距離増加Lv3
 	SlindingUpGradeLv3* data7 = new SlindingUpGradeLv3(); // インスタンス生成
 	AddUI(data7, BODY, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "SlindingUpGradeLv2");
+
+	/// 銃関係のアップグレードの追加
+	// 銃のマガジンサイズ増加Lv1
+	MagazineSizeUPLv1* data8 = new MagazineSizeUPLv1(); // インスタンス生成
+	AddUI(data8, GUN, Math::Vector2(600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	// 銃のマガジンサイズ増加Lv2
+	MagazineSizeUPLv2* data9 = new MagazineSizeUPLv2(); // インスタンス生成
+	AddUI(data9, GUN, Math::Vector2(600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "MagazineSizeUPLv1");
+	// 銃のマガジンサイズ増加Lv3
+	MagazineSizeUPLv3* data10 = new MagazineSizeUPLv3(); // インスタンス生成
+	AddUI(data10, GUN, Math::Vector2(600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "MagazineSizeUPLv2");
+	// リロード時の弾込め数増加Lv1
+	ReloadCountUpLv1* data11 = new ReloadCountUpLv1(); // インスタンス生成
+	AddUI(data11, GUN, Math::Vector2(200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	// リロード時の弾込め数増加Lv2
+	ReloadCountUpLv2* data12 = new ReloadCountUpLv2(); // インスタンス生成
+	AddUI(data12, GUN, Math::Vector2(200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadCountUpLv1");
+	// リロード時の弾込め数増加Lv3
+	ReloadCountUpLv3* data13 = new ReloadCountUpLv3(); // インスタンス生成
+	AddUI(data13, GUN, Math::Vector2(200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadCountUpLv2");
+	// リロード時間短縮Lv1
+	ReloadSpeedUPLv1* data14 = new ReloadSpeedUPLv1(); // インスタンス生成
+	AddUI(data14, GUN, Math::Vector2(-200.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	// リロード時間短縮Lv2
+	ReloadSpeedUPLv2* data15 = new ReloadSpeedUPLv2(); // インスタンス生成
+	AddUI(data15, GUN, Math::Vector2(-200.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadSpeedUPLv1");
+	// リロード時間短縮Lv3
+	ReloadSpeedUPLv3* data16 = new ReloadSpeedUPLv3(); // インスタンス生成
+	AddUI(data16, GUN, Math::Vector2(-200.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "ReloadSpeedUPLv2");
+	// 拡散率増加Lv1
+	SpreadUPLv1* data17 = new SpreadUPLv1(); // インスタンス生成
+	AddUI(data17, GUN, Math::Vector2(-600.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png");
+	//  拡散率増加Lv2
+	SpreadUPLv2* data18 = new SpreadUPLv2(); // インスタンス生成
+	AddUI(data18, GUN, Math::Vector2(-600.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "SpreadUPLv1");
+	//  拡散率増加Lv3
+	SpreadUPLv3* data19 = new SpreadUPLv3(); // インスタンス生成
+	AddUI(data19, GUN, Math::Vector2(-600.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/GunIcon.png", "SpreadUPLv2");
+
+	/// ドローン関係のアップグレード
+	// ドローンの回収速度アップLv1
+	CorrectSpeedUPLv1* data20 = new CorrectSpeedUPLv1(); // インスタンス生成
+	AddUI(data20, DRONE, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png");
+	// ドローンの回収速度アップLv2
+	CorrectSpeedUPLv2* data21 = new CorrectSpeedUPLv2(); // インスタンス生成
+	AddUI(data21, DRONE, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "CorrectSpeedUPLv1");
+	// ドローンの回収速度アップLv3
+	CorrectSpeedUPLv3* data22 = new CorrectSpeedUPLv3(); // インスタンス生成
+	AddUI(data22, DRONE, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "CorrectSpeedUPLv2");
+	// ドローンのアイテム生成敵数ダウンLv1
+	GenerateItemCountDownLv1* data23 = new GenerateItemCountDownLv1(); // インスタンス生成
+	AddUI(data23, DRONE, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png");
+	// ドローンのアイテム生成敵数ダウンLv2
+	GenerateItemCountDownLv2* data24 = new GenerateItemCountDownLv2(); // インスタンス生成
+	AddUI(data24, DRONE, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "GenerateItemCountDownLv1");
+	// ドローンのアイテム生成敵数ダウンLv3
+	GenerateItemCountDownLv3* data25 = new GenerateItemCountDownLv3(); // インスタンス生成
+	AddUI(data25, DRONE, Math::Vector2(400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/DroneIcon.png", "GenerateItemCountDownLv2");
 
 }
 
