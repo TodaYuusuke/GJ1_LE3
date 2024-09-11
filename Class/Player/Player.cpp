@@ -160,12 +160,16 @@ void Player::GlovalUpdate()
 		float t = parameters_.currentTurnSec / parameters_.turnSec;
 		//最小最大角度
 		float pi = (float)std::numbers::pi / 2.0f;
+
+		float min = pi;
+		float max = pi * 3;
+
 		float rotateY;
 		if (pVeloX_ > 0) {
-			rotateY = Lerp(-pi, pi, t);
+			rotateY = Lerp(max, min, t);
 		}
 		else {
-			rotateY = Lerp(pi, -pi, t);
+			rotateY = Lerp(min, max, t);
 		}
 		model_.worldTF.rotation = Math::Quaternion::ConvertEuler({ 0,rotateY ,0 });
 
@@ -244,7 +248,7 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 		LWP::Math::Vector3 ve = rotateZ(v, theta);
 
 		//一発
-		bullets_->SetData(model_.worldTF.translation, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
+		bullets_->SetData(model_.worldTF.translation+parameters_.bulletData.offset_, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
 
 		theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
 
@@ -276,6 +280,10 @@ float Player::GetPlayerDirection()
 void Player::Debug()
 {
 #ifdef DEMO
+
+	//無限バンダナ
+	static bool isEndlessAmmo_ = false;
+
 	std::string behaName = "HP %d behavior : " + behaviorStirng_[behavior_];
 
 	ImGui::Begin("Game");
@@ -302,7 +310,8 @@ void Player::Debug()
 			}
 
 			if (ImGui::TreeNode("bullet")) {
-
+				ImGui::Checkbox("endless ammo", &isEndlessAmmo_);
+				ImGui::DragFloat3("offset pos", &parameters_.bulletData.offset_.x, 0.01f);
 				ImGui::Text("bullet remaining : %d", parameters_.bulletData.ammoRemaining_);
 				ImGui::DragInt("pellet count", &parameters_.bulletData.shotpelletNum_);
 				ImGui::DragInt("max ammo count", &parameters_.bulletData.maxAmmoNum_);
@@ -332,6 +341,10 @@ void Player::Debug()
 		ImGui::EndTabBar();
 	}
 	ImGui::End();
+
+	if (isEndlessAmmo_) {
+		parameters_.bulletData.ammoRemaining_ = parameters_.bulletData.maxAmmoNum_;
+	}
 #endif // DEMO
 
 }
@@ -408,10 +421,13 @@ void Player::InitializeJump()
 	acce_.y = -parameters_.gravity;
 
 	parameters_.jumpData.isJump_ = true;
+	parameters_.bulletData.currentPutBulletInSec_ = 0;
+	parameters_.bulletData.currentReloadStartSec_ = 0;
 
 	SetAnimation(A_Idle);
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
+
 
 }
 void Player::InitializeHitSomeone()
@@ -513,7 +529,11 @@ void Player::UpdateMove()
 		}
 
 		if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-			behaviorReq_ = Jump;
+			//残弾がある時のみ処理
+			if (parameters_.bulletData.ammoRemaining_ > 0) {
+				parameters_.bulletData.ammoRemaining_--;
+				behaviorReq_ = Jump;
+			}
 		}
 
 	}
