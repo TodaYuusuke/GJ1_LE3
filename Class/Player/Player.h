@@ -219,11 +219,15 @@ private:// ** 処理をまとめた関数 ** //
 	//各状態関係なく更新
 	void GlovalUpdate();
 
+	//無敵時間の処理
+	void HitUpdate();
+
 	//弾のリロード処理
 	void ReloadBullet(float delta);
 
 	//弾の発射処理
 	bool ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
+
 
 
 	//各入力による処理

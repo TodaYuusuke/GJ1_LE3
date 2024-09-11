@@ -190,7 +190,40 @@ void Player::GlovalUpdate()
 
 	ReloadBullet(delta);
 
+	HitUpdate();
+
 	bullets_->Update();
+}
+
+void Player::HitUpdate()
+{
+	//ヒット判定が切れているときのみ処理
+	if (!parameters_.hitData.isHit_) {
+		float delta = Info::GetDeltaTimeF();
+
+		//データの加算処理
+		parameters_.hitData.currentNoHit_ += delta;
+		parameters_.hitData.animeCount_++;
+
+		//点滅処理
+		if (parameters_.hitData.animeCount_ % parameters_.hitData.tenmetuCount_ == 0) {
+			if (model_.isActive) {
+				model_.isActive = false;
+			}
+			else {
+				model_.isActive = true;
+			}
+		}
+
+		//終了処理
+		if (parameters_.hitData.currentNoHit_ >= parameters_.hitData.noHitSec_) {
+			parameters_.hitData.currentNoHit_ = 0;
+			parameters_.hitData.animeCount_ = 0;
+			parameters_.hitData.isHit_ = true;
+			model_.isActive = true;
+			behaviorReq_ = Moving;
+		}
+	}
 }
 
 void Player::ReloadBullet(float delta)
@@ -527,9 +560,11 @@ void Player::InitializeHitSomeone()
 	velo_ = ve * parameters_.hitData.hitVelocity_;
 	acce_.y = -parameters_.gravity;
 
+	parameters_.hitData.currentNoHit_ = 0;
+	parameters_.hitData.animeCount_ = 0;
+
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
-	parameters_.hitData.animeCount_ = 0;
 	model_.isActive = false;
 }
 
@@ -770,25 +805,13 @@ void Player::UpdateSlideStopShot()
 
 void Player::UpdateHitSomeone()
 {
-	float delta = Info::GetDeltaTimeF();
-	parameters_.hitData.currentNoHit_ += delta;
 
-	parameters_.hitData.animeCount_++;
-	if (parameters_.hitData.animeCount_ % parameters_.hitData.tenmetuCount_ == 0) {
-		if (model_.isActive) {
-			model_.isActive = false;
-		}
-		else {
-			model_.isActive = true;
-		}
-	}
+	//着地で移動処理
+	if (parameters_.jumpData.isJump_) {
 
-	if (parameters_.hitData.currentNoHit_ >= parameters_.hitData.noHitSec_) {
-		parameters_.hitData.currentNoHit_ = 0;
-		parameters_.hitData.isHit_ = true;
-		model_.isActive = true;
 		behaviorReq_ = Moving;
 	}
+	
 }
 
 
