@@ -146,7 +146,7 @@ public://構造体＆enum群
 		float currentTurnSec = 0;
 
 		//移動の慣性処理
-		float movingInertiaSec = 1.0f;
+		float movingInertiaSec = 0.45f;
 		float currentInertia = 0.0f;
 
 		//止まった時の減速処理の増加量
