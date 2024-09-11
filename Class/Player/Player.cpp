@@ -229,13 +229,13 @@ void Player::ReloadBullet(float delta)
 
 
 
-void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
+bool Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
 {
 
 	float theta = -parameters_.bulletData.bulletDispersion_ / 2;
 
 	if (parameters_.bulletData.ammoRemaining_ <= 0) {
-		return;
+		return false;
 	}
 
 	//弾減らす処理
@@ -255,6 +255,8 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 
 	}
+
+	return true;
 }
 #pragma region 各入力
 
@@ -265,19 +267,28 @@ void Player::ToSliding()
 	}
 }
 
-void Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
+bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 {
 	if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
-		ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
+		bool ans= ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
 
-		//状態に
-		if (ammoName == standShot) {
-			SetAnimation(A_StandShot, false);
+		if (ans) {
+			//状態に
+			if (ammoName == standShot) {
+				SetAnimation(A_StandShot, false);
+			}
+			else {
+				SetAnimation(A_SlidingShot, false);
+			}
+			return true;
 		}
 		else {
-			SetAnimation(A_SlidingShot, false);
+			return false;
 		}
+		
 	}
+
+	return false;
 }
 
 void Player::ToJump() {
@@ -334,11 +345,25 @@ void Player::Debug()
 			ImGui::DragFloat("stop deceleation double", &parameters_.stopDecelerationDouble_,0.1f);
 			ImGui::DragFloat("standShot deceleation double", &parameters_.standShotDecelerationDouble_, 0.1f);
 
+			if (ImGui::TreeNode("Active Flag")) {
+
+				ImGui::Checkbox("jump", &parameters_.activeFlag.jump);
+				ImGui::Checkbox("slidingStopShot", &parameters_.activeFlag.slidingStopShot);
+
+
+				ImGui::TreePop();
+			}
+
 			if (ImGui::TreeNode("slide")) {
 				ImGui::DragFloat("slide leng", &parameters_.slideData.length, 0.01f);
 				ImGui::DragFloat("slide spd", &parameters_.slideData.spd, 0.01f);
 				ImGui::Text("inertiaa count : %4.1f", &parameters_.currentInertia);
 				ImGui::DragFloat("acceSlide spd", &parameters_.slideData.acceSpd, 0.01f);
+
+				ImGui::DragFloat(" shot slope ", &parameters_.slideData.shotSlope,0.01f);
+
+				ImGui::DragFloat("reaction height", &parameters_.slideData.jumpSlope_,0.01f);
+				ImGui::DragFloat("reaction velo",&parameters_.slideData.startVelo,0.01f);
 				ImGui::TreePop();
 			}
 
@@ -395,6 +420,7 @@ void (Player::* Player::BehaviorInitialize[])() = {
 	&Player::InitializeSlide,
 	&Player::InitializeQuitSlide,
 	&Player::InitializeJump,
+	&Player::InitializeSlideStopShot,
 	&Player::InitializeHitSomeone
 };
 //更新初期化関数ポインタテーブル
@@ -403,6 +429,7 @@ void (Player::* Player::BehaviorUpdate[])() = {
 	&Player::UpdateSlide,
 	&Player::UpdateQuitSlide,
 	&Player::UpdateJump,
+	&Player::UpdateSlideStopShot,
 	&Player::UpdateHitSomeone
 };
 
@@ -449,6 +476,8 @@ void Player::InitializeJump()
 	velo = Math::Vector3{ pVeloX_,0,0 }.Normalize();
 	velo.y = parameters_.jumpData.jumpSlope_;
 	velo = velo.Normalize();
+
+	//慣性処理が消え去った
 	//if (preBehavior_ == Sliding) {
 	//	//ジャンプの向きベクトル計算
 	//	velo_.y = Math::Vector3{ velo * jumpVelo_ }.y;
@@ -468,6 +497,26 @@ void Player::InitializeJump()
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
+
+}
+void Player::InitializeSlideStopShot()
+{
+	//向き方向と逆方向に吹っ飛ぶ
+	Math::Vector3 velo;
+	velo = Math::Vector3{ -pVeloX_,0,0 }.Normalize();
+	velo.y = parameters_.slideData.jumpSlope_;
+	velo = velo.Normalize();
+
+	velo_ = velo * parameters_.slideData.startVelo;
+	acce_.y = -parameters_.gravity;
+
+	parameters_.jumpData.isJump_ = true;
+	parameters_.bulletData.currentPutBulletInSec_ = 0;
+	parameters_.bulletData.currentReloadStartSec_ = 0;
+
+	SetAnimation(A_Idle);
+	aabb_.aabb.min = standAABB_.min;
+	aabb_.aabb.max = standAABB_.max;
 
 }
 void Player::InitializeHitSomeone()
@@ -573,29 +622,17 @@ void Player::UpdateMove()
 		parameters_.isturn = true;
 		parameters_.currentTurnSec = 0;
 	}
-
-
-
-
 #pragma endregion
 
 
 #pragma region 各状態変化
 	//スライディングに移行
-
 	if (!parameters_.jumpData.isJump_) {
-
 		ToSliding();
-
 		ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(),standShot);
-
 		ToJump();
-
-
 	}
 #pragma endregion
-
-
 }
 void Player::UpdateSlide()
 {
@@ -613,9 +650,49 @@ void Player::UpdateSlide()
 		SetAnimation(A_Sliding);
 	}
 
+	//
+	float x=0;
+	if (Input::Keyboard::GetPress(DIK_D)) {
+		x += 1;
+	}
+	if (Input::Keyboard::GetPress(DIK_A)) {
+		x -= 1;
+	}
+	x += Input::Pad::GetLStick().x;
+
+	//向きが同じ場合特になし
+	if ((x > 0 && pVeloX_ > 0)||( x < 0 && pVeloX_ < 0)) {
+
+		if (pVeloX_ > 0) {
+			x = 1;
+		}
+		else {
+			x = -1;
+		}
+
+	}
+	else {
+		x = 0;
+	}
 
 	//スライド中に攻撃
-	ToShot({ 0,1,0 }, slideShot);
+	std::string type;
+
+	//水平射撃か
+	if (x != 0) {
+		type = standShot;
+	}
+	else {
+		type = slideShot;
+	}
+
+	if (ToShot(Math::Vector3{ x,parameters_.slideData.shotSlope,0 }.Normalize(), type)) {
+
+		//0じゃないとき処理
+		if (x != 0) {
+			behaviorReq_ = SlideStopShot;
+		}
+	}
 
 
 	ToJump();
@@ -664,6 +741,15 @@ void Player::UpdateJump()
 	if (!parameters_.jumpData.isJump_) {
 		behaviorReq_ = Moving;
 	}
+}
+
+void Player::UpdateSlideStopShot()
+{
+	//着地で歩く処理に移行
+	if (!parameters_.jumpData.isJump_) {
+		behaviorReq_ = Moving;
+	}
+
 }
 
 void Player::UpdateHitSomeone()

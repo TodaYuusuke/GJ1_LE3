@@ -86,6 +86,14 @@ public://構造体＆enum群
 		//減速量
 		float acceSpd = 80.0f;
 
+		//発射のが描く
+		float shotSlope = 1.0f;
+
+		//反動の角度
+		float jumpSlope_ = 1.0f;
+
+		//反動初期ベクトル
+		float startVelo = 10.0f;
 	};
 
 	struct JumpData {
@@ -169,6 +177,7 @@ public:
 		Sliding,	//スライド状態
 		QuitSlide,	//スライド終了
 		Jump,		//ジャンプ処理
+		SlideStopShot,
 		HitSomeone,//ヒット時処理
 		_countBehavior
 	};
@@ -196,12 +205,14 @@ private:// ** 処理をまとめた関数 ** //
 	void InitializeSlide();			//スライド初期化
 	void InitializeQuitSlide();		//スライドやめる初期化
 	void InitializeJump();
+	void InitializeSlideStopShot(); //スライディングキャンセルする発砲処理
 	void InitializeHitSomeone();
 
 	void UpdateMove();				//移動更新
 	void UpdateSlide();				//スライド更新
 	void UpdateQuitSlide();			//スライドやめる更新
 	void UpdateJump();
+	void UpdateSlideStopShot();     //スライディングキャンセルする発砲処理
 	void UpdateHitSomeone();
 #pragma endregion
 
@@ -212,12 +223,12 @@ private:// ** 処理をまとめた関数 ** //
 	void ReloadBullet(float delta);
 
 	//弾の発射処理
-	void ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
+	bool ShotBullet(const LWP::Math::Vector3&v, const std::string& cName, float shotNum =5);
 
 
 	//各入力による処理
 	void ToSliding();
-	void ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName);
+	bool ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName);
 	void ToJump();
 	
 
@@ -308,6 +319,7 @@ private: // ** 変数 ** //
 		"Sliding",
 		"QuitSlide",
 		"Jump",
+		"SlideStopShot",
 		"HitSomeone"
 	};
 

@@ -6,7 +6,6 @@
 #include"../Player/Player.h"
 #include"../Drone/Drone.h"
 #include"../FollowCamera/FollowCamera.h"
-#include"../SkillTree/SkillTree.h"
 #include "../UI/GameUIManager.h"
 
 class TestScene final
@@ -26,7 +25,6 @@ public:
 private: //*** これより先に必要な処理や変数を記述 ***//
 	FollowCamera followCamera_;
 	Player player_;
-	SkillTree skilltree_;
 	EnemyManager enemyManager_;
 	Drone drone_;
 
