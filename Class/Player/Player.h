@@ -121,6 +121,11 @@ public://構造体＆enum群
 		float turnSec = 0.2f;
 		float currentTurnSec = 0;
 
+		//移動の慣性処理
+		float movingInertiaSec = 1.0f;
+		float currentInertia = 0.0f;
+
+
 		//ジャンプ関連
 		JumpData jumpData;
 		//スライディング関連

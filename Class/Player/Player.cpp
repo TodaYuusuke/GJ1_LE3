@@ -27,7 +27,7 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 
 
 
-Player::Player() 
+Player::Player()
 {
 	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
@@ -47,7 +47,7 @@ Player::Player()
 	//被弾処理
 	aabb_.collider.enterLambda = [=](Collider::Collider* data) {
 
-		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding])||data->name==standShot || data->name == slideShot) {
+		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding]) || data->name == standShot || data->name == slideShot) {
 			return;
 		}
 
@@ -248,7 +248,7 @@ void Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 		LWP::Math::Vector3 ve = rotateZ(v, theta);
 
 		//一発
-		bullets_->SetData(model_.worldTF.translation+parameters_.bulletData.offset_, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
+		bullets_->SetData(model_.worldTF.translation + parameters_.bulletData.offset_, { ve * parameters_.bulletData.bulletsSpd_ }, cName);
 
 		theta += parameters_.bulletData.bulletDispersion_ / (shotNum - 1.0f);
 
@@ -295,9 +295,12 @@ void Player::Debug()
 			ImGui::DragFloat("move spd", &parameters_.moveSpd, 0.01f);
 			ImGui::DragFloat("turn sec", &parameters_.turnSec, 0.01f);
 
+			ImGui::DragFloat("max move sec", &parameters_.movingInertiaSec, 0.01f);
+
 			if (ImGui::TreeNode("slide")) {
 				ImGui::DragFloat("slide leng", &parameters_.slideData.length, 0.01f);
 				ImGui::DragFloat("slide spd", &parameters_.slideData.spd, 0.01f);
+				ImGui::Text("inertiaa count : %4.1f", &parameters_.currentInertia);
 				ImGui::DragFloat("acceSlide spd", &parameters_.slideData.acceSpd, 0.01f);
 				ImGui::TreePop();
 			}
@@ -468,10 +471,31 @@ void Player::UpdateMove()
 	//プレイヤーの向きを保存
 	if (move.x != 0) {
 		pVeloX_ = move.x;
+
+		parameters_.currentInertia += delta;
+	}
+	else {
+		parameters_.currentInertia -= delta * 2.0f;;
 	}
 
+	//たち射撃の場合さらにカウント減少
+	if (nowPlayAnimeName_ == animeName_[A_StandShot]) {
+		parameters_.currentInertia -= delta * 3.0f;
+	}
+
+	//0から最大値に値を合わせる
+	if (parameters_.currentInertia < 0) {
+		parameters_.currentInertia = 0;
+	}
+	else if (parameters_.currentInertia > parameters_.movingInertiaSec) {
+		parameters_.currentInertia = parameters_.movingInertiaSec;
+	}
+
+	//0~1に変更
+	float t = parameters_.currentInertia / parameters_.movingInertiaSec;
+
 	//WorldTFに値追加
-	model_.worldTF.translation += move * delta;
+	model_.worldTF.translation += (move * t) * delta;
 
 #pragma region アニメーション変更処理
 
