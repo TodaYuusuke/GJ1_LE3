@@ -68,6 +68,8 @@ Player::Player()
 			parameters_.bulletData.currentPutBulletInSec_ = 0;
 			parameters_.bulletData.currentReloadStartSec_ = 0;
 			behaviorReq_ = HitSomeone;
+
+			//SetAnimation(A_Damage, false);
 		}
 
 		};
@@ -427,6 +429,18 @@ void Player::Debug()
 
 				ImGui::TreePop();
 			}
+
+			if (ImGui::TreeNode("hit")) {
+
+				ImGui::Text("isHit : %d", parameters_.hitData.isHit_);
+				ImGui::DragFloat("no hit sec", &parameters_.hitData.noHitSec_);
+				ImGui::DragFloat("hit height", &parameters_.hitData.hitHeight_);
+				ImGui::DragFloat("hit velo", &parameters_.hitData.hitVelocity_);
+				ImGui::DragInt("tenmetsu count",& parameters_.hitData.tenmetuCount_);
+
+				ImGui::TreePop();
+			}
+
 			if (ImGui::TreeNode("AABB")) {
 				aabb_.aabb.DebugGUI();
 				ImGui::TreePop();
@@ -571,6 +585,9 @@ void Player::InitializeHitSomeone()
 	parameters_.hitData.currentNoHit_ = 0;
 	parameters_.hitData.animeCount_ = 0;
 
+
+	SetAnimation(A_Damage,false);
+
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
 	model_.isActive = false;
@@ -634,7 +651,7 @@ void Player::UpdateMove()
 #pragma region アニメーション変更処理
 
 	//弾の発射モーション以外は着地モーション優先
-	if (nowPlayAnimeName_ != animeName_[A_Land]) {
+	if (nowPlayAnimeName_ != animeName_[A_Land]&& nowPlayAnimeName_ != animeName_[A_Recovery]) {
 
 		if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
 
@@ -682,8 +699,11 @@ void Player::UpdateMove()
 #pragma region 各状態変化
 	//スライディングに移行
 	if (!parameters_.jumpData.isJump_) {
-		ToSliding();
-		ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot);
+		if (nowPlayAnimeName_ != animeName_[A_Recovery]) {
+			ToSliding();
+
+			ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot);
+		}
 		ToJump();
 	}
 #pragma endregion
@@ -833,8 +853,8 @@ void Player::UpdateHitSomeone()
 {
 
 	//着地で移動処理
-	if (parameters_.jumpData.isJump_) {
-
+	if (!parameters_.jumpData.isJump_) {
+		SetAnimation(A_Recovery, false);
 		behaviorReq_ = Moving;
 	}
 	

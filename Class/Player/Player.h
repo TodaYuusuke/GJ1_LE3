@@ -15,7 +15,7 @@ public://構造体＆enum群
 		A_SlidingShot,
 		A_JumpStart,
 		A_Jumping,
-		A_Land,
+		A_Land,		//着地
 		A_Damage,
 		A_Recovery,
 		A_Dead,
@@ -64,17 +64,17 @@ public://構造体＆enum群
 		//ヒットフラグ
 		bool isHit_ = true;
 		//ヒット時の無敵時間
-		float noHitSec_ = 1.0f;
+		float noHitSec_ = 3.0f;
 		float currentNoHit_ = 0;
 		//ヒット時の吹っ飛ぶX方向
 		float hitDirection_;
 		//吹っ飛ぶときの角度
 		float hitHeight_ = 1.0f;
 		//初速
-		float hitVelocity_ = 10.0f;
+		float hitVelocity_ = 20.0f;
 
 		int animeCount_= 0;
-		int tenmetuCount_ = 10;
+		int tenmetuCount_ = 5;
 	};
 
 	//スライディングのデータ
