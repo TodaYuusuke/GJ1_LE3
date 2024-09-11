@@ -12,7 +12,7 @@ void FollowCamera::Initialize(LWP::Object::Camera* cam)
 {
 	camera_ = cam;
 	camera_->transform.translation.y = 2.5f;
-	camera_->transform.translation.z = -22.0f;
+	camera_->transform.translation.z = -30.0f;
 }
 
 void FollowCamera::Update(const LWP::Math::Vector3& playerPos)
