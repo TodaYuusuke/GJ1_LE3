@@ -2,28 +2,28 @@
 #include"../IUpgrade/IUpgrade.h"
 
 /// <summary>
-/// Ø‚è•Ô‚µ—LŒø‰»ƒAƒbƒvƒOƒŒ[ƒh
+/// åˆ‡ã‚Šè¿”ã—æœ‰åŠ¹åŒ–ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰
 /// </summary>
 class ActiveCutBack : public IUpgrade {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	void Init() override {
-		// –¼Ìİ’è
+		// åç§°è¨­å®š
 		name_ = "ActiveCutBack";
 	};
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
+	/// <param name="player_">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
 	void Apply(Player* player_, Drone* drone)override { 
-		// ƒvƒŒƒCƒ„[‚ÌØ‚è•Ô‚µ‚ğ—LŒø‰»
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆ‡ã‚Šè¿”ã—ã‚’æœ‰åŠ¹åŒ–
 		player_->parameters_.activeFlag.slidingStopShot = true; 
-		// “K—pƒtƒ‰ƒO‚ğtrue
+		// é©ç”¨ãƒ•ãƒ©ã‚°ã‚’true
 		isApplied_ = true;
 	}
 

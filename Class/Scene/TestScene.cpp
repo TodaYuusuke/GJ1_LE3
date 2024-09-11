@@ -7,7 +7,6 @@ using namespace LWP::Input;
 // 初期化
 void TestScene::Initialize() {
 	player_.Initialize();
-	//skilltree_.Initialize();
 
 	enemyManager_.Initialize(&player_);
 
@@ -17,6 +16,8 @@ void TestScene::Initialize() {
 	followCamera_.Initialize(&mainCamera);
 	drone_.Initialize(&player_, &enemyManager_);
 
+	// アップグレードマネージャーの初期化
+	upgradeManger_.Initialize(&player_, &drone_);
 
 	stage_.LoadShortPath("Stage/Stage.gltf");
 	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
@@ -33,4 +34,7 @@ void TestScene::Update() {
 	drone_.Update();
 	// UIの更新
 	gameUIManager_.Update();
+
+	// アップグレードマネージャーの更新
+	upgradeManger_.Update();
 }

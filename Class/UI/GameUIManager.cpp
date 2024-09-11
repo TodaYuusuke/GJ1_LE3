@@ -60,10 +60,18 @@ void GameUIManager::Update()
 		isSetUpUI_ = true;
 	}
 
-	// HPゲージ更新
-	HPGaugeUpdate();
-	// 弾ゲージ更新
-	BulletGaugeUpdate();
+	// UIの表示状態が切り替わっている場合
+	if (isDisplayObserver_.GetChanged()) {
+		SwitchDisplayUI(isDisplayObserver_.t);
+	}
+
+	// 表示状態の場合は更新
+	if (isDisplayObserver_.t) {
+		// HPゲージ更新
+		HPGaugeUpdate();
+		// 弾ゲージ更新
+		BulletGaugeUpdate();
+	}
 }
 
 void GameUIManager::DebugGUI()
@@ -74,6 +82,9 @@ void GameUIManager::DebugGUI()
 	if (ImGui::BeginTabBar("LWP")) {
 		// 子アイテム生成
 		if (ImGui::BeginTabItem("UI")) {
+			// 表示トリガー切り替え
+			ImGui::Checkbox("IsDisplay", &isDisplayObserver_.t);
+			
 			// HPゲージ系スプライト
 			if (ImGui::TreeNode("HPGauge")) {
 				// 最初のスプライトのImGuiを表示
@@ -226,6 +237,19 @@ void GameUIManager::BulletGaugeUpdate()
 				BulletsUI_[i].isActive = true;
 			}
 		}
+	}
+}
+
+void GameUIManager::SwitchDisplayUI(bool isDisplay)
+{
+	//　HPゲージの表示を非表示
+	for (int i = 0; i < player_->parameters_.maxHp; i++) {
+		hpGauge_[i].isActive = isDisplay;
+	}
+
+	//　弾ゲージの表示を非表示
+	for (int i = 0; i < player_->parameters_.bulletData.maxAmmoNum_; i++) {
+		BulletsUI_[i].isActive = isDisplay;
 	}
 }
 

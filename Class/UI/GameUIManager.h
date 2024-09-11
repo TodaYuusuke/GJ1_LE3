@@ -60,10 +60,19 @@ private: // プライベートな関数
 	/// </summary>
 	void BulletGaugeUpdate();
 
+	/// <summary>
+	/// UIの表示、非表示の切り替え関数
+	/// </summary>
+	/// <param name="isDisplay">表示、非表示フラグ</param>
+	void SwitchDisplayUI(bool isDisplay);
+
 private: // メンバ変数
 
 	// プレイヤー本体
 	Player* player_ = nullptr;
+
+	// 表示トリガー
+	LWP::Utility::Observer<bool> isDisplayObserver_ = true;
 
 	// UI系のセットアップフラグ
 	bool isSetUpUI_ = false;

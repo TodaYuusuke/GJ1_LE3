@@ -2,31 +2,31 @@
 #include"../IUpgrade/IUpgrade.h"
 
 // <summary>
-/// ƒŠƒ[ƒhŠJnŠÔ’ZkLv2
+/// ãƒªãƒ­ãƒ¼ãƒ‰é–‹å§‹æ™‚é–“çŸ­ç¸®Lv2
 /// </summary>
 class ReloadStartSpeedUPLv2 : public IUpgrade {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	void Init() override {
-		// –¼Ìİ’è
+		// åç§°è¨­å®š
 		name_ = "ReloadStartSpeedUPLv2";
 	};
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
+	/// <param name="player_">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
 	void Apply(Player* player_, Drone* drone)override {
-		// ã¸—¦
+		// ä¸Šæ˜‡ç‡
 		float percent = 5.0f;
 
-		// ƒŠƒ[ƒhŠJnŠÔ’Zk
+		// ãƒªãƒ­ãƒ¼ãƒ‰é–‹å§‹æ™‚é–“çŸ­ç¸®
 		player_->parameters_.bulletData.reloadStartSec_ *= (100.0f - percent) / 100.0f;
-		// “K—pƒtƒ‰ƒO‚ğtrue
+		// é©ç”¨ãƒ•ãƒ©ã‚°ã‚’true
 		isApplied_ = true;
 	}
 

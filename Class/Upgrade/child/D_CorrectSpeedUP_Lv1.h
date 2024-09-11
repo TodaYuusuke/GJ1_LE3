@@ -2,28 +2,28 @@
 #include"../IUpgrade/IUpgrade.h"
 
 /// <summary>
-/// ƒhƒ[ƒ“‰ñû‘¬“x’ZkLv1
+/// ãƒ‰ãƒ­ãƒ¼ãƒ³å›åé€Ÿåº¦çŸ­ç¸®Lv1
 /// </summary>
 class CorrectSpeedUPLv1 : public IUpgrade {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	void Init() override {
-		// –¼Ìİ’è
+		// åç§°è¨­å®š
 		name_ = "CorrectSpeedUPLv1";
 	};
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
+	/// <param name="player_">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
 	void Apply(Player* player_, Drone* drone) override { 
-		// ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv‚ğ—LŒø‚É‚·‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¸ãƒ£ãƒ³ãƒ—ã‚’æœ‰åŠ¹ã«ã™ã‚‹
 		player_->parameters_.activeFlag.jump = true; 
-		// “K—pƒtƒ‰ƒO‚ğtrue
+		// é©ç”¨ãƒ•ãƒ©ã‚°ã‚’true
 		isApplied_ = true;
 	}
 };

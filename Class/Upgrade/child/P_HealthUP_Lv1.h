@@ -2,31 +2,31 @@
 #include"../IUpgrade/IUpgrade.h"
 
 /// <summary>
-/// ‘Ì—Í‘‰ÁLv1
+/// ä½“åŠ›å¢—åŠ Lv1
 /// </summary>
 class HealthUPLv1 : public IUpgrade {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	void Init() override {
-		// –¼Ìİ’è
+		// åç§°è¨­å®š
 		name_ = "HealthUPLv1";
 	};
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
+	/// <param name="player_">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
 	void Apply(Player* player_, Drone* drone)override { 
-		// ƒvƒŒƒCƒ„[‚ÌÅ‘å‘Ì—Í‚ğ‘‰Á
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æœ€å¤§ä½“åŠ›ã‚’å¢—åŠ 
 		player_->parameters_.maxHp += 1;
-		// ƒvƒŒƒCƒ„[‚ÌŒ»İHP‚à+1
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨HPã‚‚+1
 		player_->parameters_.hp += 1;
 
-		// “K—pƒtƒ‰ƒO‚ğtrue
+		// é©ç”¨ãƒ•ãƒ©ã‚°ã‚’true
 		isApplied_ = true;
 	}
 

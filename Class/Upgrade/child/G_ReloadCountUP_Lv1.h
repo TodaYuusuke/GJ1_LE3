@@ -2,28 +2,28 @@
 #include"../IUpgrade/IUpgrade.h"
 
 /// <summary>
-/// ˆê“x‚ÌƒŠƒ[ƒh‚Å‚ß‚é’e”‘‰ÁLv1
+/// ä¸€åº¦ã®ãƒªãƒ­ãƒ¼ãƒ‰ã§è¾¼ã‚ã‚‹å¼¾æ•°å¢—åŠ Lv1
 /// </summary>
 class ReloadCountUpLv1 : public IUpgrade {
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	void Init() override {
-		// –¼Ìİ’è
+		// åç§°è¨­å®š
 		name_ = "ReloadCountUpLv1";
 	};
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
+	/// <param name="player_">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
 	void Apply(Player* player_, Drone* drone)override { 
-		// ƒŠƒ[ƒh”‘‰Á
+		// ãƒªãƒ­ãƒ¼ãƒ‰æ•°å¢—åŠ 
 		player_->parameters_.bulletData.simultaneouslyLoaded_ += 1; 
-		// “K—pƒtƒ‰ƒO‚ğtrue
+		// é©ç”¨ãƒ•ãƒ©ã‚°ã‚’true
 		isApplied_ = true;
 	}
 

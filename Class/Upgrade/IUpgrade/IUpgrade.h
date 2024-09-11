@@ -3,42 +3,60 @@
 #include"../../Drone/Drone.h"
 
 /// <summary>
-/// ƒAƒbƒvƒOƒŒ[ƒhŠî’êƒNƒ‰ƒX
+/// ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰åŸºåº•ã‚¯ãƒ©ã‚¹
 /// </summary>
 class IUpgrade {
 
-public: // ƒRƒ“ƒXƒgƒ‰ƒNƒ^“™
+public: // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ç­‰
 
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	IUpgrade() = default;
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	~IUpgrade() = default;
 
-public: // ƒˆ‰¼‘zŠÖ”
+public: // ç´”ç²‹ä»®æƒ³é–¢æ•°
 	
 	/// <summary>
-	/// ‰Šú‰»ŠÖ”
+	/// åˆæœŸåŒ–é–¢æ•°
 	/// </summary>
 	virtual void Init() = 0;
 
 	/// <summary>
-	/// “K—pŠÖ”
+	/// é©ç”¨é–¢æ•°
 	/// </summary>
-	/// <param name="player_">ƒvƒŒƒCƒ„[–{‘Ì</param>
-	/// <param name="drone">ƒhƒ[ƒ“–{‘Ì</param>
-	virtual void Apply(Player* player_,Drone*drone) = 0;
+	/// <param name="player">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
+	virtual void Apply(Player* player,Drone*drone) = 0;
+
+	/// <summary>
+	/// ãƒ‡ãƒãƒƒã‚°ç”¨ã®GUIã‚’è¡¨ç¤ºã™ã‚‹é–¢æ•°
+	/// </summary>
+	/// <param name="player">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æœ¬ä½“</param>
+	/// <param name="drone">ãƒ‰ãƒ­ãƒ¼ãƒ³æœ¬ä½“</param>
+	void DebugGUI(Player* player, Drone* drone) {
+		// é©ç”¨æ¸ˆã¿ãƒ•ãƒ©ã‚°ç¢ºèªç”¨ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹
+		ImGui::Checkbox("isApplied", &isApplied_);
+
+		// é©ç”¨æ¸ˆã¿ã§ãªã„å ´åˆã®ã¿
+		if (!isApplied_) {
+			// ãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨é©ç”¨é–¢æ•°ã®å‘¼ã³å‡ºã—
+			if (ImGui::Button("Apply")) {
+				Apply(player, drone);
+			}
+		}
+	}
 
 public:
 
-	// ƒAƒbƒvƒOƒŒ[ƒh–¼Ì
+	// ã‚¢ãƒƒãƒ—ã‚°ãƒ¬ãƒ¼ãƒ‰åç§°
 	std::string name_ = "";
 
-	//g—pƒtƒ‰ƒO
+	//ä½¿ç”¨ãƒ•ãƒ©ã‚°
 	bool isApplied_ = false;
 
 };
