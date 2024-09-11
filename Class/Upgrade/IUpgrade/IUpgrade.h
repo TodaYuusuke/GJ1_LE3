@@ -1,6 +1,6 @@
 #pragma once
-#include"../Player/Player.h"
-#include"../Drone/Drone.h"
+#include"../../Player/Player.h"
+#include"../../Drone/Drone.h"
 
 class IUpgrade {
 

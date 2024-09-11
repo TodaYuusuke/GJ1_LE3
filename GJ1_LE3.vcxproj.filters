@@ -52,7 +52,7 @@
     <ClCompile Include="Class\Drone\Drone.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Class\UpgradeManager\UpgradeManager.cpp">
+    <ClCompile Include="Class\Upgrade\UpgradeManager\UpgradeManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -93,10 +93,10 @@
     <ClInclude Include="Class\Drone\Drone.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\IUpgrade\IUpgrade.h">
+    <ClInclude Include="Class\Upgrade\IUpgrade\IUpgrade.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\UpgradeManager\UpgradeManager.h">
+    <ClInclude Include="Class\Upgrade\UpgradeManager\UpgradeManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
