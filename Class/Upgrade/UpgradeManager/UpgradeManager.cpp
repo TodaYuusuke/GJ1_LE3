@@ -30,6 +30,21 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	backGround_.material.color = { 0.0f, 0.0f, 0.0f, 0.85f }; // 色を設定
 	backGround_.isActive = false;
 
+	// 背景用スプライトのリセット
+	SpriteReset(backConectorGround_, "UI/Upgrade/Icon/Connectors.png");
+	backConectorGround_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
+	backConectorGround_.worldTF.translation = {
+		static_cast<float>(Config::Window::kResolutionWidth) / 2.0f,
+		static_cast<float>(Config::Window::kResolutionHeight) / 2.0f,
+	}; // 座標を設定
+	backConectorGround_.worldTF.scale = {
+		1.0f,
+		1.0f,
+		1.0f,
+	}; // スケールを設定
+	backConectorGround_.material.color = { 1.0f, 1.0f, 1.0f, 1.0f }; // 色を設定
+	backConectorGround_.isActive = false;
+
 	/// 大枠カテゴリのリセット
 	// 身体
 	SpriteReset(bodyParent_, "UI/Upgrade/Icon/BodyIcon.png");
@@ -318,6 +333,7 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 {
 	// アップグレード時の背景の表示を切り替える
 	backGround_.isActive = isDisplay;
+	backConectorGround_.isActive = isDisplay;
 	// 大カテゴリ用スプライトの表示を切り替える
 	bodyParent_.isActive	= isDisplay;
 	gunParent_.isActive		= isDisplay;

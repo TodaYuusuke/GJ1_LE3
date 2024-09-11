@@ -161,6 +161,8 @@ private: // メンバ変数
 
 	// 背景用スプライト
 	LWP::Primitive::Sprite backGround_;
+	// コネクタ用スプライト
+	LWP::Primitive::Sprite backConectorGround_;
 	// 大カテゴリ用スプライト
 	LWP::Primitive::Sprite bodyParent_;		// 身体
 	LWP::Primitive::Sprite gunParent_;		// 銃
