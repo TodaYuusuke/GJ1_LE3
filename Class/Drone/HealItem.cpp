@@ -145,10 +145,9 @@ void Drone::UpdateSuction() {
 	suction_.time += LWP::Info::GetDeltaTimeF();
 	// 経過時間を過ぎたら吸収完了
 	if (suction_.time > upgradeParamater.kSuctionNeedTime) {
+		behaviorReq_ = PlayerFollow;
 		delete suction_.enemy;
 		suctionedDeadBody++;	// 吸収数+1
-
-		// アイテム
 	}
 }
 void Drone::InitGenerateItem() {

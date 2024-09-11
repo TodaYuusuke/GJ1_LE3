@@ -3,10 +3,10 @@
 #include "../Enemy/EnemyManager.h"
 
 
-class Drone final {
+class HealItem final {
 public:
-	Drone() = default;
-	~Drone() = default;
+	HealItem() = default;
+	~HealItem() = default;
 
 	// ** メンバ関数 ** //
 
