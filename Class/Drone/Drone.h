@@ -42,7 +42,7 @@ private: // ** メンバ変数 ** //
 	// 吸収した敵の数
 	int suctionedDeadBody_ = 0;
 	// 生成した回復アイテムのインスタンス保持
-	std::vector<HealItem*> heals_;
+	std::list<HealItem> heals_;
 
 	// アクティブ切り替え
 	bool isActive_ = true;

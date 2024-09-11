@@ -91,9 +91,13 @@ void Drone::Update() {
 	model_.worldTF.translation = Utility::Interp::Lerp(model_.worldTF.translation, goalPosition_, kSlerpT_);
 
 	// 回復アイテム更新
-	for (HealItem* h : heals_) {
-		h->Update();
+	for (HealItem& h : heals_) {
+		h.Update();
 	}
+	heals_.remove_if([](HealItem& h) {
+		return h.GetUsed();
+	});
+
 }
 
 //初期化関数ポンタテーブル
@@ -155,8 +159,8 @@ void Drone::UpdateSuction() {
 		suctionedDeadBody_++;	// 吸収数+1
 		// アイテム生成
 		if (suctionedDeadBody_ >= upgradeParamater.kNeedDeadBody) {
-			heals_.push_back(new HealItem());
-			heals_.back()->Init(model_.worldTF.GetWorldPosition());
+			heals_.emplace_back();
+			heals_.back().Init(model_.worldTF.GetWorldPosition());
 			suctionedDeadBody_ = 0;
 		}
 

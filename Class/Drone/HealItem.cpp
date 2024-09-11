@@ -15,7 +15,11 @@ void HealItem::Init(LWP::Math::Vector3 pos) {
 	aabb.max *= 0.5f;
 	collider_.SetFollowTarget(&model_.worldTF);
 	collider_.name = "HealItem";
-
+	collider_.enterLambda = [this](Collider* col) {
+		if (col->name == "player") {
+			isUsed_ = true;
+		}
+	};
 }
 void HealItem::Update() {
 	ImGui::Begin("Test");
