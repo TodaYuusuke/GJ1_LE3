@@ -156,6 +156,8 @@
     <ClCompile Include="Class\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Class\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Class\Player\Player.cpp" />
+    <ClCompile Include="Class\Scene\GameScene.cpp" />
+    <ClCompile Include="Class\Scene\Result.cpp" />
     <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
     <ClCompile Include="Class\UpgradeManager\UpgradeManager.cpp" />
@@ -172,6 +174,8 @@
     <ClInclude Include="Class\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Class\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Class\Player\Player.h" />
+    <ClInclude Include="Class\Scene\GameScene.h" />
+    <ClInclude Include="Class\Scene\Result.h" />
     <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
     <ClInclude Include="Class\IUpgrade\IUpgrade.h" />

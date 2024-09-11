@@ -81,7 +81,7 @@ public://構造体＆enum群
 		float length = 10.0f;
 
 		//速度
-		float spd = 20.0f;
+		float spd = 15.0f;
 
 		//減速量
 		float acceSpd = 80.0f;

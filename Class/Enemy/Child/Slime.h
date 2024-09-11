@@ -37,7 +37,7 @@ private: // ** パラメーター ** //
 		LWP::Math::Vector3 velocity = { 0.0f,0.0f,0.0f };	// 速度
 
 		float kJumpIntervalTime = 3.0f;	// ジャンプインターバル時間（秒）
-		LWP::Math::Vector3 kJumpVelocity = { -0.15f,0.5f,0.0f };	// ジャンプした瞬間の速度
-		float kGravity = -0.023f;	// 重力
+		LWP::Math::Vector3 kJumpVelocity = { -0.15f,0.17f,0.0f };	// ジャンプした瞬間の速度
+		float kGravity = -0.003f;	// 重力
 	}normal_;
 };
