@@ -269,8 +269,6 @@ void Player::ReloadBullet(float delta)
 	}
 }
 
-
-
 bool Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, float shotNum)
 {
 
@@ -351,11 +349,7 @@ void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
 	animation.Play(animeName_[type], loop);
 	nowPlayAnimeName_ = animeName_[type];
-
-
 }
-
-
 
 float Player::GetPlayerDirection()
 {
@@ -482,7 +476,10 @@ void Player::InitializeMove()
 {
 	//ベクトル初期化
 	//velo_ = { 0,0,0 };
-	SetAnimation(A_Run);
+	//SetAnimation(A_Run);
+
+	parameters_.currentInertia = 0;
+
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
@@ -636,22 +633,33 @@ void Player::UpdateMove()
 
 #pragma region アニメーション変更処理
 
-	if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
+	//弾の発射モーション以外は着地モーション優先
+	if (nowPlayAnimeName_ != animeName_[A_Land]) {
 
-		if (move.x == 0 && move.y == 0 && move.z == 0) {
+		if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
 
-			if (nowPlayAnimeName_ == animeName_[A_StandShot] && !animation.GetPlaying()) {
-				SetAnimation(A_Idle);
+			if (move.x == 0 && move.y == 0 && move.z == 0) {
+
+				if (nowPlayAnimeName_ == animeName_[A_StandShot] && !animation.GetPlaying()) {
+					SetAnimation(A_Idle);
+				}
+				else if (nowPlayAnimeName_ != animeName_[A_Idle] && nowPlayAnimeName_ != animeName_[A_StandShot]) {
+					SetAnimation(A_Idle);
+				}
+
 			}
-			else if (nowPlayAnimeName_ != animeName_[A_Idle] && nowPlayAnimeName_ != animeName_[A_StandShot]) {
-				SetAnimation(A_Idle);
+			else {
+				if (nowPlayAnimeName_ != animeName_[A_Run]) {
+					SetAnimation(A_Run);
+				}
 			}
 		}
 		else {
-			if (nowPlayAnimeName_ != animeName_[A_Run]) {
-				SetAnimation(A_Run);
+			if (!animation.GetPlaying()) {
+				SetAnimation(A_Idle);
 			}
 		}
+
 	}
 	else {
 		if (!animation.GetPlaying()) {
@@ -808,6 +816,7 @@ void Player::UpdateJump()
 
 	if (!parameters_.jumpData.isJump_) {
 		behaviorReq_ = Moving;
+		SetAnimation(A_Land, false);
 	}
 }
 
