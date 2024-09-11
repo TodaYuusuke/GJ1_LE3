@@ -43,9 +43,6 @@
     <ClCompile Include="Class\FollowCamera\FollowCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Class\SkillTree\SkillTree.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Class\UI\GameUIManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -84,9 +81,6 @@
     <ClInclude Include="Class\FollowCamera\FollowCamera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Class\SkillTree\SkillTree.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Class\UI\GameUIManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -99,8 +93,8 @@
     <ClInclude Include="Class\Upgrade\UpgradeManager\UpgradeManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Class\SkillTree\skilltreeData.json" />
+    <ClInclude Include="Class\Upgrade\child\ActiveJump.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

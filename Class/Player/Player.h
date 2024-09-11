@@ -99,6 +99,12 @@ public://構造体＆enum群
 		float jumpSlope_ = 1.5f;
 	};
 
+	struct  ActiveFlag
+	{
+
+		bool jump = false;
+	};
+
 	//パラメータまとめ
 	struct Parameters
 	{
@@ -139,6 +145,9 @@ public://構造体＆enum群
 		HitData hitData;
 		//弾関連
 		BulletData bulletData;
+
+		//各有効処理フラグ
+		ActiveFlag activeFlag;
 	};
 public:
 
