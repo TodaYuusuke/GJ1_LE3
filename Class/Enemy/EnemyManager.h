@@ -62,6 +62,6 @@ private: // ** 初期化時に確定するデータ ** //
 	// 敵召喚間隔
 	bool isSummon = true;
 	// プレイヤーから画面外への距離
-	float screenOutDistance_ = 10.0f;
+	float screenOutDistance_ = 15.0f;
 
 };
