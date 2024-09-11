@@ -24,7 +24,8 @@ public: // 純粋仮想関数
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	virtual void Init() = 0;
+	/// <param name="prevUpgradeName">前提アップグレード名</param>
+	virtual void Init(const std::string& prevUpgradeName = "") = 0;
 
 	/// <summary>
 	/// 適用関数
@@ -55,6 +56,8 @@ public:
 
 	// アップグレード名称
 	std::string name_ = "";
+	// 前提アップグレード名称
+	std::string prevUpgradeName_ = "";
 
 	//使用フラグ
 	bool isApplied_ = false;

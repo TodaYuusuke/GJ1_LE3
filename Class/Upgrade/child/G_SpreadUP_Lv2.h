@@ -10,9 +10,11 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化関数
 	/// </summary>
-	void Init() override {
+	void Init(const std::string& prevUpgradeName = "") override {
 		// 名称設定
 		name_ = "SpreadUPLv2";
+		// 前提アップグレード名称
+		prevUpgradeName_ = prevUpgradeName;
 	};
 
 	/// <summary>

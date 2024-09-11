@@ -4,6 +4,11 @@
 // LWPを短縮
 using namespace LWP;
 
+UpgradeManager::~UpgradeManager()
+{
+	delete cursorSprite_;
+}
+
 void UpgradeManager::Initialize(Player* player, Drone* drone)
 {
 	// ポインタを取得する
@@ -59,15 +64,16 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	AddUpgrades();
 
 	// カーソル
-	SpriteReset(cursorSprite_, "UI/Upgrade/Cursor.png");
-	cursorSprite_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
-	cursorSprite_.worldTF.translation = {
+	cursorSprite_ = new LWP::Primitive::Sprite();
+	SpriteReset(*cursorSprite_, "UI/Upgrade/Cursor.png");
+	cursorSprite_->anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
+	cursorSprite_->worldTF.translation = {
 		960.0f,
 		450.0f,
 		0.0f,
 	}; // 座標を設定
-	cursorSprite_.worldTF.scale = { 0.25f, 0.25f }; // スケール調整
-	cursorSprite_.isActive = false;
+	cursorSprite_->worldTF.scale = { 0.25f, 0.25f }; // スケール調整
+	cursorSprite_->isActive = false;
 }
 
 void UpgradeManager::Update()
@@ -162,30 +168,30 @@ void UpgradeManager::DebugGUI()
 void UpgradeManager::AddUpgrades()
 {
 	/// プレイヤー関係のアップグレードの追加
-	// プレイヤーの切り返し有効化
-	ActiveCutBack* data0 = new ActiveCutBack(); // インスタンス生成
-	AddUI(data0, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
 	// プレイヤーのジャンプ有効化
 	ActiveJump* data1 = new ActiveJump(); // インスタンス生成
-	AddUI(data1, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data1, BODY, Math::Vector2(400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	// プレイヤーの切り返し有効化
+	ActiveCutBack* data0 = new ActiveCutBack(); // インスタンス生成
+	AddUI(data0, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "ActiveJump");
 	// プレイヤーの体力増加Lv1
 	HealthUPLv1* data2 = new HealthUPLv1(); // インスタンス生成
 	AddUI(data2, BODY, Math::Vector2(-0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
 	// プレイヤーの体力増加Lv2
 	HealthUPLv2* data3 = new HealthUPLv2(); // インスタンス生成
-	AddUI(data3, BODY, Math::Vector2(0.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data3, BODY, Math::Vector2(0.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "HealthUPLv1");
 	// プレイヤーの体力増加Lv3
 	HealthUPLv3* data4 = new HealthUPLv3(); // インスタンス生成
-	AddUI(data4, BODY, Math::Vector2(0.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data4, BODY, Math::Vector2(0.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "HealthUPLv2");
 	// プレイヤーのスライディング距離増加Lv1
 	SlindingUpGradeLv1* data5 = new SlindingUpGradeLv1(); // インスタンス生成
 	AddUI(data5, BODY, Math::Vector2(-400.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
 	// プレイヤーのスライディング距離増加Lv2
 	SlindingUpGradeLv2* data6 = new SlindingUpGradeLv2(); // インスタンス生成
-	AddUI(data6, BODY, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data6, BODY, Math::Vector2(-400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "SlindingUpGradeLv1");
 	// プレイヤーのスライディング距離増加Lv3
 	SlindingUpGradeLv3* data7 = new SlindingUpGradeLv3(); // インスタンス生成
-	AddUI(data7, BODY, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png");
+	AddUI(data7, BODY, Math::Vector2(-400.0f, 1200.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "SlindingUpGradeLv2");
 
 }
 
@@ -201,13 +207,13 @@ void UpgradeManager::SpriteReset(LWP::Primitive::Sprite& s, const std::string& t
 	s.anchorPoint = { 0.5f, 0.5f };
 }
 
-void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName)
+void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& prevUpgradeName)
 {
 	/// アップグレードの初期化
-	upgrade->Init();
+	upgrade->Init(prevUpgradeName);
 	// スプライトの初期化
 	SpriteReset(upgrades_[upgrade->name_].ui, texName);
-	
+
 	// 登録されるカテゴリ別に親を変更
 	switch (category)
 	{
@@ -224,9 +230,9 @@ void UpgradeManager::AddUI(IUpgrade* upgrade, Category category, const LWP::Math
 
 	// スプライトの位置、サイズを初期化
 	upgrades_[upgrade->name_].ui.worldTF.translation = Math::Vector3(position.x, position.y, 0.0f);
-	upgrades_[upgrade->name_].ui.worldTF.scale		 = Math::Vector3(scale, scale, 0.0f);
-	upgrades_[upgrade->name_].ui.anchorPoint		 = { 0.5f, 0.5f };
-	upgrades_[upgrade->name_].ui.isActive			 = false;
+	upgrades_[upgrade->name_].ui.worldTF.scale = Math::Vector3(scale, scale, 0.0f);
+	upgrades_[upgrade->name_].ui.anchorPoint = { 0.5f, 0.5f };
+	upgrades_[upgrade->name_].ui.isActive = false;
 
 	// 対象データを追加
 	upgrades_[upgrade->name_].upgrade = std::move(upgrade);
@@ -248,7 +254,7 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	}
 
 	// カーソル表示を切り替える
-	cursorSprite_.isActive = isDisplay;
+	cursorSprite_->isActive = isDisplay;
 
 	// アップグレードUIの表示状態が切り替えフラグの状態を変更
 	isOpenUpgradeWindow_ = isDisplay;
@@ -258,8 +264,8 @@ void UpgradeManager::CheckCollisionUpgrades()
 {
 	// カーソルのワールド座標を取得する
 	Math::Vector2 cursorPos = {
-		cursorSprite_.worldTF.GetWorldPosition().x,
-		cursorSprite_.worldTF.GetWorldPosition().y
+		cursorSprite_->worldTF.GetWorldPosition().x,
+		cursorSprite_->worldTF.GetWorldPosition().y
 	};
 	// カーソルの当たり判定半径
 	float cursorRadius = 20.0f;
@@ -274,33 +280,97 @@ void UpgradeManager::CheckCollisionUpgrades()
 			it->second.ui.worldTF.GetWorldPosition().y
 		};
 
-		// 衝突判定を検証する
-		if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
-			// スキルポイントが1以上かつ、適用していない状態であれば
-			if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
-				// スケールを線形補間で大きくする
-				it->second.ui.worldTF.scale =
-					Utility::Interp::Lerp(
-						it->second.ui.worldTF.scale, Math::Vector3(0.75f, 0.75f, 1.0f), 0.25f
-					);
+		// 前提アップグレードが存在しない場合
+		if (it->second.upgrade->prevUpgradeName_ == "" && !it->second.upgrade->isApplied_) {
+			// 衝突判定を検証する
+			if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
+				// スキルポイントが1以上なら
+				if (skillPoint_ >= 1) {
+					// スケールを線形補間で大きくする
+					it->second.ui.worldTF.scale =
+						Utility::Interp::Lerp(
+							it->second.ui.worldTF.scale, Math::Vector3(0.75f, 0.75f, 1.0f), 0.25f
+						);
 
-				// スペースキーが押されたら
-				if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
-					// 適用関数を呼び出す
-					it->second.upgrade->Apply(player_, drone_);
-					// スプライトの色を少し薄くする
-					it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+					// スペースキーが押されたら
+					if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+						// 適用関数を呼び出す
+						it->second.upgrade->Apply(player_, drone_);
+						// スプライトの色を少し薄くする
+						it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
 
-					// スキルポイントを - 1
-					skillPoint_--;
+						// スキルポイントを - 1
+						skillPoint_--;
+					}
+				}
+				else { // それ以外であれば
+					// スケールを線形補間で小さくする
+					it->second.ui.worldTF.scale =
+						Utility::Interp::Lerp(
+							it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+						);
 				}
 			}
-			else { // それ以外であれば
+			else { // 選択されていない場合
 				// スケールを線形補間で小さくする
 				it->second.ui.worldTF.scale =
 					Utility::Interp::Lerp(
 						it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
 					);
+			}
+		}
+		else if(it->second.upgrade->prevUpgradeName_ != "") { // 前提アップグレードが存在する場合
+			// 前提アップグレードが解放されている場合
+			if (upgrades_[it->second.upgrade->prevUpgradeName_].upgrade->isApplied_ && !it->second.upgrade->isApplied_) {
+				// スプライトの色を戻す
+				it->second.ui.material.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+				// 衝突判定を検証する
+				if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
+					// スキルポイントが1以上かつ、適用していない状態であれば
+					if (skillPoint_ >= 1) {
+						// スケールを線形補間で大きくする
+						it->second.ui.worldTF.scale =
+							Utility::Interp::Lerp(
+								it->second.ui.worldTF.scale, Math::Vector3(0.75f, 0.75f, 1.0f), 0.25f
+							);
+
+						// スペースキーが押されたら
+						if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+							// 適用関数を呼び出す
+							it->second.upgrade->Apply(player_, drone_);
+							// スプライトの色を少し薄くする
+							it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+							// スキルポイントを - 1
+							skillPoint_--;
+						}
+					}
+					else { // それ以外であれば
+						// スケールを線形補間で小さくする
+						it->second.ui.worldTF.scale =
+							Utility::Interp::Lerp(
+								it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+							);
+					}
+				}
+				else { // 選択されていない場合
+					// スケールを線形補間で小さくする
+					it->second.ui.worldTF.scale =
+						Utility::Interp::Lerp(
+							it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+						);
+				}
+			}
+			else { // 解放されていない場合
+				// スプライトの色を少し薄くする
+				it->second.ui.material.color = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+				// スケールを線形補間で小さくする
+				it->second.ui.worldTF.scale =
+					Utility::Interp::Lerp(
+						it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
+				);
 			}
 		}
 		else { // 選択されていない場合
@@ -346,13 +416,22 @@ void UpgradeManager::CursorInput()
 	input = input.Normalize();
 
 	// カーソルの座標を移動させる
-	cursorSprite_.worldTF.translation += Math::Vector3(input.x, input.y, 0.0f) * 5.0f;
+	cursorSprite_->worldTF.translation += Math::Vector3(input.x, input.y, 0.0f) * 10.0f;
 
-	// カーソルの移動範囲を画面内に制限する
-	if (cursorSprite_.worldTF.translation.x > (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f)) {
-		cursorSprite_.worldTF.translation.x = (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f);
+	/// カーソルの移動範囲を画面内に制限する
+	// X軸
+	if (cursorSprite_->worldTF.translation.x > (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_->size.t.x * cursorSprite_->worldTF.scale.x) / 2.0f)) {
+		cursorSprite_->worldTF.translation.x = (static_cast<float>(LWP::Config::Window::kResolutionWidth) - (cursorSprite_->size.t.x * cursorSprite_->worldTF.scale.x) / 2.0f);
 	}
-	else if (cursorSprite_.worldTF.translation.x < ((cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f)){
-		cursorSprite_.worldTF.translation.x = ((cursorSprite_.size.t.x * cursorSprite_.worldTF.scale.x) / 2.0f);
+	else if (cursorSprite_->worldTF.translation.x < ((cursorSprite_->size.t.x * cursorSprite_->worldTF.scale.x) / 2.0f)){
+		cursorSprite_->worldTF.translation.x = ((cursorSprite_->size.t.x * cursorSprite_->worldTF.scale.x) / 2.0f);
 	}
+	// Y軸
+	if (cursorSprite_->worldTF.translation.y > (static_cast<float>(LWP::Config::Window::kResolutionHeight) - (cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f)) {
+		cursorSprite_->worldTF.translation.y = (static_cast<float>(LWP::Config::Window::kResolutionHeight) - (cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f);
+	}
+	else if (cursorSprite_->worldTF.translation.y < ((cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f)){
+		cursorSprite_->worldTF.translation.y = ((cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f);
+	}
+
 }

@@ -38,7 +38,7 @@ public: // コンストラクタ等
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~UpgradeManager() = default;
+	~UpgradeManager();
 
 public: // メンバ関数
 
@@ -106,7 +106,8 @@ private: // プライベートな関数
 	/// <param name="position">アップグレードの座標</param>
 	/// <param name="scale">スケール</param>
 	/// <param name="texName">テクスチャ名</param>
-	void AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName);
+	/// <param name="prevUpgradeName">前提アップグレード名</param>
+	void AddUI(IUpgrade* upgrade, Category category, const LWP::Math::Vector2 position, float scale, const std::string& texName, const std::string& prevUpgradeName = "");
 
 	/// <summary>
 	/// UIの表示、非表示の切り替え関数
@@ -164,7 +165,10 @@ private: // メンバ変数
 	LWP::Primitive::Sprite droneParent_;	// ドローン
 
 	// カーソルスプライト
-	LWP::Primitive::Sprite cursorSprite_;
+	LWP::Primitive::Sprite* cursorSprite_;
+
+	// ツリー管理用名前配列
+	std::vector<std::string> hpCategory_;
 };
 
 
