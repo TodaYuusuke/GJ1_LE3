@@ -270,7 +270,7 @@ void Player::ToSliding()
 bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 {
 	if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
-		bool ans= ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
+		bool ans = ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
 
 		if (ans) {
 			//状態に
@@ -285,7 +285,7 @@ bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 		else {
 			return false;
 		}
-		
+
 	}
 
 	return false;
@@ -342,7 +342,7 @@ void Player::Debug()
 			ImGui::DragFloat("turn sec", &parameters_.turnSec, 0.01f);
 			ImGui::Text("inertia count : %4.1f", parameters_.currentInertia);
 			ImGui::DragFloat("max move sec", &parameters_.movingInertiaSec, 0.01f);
-			ImGui::DragFloat("stop deceleation double", &parameters_.stopDecelerationDouble_,0.1f);
+			ImGui::DragFloat("stop deceleation double", &parameters_.stopDecelerationDouble_, 0.1f);
 			ImGui::DragFloat("standShot deceleation double", &parameters_.standShotDecelerationDouble_, 0.1f);
 
 			if (ImGui::TreeNode("Active Flag")) {
@@ -360,10 +360,10 @@ void Player::Debug()
 				ImGui::Text("inertiaa count : %4.1f", &parameters_.currentInertia);
 				ImGui::DragFloat("acceSlide spd", &parameters_.slideData.acceSpd, 0.01f);
 
-				ImGui::DragFloat(" shot slope ", &parameters_.slideData.shotSlope,0.01f);
+				ImGui::DragFloat(" shot slope ", &parameters_.slideData.shotSlope, 0.01f);
 
-				ImGui::DragFloat("reaction height", &parameters_.slideData.jumpSlope_,0.01f);
-				ImGui::DragFloat("reaction velo",&parameters_.slideData.startVelo,0.01f);
+				ImGui::DragFloat("reaction height", &parameters_.slideData.jumpSlope_, 0.01f);
+				ImGui::DragFloat("reaction velo", &parameters_.slideData.startVelo, 0.01f);
 				ImGui::TreePop();
 			}
 
@@ -629,7 +629,7 @@ void Player::UpdateMove()
 	//スライディングに移行
 	if (!parameters_.jumpData.isJump_) {
 		ToSliding();
-		ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(),standShot);
+		ToShot(Math::Vector3{ pVeloX_,0,0 }.Normalize(), standShot);
 		ToJump();
 	}
 #pragma endregion
@@ -651,7 +651,7 @@ void Player::UpdateSlide()
 	}
 
 	//
-	float x=0;
+	float x = 0;
 	if (Input::Keyboard::GetPress(DIK_D)) {
 		x += 1;
 	}
@@ -661,7 +661,7 @@ void Player::UpdateSlide()
 	x += Input::Pad::GetLStick().x;
 
 	//向きが同じ場合特になし
-	if ((x > 0 && pVeloX_ > 0)||( x < 0 && pVeloX_ < 0)) {
+	if ((x > 0 && pVeloX_ < 0) || (x < 0 && pVeloX_ > 0)) {
 
 		if (pVeloX_ > 0) {
 			x = 1;
@@ -677,22 +677,38 @@ void Player::UpdateSlide()
 
 	//スライド中に攻撃
 	std::string type;
-
+	bool ans=false;
 	//水平射撃か
 	if (x != 0) {
 		type = standShot;
+
+		ans = ShotBullet(Math::Vector3{ x,parameters_.slideData.shotSlope,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 	}
 	else {
-		type = slideShot;
+		if (Input::Keyboard::GetTrigger(DIK_C)) {
+			type = slideShot;
+			ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
+		}
 	}
 
-	if (ToShot(Math::Vector3{ x,parameters_.slideData.shotSlope,0 }.Normalize(), type)) {
+
+
+	if (ans) {
+		//状態に
+		if (type == standShot) {
+			SetAnimation(A_StandShot, false);
+		}
+		else {
+			SetAnimation(A_SlidingShot, false);
+		}
 
 		//0じゃないとき処理
 		if (x != 0) {
 			behaviorReq_ = SlideStopShot;
 		}
 	}
+
+
 
 
 	ToJump();

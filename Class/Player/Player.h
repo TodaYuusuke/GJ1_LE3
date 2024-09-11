@@ -87,13 +87,13 @@ public://構造体＆enum群
 		float acceSpd = 80.0f;
 
 		//発射のが描く
-		float shotSlope = 1.0f;
+		float shotSlope = 0.0f;
 
 		//反動の角度
-		float jumpSlope_ = 1.0f;
+		float jumpSlope_ = 0.3f;
 
 		//反動初期ベクトル
-		float startVelo = 10.0f;
+		float startVelo = 20.0f;
 	};
 
 	struct JumpData {
