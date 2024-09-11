@@ -489,7 +489,7 @@ void (Player::* Player::BehaviorUpdate[])() = {
 void Player::InitializeMove()
 {
 	//ベクトル初期化
-	//velo_ = { 0,0,0 };
+	velo_ = { 0,0,0 };
 	//SetAnimation(A_Run);
 
 	parameters_.currentInertia = 0;
