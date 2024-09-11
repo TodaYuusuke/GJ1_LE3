@@ -2,6 +2,7 @@
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
 
+#include "HealItem.h"
 
 class Drone final {
 public:
@@ -35,14 +36,16 @@ private: // ** メンバ変数 ** //
 	LWP::Object::PointLight light_;
 
 	// なめらかな移動用の変数
-	LWP::Math::Vector3 goalPosition = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
-	float kSlerpT = 0.09f;	// Slerpの係数
+	LWP::Math::Vector3 goalPosition_ = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
+	float kSlerpT_ = 0.09f;	// Slerpの係数
 
 	// 吸収した敵の数
-	int suctionedDeadBody = 0;
+	int suctionedDeadBody_ = 0;
+	// 生成した回復アイテムのインスタンス保持
+	std::vector<HealItem*> heals_;
 
 	// アクティブ切り替え
-	bool isActive = true;
+	bool isActive_ = true;
 
 public: // ** アップグレードされるパブリックな変数 ** //
 

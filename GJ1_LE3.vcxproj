@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Class\Drone\Drone.cpp" />
+    <ClCompile Include="Class\Drone\HealItem.cpp" />
     <ClCompile Include="Class\Enemy\Child\Slime.cpp" />
     <ClCompile Include="Class\Enemy\IEnemy.cpp" />
     <ClCompile Include="Class\Enemy\EnemyManager.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\Drone\Drone.h" />
+    <ClInclude Include="Class\Drone\HealItem.h" />
     <ClInclude Include="Class\Enemy\Child\Slime.h" />
     <ClInclude Include="Class\Enemy\IEnemy.h" />
     <ClInclude Include="Class\Enemy\EnemyManager.h" />

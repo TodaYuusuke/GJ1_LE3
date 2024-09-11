@@ -33,10 +33,11 @@ void Drone::Update() {
 				light_.DebugGUI();
 				ImGui::TreePop();
 			}
-			ImGui::Checkbox("isActive", &isActive);
+			ImGui::Checkbox("isActive", &isActive_);
 			ImGui::Text("----- Parameter -----");
-			ImGui::DragFloat("kSlerpT", &kSlerpT, 0.01f);
+			ImGui::DragFloat("kSlerpT", &kSlerpT_, 0.01f);
 			if (ImGui::TreeNode("UpgradeParameter")) {
+				ImGui::Text("SuctionedDeadBody : %d", suctionedDeadBody_);
 				ImGui::DragInt("kNeedDeadBody", &upgradeParamater.kNeedDeadBody, 0.01f);
 				ImGui::DragFloat("kSuctionNeedTime", &upgradeParamater.kSuctionNeedTime, 0.01f);
 				ImGui::TreePop();
@@ -71,7 +72,7 @@ void Drone::Update() {
 #endif
 
 	// 早期リターン
-	if (!isActive) { return; }
+	if (!isActive_) { return; }
 
 	//状態リクエストがある時実行
 	if (behaviorReq_) {
@@ -87,7 +88,12 @@ void Drone::Update() {
 	(this->*BehaviorUpdate[behavior_])();
 
 	// モデルの座標更新
-	model_.worldTF.translation = Utility::Interp::Lerp(model_.worldTF.translation, goalPosition, kSlerpT);
+	model_.worldTF.translation = Utility::Interp::Lerp(model_.worldTF.translation, goalPosition_, kSlerpT_);
+
+	// 回復アイテム更新
+	for (HealItem* h : heals_) {
+		h->Update();
+	}
 }
 
 //初期化関数ポンタテーブル
@@ -110,7 +116,7 @@ void Drone::UpdatePlayerFollow() {
 	// プレイヤーの上を飛ぶ
 	Vector3 offset = playerFollow_.kOffset;
 	offset.x *= player_->GetPlayerDirection();
-	goalPosition = player_->GetWorldPosition() + offset;
+	goalPosition_ = player_->GetWorldPosition() + offset;
 
 	// 近くに死体があるかチェック
 	IEnemy* e = enemies_->GetNearDeadBody(model_.worldTF.GetWorldPosition());
@@ -122,11 +128,11 @@ void Drone::UpdatePlayerFollow() {
 void Drone::InitMoveDeadBody() {
 	// 死体の近くにいくまで移動
 	Vector3 bodyPos = suction_.enemy->GetWorldPosition();
-	goalPosition = bodyPos + ((model_.worldTF.GetWorldPosition() - bodyPos).Normalize() * moveDeadBody_.kRange);
+	goalPosition_ = bodyPos + ((model_.worldTF.GetWorldPosition() - bodyPos).Normalize() * moveDeadBody_.kRange);
 }
 void Drone::UpdateMoveDeadBody() {
 	// 近くについたら吸収
-	if (Vector3::Distance(model_.worldTF.GetWorldPosition(), goalPosition) <= 0.05f) {
+	if (Vector3::Distance(model_.worldTF.GetWorldPosition(), goalPosition_) <= 0.05f) {
 		behaviorReq_ = Suction;
 	}
 }
@@ -146,8 +152,15 @@ void Drone::UpdateSuction() {
 	// 経過時間を過ぎたら吸収完了
 	if (suction_.time > upgradeParamater.kSuctionNeedTime) {
 		delete suction_.enemy;
-		suctionedDeadBody++;	// 吸収数+1
+		suctionedDeadBody_++;	// 吸収数+1
+		// アイテム生成
+		if (suctionedDeadBody_ >= upgradeParamater.kNeedDeadBody) {
+			heals_.push_back(new HealItem());
+			heals_.back()->Init(model_.worldTF.GetWorldPosition());
+			suctionedDeadBody_ = 0;
+		}
 
+		behaviorReq_ = PlayerFollow;	// プレイヤー追従に戻る
 		// アイテム
 	}
 }

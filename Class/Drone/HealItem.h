@@ -1,7 +1,5 @@
 #pragma once
 #include "../Player/Player.h"
-#include "../Enemy/EnemyManager.h"
-
 
 class HealItem final {
 public:
@@ -9,106 +7,26 @@ public:
 	~HealItem() = default;
 
 	// ** メンバ関数 ** //
-
-
+	
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="plyerPtr">プレイヤーポインタ</param>
-	/// <param name="EnemyPtr">エネミー管理ポインタ</param>
-	void Initialize(Player* playerPtr, EnemyManager* enemyPtr);
-	// 更新
+	void Init(LWP::Math::Vector3 pos);
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
 
 private: // ** メンバ変数 ** //
 
-	// プレイヤーのポインタ
-	Player* player_ = nullptr;
-	// 敵のポインタ
-	EnemyManager* enemies_ = nullptr;
-
 	// モデル
-	LWP::Resource::SkinningModel model_;
-	LWP::Resource::Animation animation_;
-	// 光源
-	LWP::Object::PointLight light_;
+	LWP::Resource::RigidModel model_;
+	// コライダー
+	LWP::Object::Collider::Collider collider_;
 
-	// なめらかな移動用の変数
-	LWP::Math::Vector3 goalPosition = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
-	float kSlerpT = 0.09f;	// Slerpの係数
-
-	// 吸収した敵の数
-	int suctionedDeadBody = 0;
-
-	// アクティブ切り替え
-	bool isActive = true;
-
-public: // ** アップグレードされるパブリックな変数 ** //
-
-	struct UpgradeParameter {
-		// アイテム生成に必要な敵の数
-		int kNeedDeadBody = 10;
-		// 吸収に必要な時間
-		float kSuctionNeedTime = 3.0f;
-	}upgradeParamater;
-
-private: // ** ステートパターン ** //
-
-	//各状態
-	enum Behavior {
-		PlayerFollow,	// プレイヤー追従
-		MoveDeadBody,	// 死体に寄る
-		Suction,		// 吸収
-		GenerateItem,	// アイテム生成
-		Count
-	};
-	//状態リクエスト
-	std::optional<Behavior> behaviorReq_ = std::nullopt;
-	//状態
-	Behavior behavior_ = PlayerFollow;
-	//変更前の状態
-	Behavior preBehavior_ = PlayerFollow;
-
-	//ImGui用
-	std::string behaviorStirng_[Behavior::Count] = {
-		"PlayerFollow",
-		"MoveDeadBody",
-		"Suction",
-		"GenerateItem"
-	};
-
-	//プレイヤーの初期化関数ポインタテーブル
-	static void (Drone::* BehaviorInitialize[])();
-	//プレイヤーの更新関数ポインタテーブル
-	static void (Drone::* BehaviorUpdate[])();
-
-#pragma region 各状態初期化と更新
-	void InitPlayerFollow();	// プレイヤー追従
-	void UpdatePlayerFollow();
-	void InitMoveDeadBody();	// 死体に寄る
-	void UpdateMoveDeadBody();
-	void InitSuction();			// 吸収
-	void UpdateSuction();
-	void InitGenerateItem();	// アイテム生成
-	void UpdateGenerateItem();
-#pragma endregion
-
-
-private: // ** パラメータ ** //
-
-	struct PlayerFollow {
-		LWP::Math::Vector3 kOffset = {-1.2f, 4.0f, 0.0f };	// プレイヤー追従時のオフセット
-		float kSearchRange = 3.0f;	// 死体検知範囲
-	}playerFollow_;
-
-	struct MoveDeadBody {
-		float kRange = 1.5f;	// 吸収距離
-	}moveDeadBody_;
-
-	struct Suction {
-		IEnemy* enemy = nullptr;	// 回収する死体のポインタ
-		float time = 0.0f;	// 経過時間
-	}suction_;
-
+	// 回転速度
+	float kRotationSpeed_ = 0.1f;
+	// 落下速度
+	float kFallSpeed_ = 0.1f;
 };
