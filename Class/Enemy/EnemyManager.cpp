@@ -1,22 +1,28 @@
 #include "EnemyManager.h"
 
+#include <fstream>
+#include <sstream>
+
 using namespace LWP;
 using namespace LWP::Math;
 
 void EnemyManager::Initialize(Player* ptr) {
 	player_ = ptr;
+
+	enemyProperty_[int(EnemyType::Spider)].kMaxSpawn = 5;
+	enemyProperty_[int(EnemyType::Slime)].kMaxSpawn = 2;
 }
 
 void EnemyManager::Update() {
+	// デバッグ用の召喚関数をセット
+	static std::vector<std::function<void(Vector3 pos)>> summonFunction{
+		[this](Vector3 pos) { enemies_.push_back(new Spider(player_, pos)); },
+		[this](Vector3 pos) { enemies_.push_back(new Slime(player_, pos)); }
+	};
 #if DEMO
 	// ** ImGui用変数 ** //
 	static int selectedClass = 0;	// 生成クラス
 	static int currentItem = 0;	// 選ばれている番号
-	// デバッグ用の召喚関数をセット
-	static std::vector<std::function<void()>> summonFunction {
-		[this]() { enemies_.push_back(new Spider(player_)); },
-		[this]() { enemies_.push_back(new Slime(player_)); }
-	};
 	// 名前もセット
 	static std::vector<const char*> classText {
 		"Spider", "Slime"
@@ -25,10 +31,34 @@ void EnemyManager::Update() {
 	ImGui::Begin("Game");
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("Enemy")) {
+			ImGui::Text("--- Debug Menu ---");
+			if(ImGui::Button("Kill All Enemy")) {
+				for (auto& e : enemies_) {
+					delete e;
+				}
+				enemies_.clear();
+			}
+			ImGui::Checkbox("isSummon", &isSummon);
+
+			// パラメータ
+			ImGui::Text("--- Parameter ---");
+			ImGui::DragFloat("screenOutRange", &screenOutDistance_, 0.01f);
+			if (ImGui::TreeNode("EnemyProperty")) {
+				for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
+					if (ImGui::TreeNode(classText[i])) {
+						ImGui::DragInt("spawn", &enemyProperty_[i].spawn, 1);
+						ImGui::DragInt("kMaxSpawn", &enemyProperty_[i].kMaxSpawn, 1);
+						ImGui::Text("summonInterval : %f", enemyProperty_[i].summonInterval_);
+						ImGui::DragFloat("kSummonInterval", &enemyProperty_[i].kSummonInterval_, 0.01f);
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
 			// 実験用召喚ボタン
 			ImGui::Text("--- Summon Enemy ---");
 			ImGui::Combo("Select Type", &selectedClass, classText.data(), static_cast<int>(EnemyType::Count));
-			if (ImGui::Button("Summon")) { summonFunction[selectedClass](); }
+			if (ImGui::Button("Summon")) { summonFunction[selectedClass](Vector3{ 0.0f,0.0f,0.0f }); }
 			ImGui::Text("");
 			// 一覧
 			ImGui::Text("--- Enemy List ---");
@@ -57,10 +87,84 @@ void EnemyManager::Update() {
 	ImGui::End();
 #endif
 
+	// 現在召喚されている敵の数をカウント
+	int currentSpawn[static_cast<int>(EnemyType::Count)] = {0};
 	for (auto& enemy : enemies_) {
 		enemy->Update();
+		currentSpawn[static_cast<int>(enemy->GetType())] += 1;
+	}
+
+
+	// 敵生成処理
+	if (isSummon) {
+		float delta = LWP::Info::GetDeltaTimeF();
+		// 敵別処理
+		for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
+			EnemyProperty& prop = enemyProperty_[i];
+
+			// 一定時間ごとに敵を生成
+			if (prop.summonInterval_ < 0.0f) {
+
+				// 最大数未満 かつ 召喚数が残っている場合
+				if (currentSpawn[i] < prop.kMaxSpawn && 0 < prop.spawn) {
+					prop.spawn--;	// 残りスポーン数を減らす
+
+					// 敵召喚
+					Vector3 summonPos = { player_->GetWorldPosition().x,0.0f,0.0f };
+					switch (Utility::GenerateRandamNum<int>(0, 1)) {
+						case 0:
+							summonPos.x += screenOutDistance_;
+							break;
+						case 1:
+							summonPos.x -= screenOutDistance_;
+							break;
+					}
+
+					// 召喚
+					summonFunction[i](summonPos);
+					// 召喚したのでクールタイムリセット
+					prop.summonInterval_ = prop.kSummonInterval_;
+				}
+			}
+			else {
+				prop.summonInterval_ -= delta;
+			}
+		}
 	}
 }
+
+void EnemyManager::StartWave(int waveNum) {
+	// レベルのステージデータを読み込む
+	std::ifstream ifs("resources/csv/wave" + std::to_string(waveNum) + ".csv");
+	std::string line;	// 1行分のデータ
+	std::string name;	// 敵の名前
+	std::string temp;	// 一時データ
+
+	// 全行読むまでループ
+	while (std::getline(ifs, line)) {
+		std::istringstream stream(line);
+		std::getline(stream, name, ',');	// 敵の種類
+		std::getline(stream, temp, ',');	// 数
+
+		if (name == "Spider") {
+			enemyProperty_[0].spawn = std::stoi(temp);
+		}
+		else if (name == "Slime") {
+			enemyProperty_[1].spawn = std::stoi(temp);
+		}
+	}
+}
+bool EnemyManager::GetEndWave() {
+	int result = 0;
+	for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
+		result += enemyProperty_[i].spawn;
+	}
+	result += enemies_.size();
+
+	// 残敵0未満ならば終了
+	return result <= 0;
+}
+
 
 IEnemy* EnemyManager::GetNearDeadBody(LWP::Math::Vector3 pos) {
 	int index = -1; // 一番近いインデックス

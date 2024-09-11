@@ -2,6 +2,7 @@
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
 
+#include "HealItem.h"
 
 class Drone final {
 public:
@@ -35,11 +36,25 @@ private: // ** メンバ変数 ** //
 	LWP::Object::PointLight light_;
 
 	// なめらかな移動用の変数
-	LWP::Math::Vector3 goalPosition = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
-	float kSlerpT = 0.09f;	// Slerpの係数
+	LWP::Math::Vector3 goalPosition_ = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
+	float kSlerpT_ = 0.09f;	// Slerpの係数
+
+	// 吸収した敵の数
+	int suctionedDeadBody_ = 0;
+	// 生成した回復アイテムのインスタンス保持
+	std::list<HealItem> heals_;
 
 	// アクティブ切り替え
-	bool isActive = true;
+	bool isActive_ = true;
+
+public: // ** アップグレードされるパブリックな変数 ** //
+
+	struct UpgradeParameter {
+		// アイテム生成に必要な敵の数
+		int kNeedDeadBody = 10;
+		// 吸収に必要な時間
+		float kSuctionNeedTime = 3.0f;
+	}upgradeParamater;
 
 private: // ** ステートパターン ** //
 
@@ -87,18 +102,16 @@ private: // ** パラメータ ** //
 
 	struct PlayerFollow {
 		LWP::Math::Vector3 kOffset = {-1.2f, 4.0f, 0.0f };	// プレイヤー追従時のオフセット
-		float kSearchRange = 5.0f;	// 死体検知範囲
+		float kSearchRange = 3.0f;	// 死体検知範囲
 	}playerFollow_;
 
 	struct MoveDeadBody {
-		float kRange = 1.0f;	// 吸収距離
+		float kRange = 1.5f;	// 吸収距離
 	}moveDeadBody_;
 
 	struct Suction {
 		IEnemy* enemy = nullptr;	// 回収する死体のポインタ
-		float time = 2.0f;	// 経過時間
-
-		float kTotalTime = 2.0f;	// かかる時間
+		float time = 0.0f;	// 経過時間
 	}suction_;
 
 };

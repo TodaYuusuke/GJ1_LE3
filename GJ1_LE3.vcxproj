@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Class\Drone\Drone.cpp" />
+    <ClCompile Include="Class\Drone\HealItem.cpp" />
     <ClCompile Include="Class\Enemy\Child\Slime.cpp" />
     <ClCompile Include="Class\Enemy\IEnemy.cpp" />
     <ClCompile Include="Class\Enemy\EnemyManager.cpp" />
@@ -156,6 +157,8 @@
     <ClCompile Include="Class\FollowCamera\FollowCamera.cpp" />
     <ClCompile Include="Class\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Class\Player\Player.cpp" />
+    <ClCompile Include="Class\Scene\GameScene.cpp" />
+    <ClCompile Include="Class\Scene\Result.cpp" />
     <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
     <ClCompile Include="Class\Upgrade\UpgradeManager\UpgradeManager.cpp" />
@@ -164,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class\Drone\Drone.h" />
+    <ClInclude Include="Class\Drone\HealItem.h" />
     <ClInclude Include="Class\Enemy\Child\Slime.h" />
     <ClInclude Include="Class\Enemy\IEnemy.h" />
     <ClInclude Include="Class\Enemy\EnemyManager.h" />
@@ -171,6 +175,8 @@
     <ClInclude Include="Class\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Class\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Class\Player\Player.h" />
+    <ClInclude Include="Class\Scene\GameScene.h" />
+    <ClInclude Include="Class\Scene\Result.h" />
     <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
     <ClInclude Include="Class\Upgrade\child\D_CorrectSpeedUP_Lv1.h" />

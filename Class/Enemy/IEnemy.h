@@ -13,7 +13,10 @@ enum class EnemyType {
 class IEnemy {
 public:
 	IEnemy() = delete;
-	IEnemy(Player* ptr) { player_ = ptr; }
+	IEnemy(Player* ptr, LWP::Math::Vector3 summonPos) {
+		player_ = ptr;
+		model_.worldTF.translation = summonPos;
+	}
 	virtual ~IEnemy() = default;
 
 	// ** 純粋仮想関数 ** //

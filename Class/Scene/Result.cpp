@@ -1,3 +1,4 @@
+#include "Result.h"
 #include "Title.h"
 #include "GameScene.h"
 
@@ -9,13 +10,13 @@ using namespace LWP::Utility;
 using namespace LWP::Object;
 
 // 初期化
-void Title::Initialize() {
+void Result::Initialize() {
 }
 
 // 更新
-void Title::Update() {
+void Result::Update() {
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
-		nextSceneFunction = []() { return new GameScene(); };
+		nextSceneFunction = []() { return new Title(); };
 	}
 }

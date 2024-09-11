@@ -21,6 +21,17 @@ public:
 	void Update();
 
 	/// <summary>
+	/// ウェーブ開始
+	/// </summary>
+	/// <param name="waveNum">開始するウェーブ</param>
+	void StartWave(int waveNum);
+	/// <summary>
+	/// ウェーブが終わったかを返す関数
+	/// </summary>
+	/// <returns>終わっていたらtrue</returns>
+	bool GetEndWave();
+
+	/// <summary>
 	/// 一番近い死体を取得する
 	/// </summary>
 	/// <param name="pos"></param>
@@ -32,9 +43,25 @@ private: // ** メンバ変数 ** //
 	// 敵の配列
 	std::vector<IEnemy*> enemies_;
 
+	// 敵のスポーンデータ
+	struct EnemyProperty {
+		int spawn = 0;	// このウェーブでスポーンする残り数
+		int kMaxSpawn = 0;	// 同時にスポーンする最大数
+
+		float summonInterval_ = 0.0f;	// 召喚までの時間
+		float kSummonInterval_ = 4.5f;	// 召喚間隔
+	};
+	std::map<int, EnemyProperty> enemyProperty_;
+
+
 private: // ** 初期化時に確定するデータ ** //
 
 	// プレイヤーのポインタ
 	Player* player_ = nullptr;
+	
+	// 敵召喚間隔
+	bool isSummon = true;
+	// プレイヤーから画面外への距離
+	float screenOutDistance_ = 15.0f;
 
 };
