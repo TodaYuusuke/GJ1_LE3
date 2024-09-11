@@ -51,6 +51,15 @@ Player::Player()
 			return;
 		}
 
+		//回復処理
+		if (data->name == "HealItem") {
+			//HPの回復処理
+			if (parameters_.hp++ > parameters_.maxHp) {
+				parameters_.hp = parameters_.maxHp;
+			}
+			return;
+		}
+
 		//ヒットフラグが有効の時
 		if (isHitOnDebug_ && parameters_.hitData.isHit_) {
 			parameters_.hitData.isHit_ = false;
