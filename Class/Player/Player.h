@@ -379,11 +379,15 @@ private: // ** 変数 ** //
 	LWP::Resource::Audio audioRun_;
 	LWP::Resource::Audio audioSlide_;
 	LWP::Resource::Audio audioGetHeal_;
+	LWP::Resource::Audio audioShot_;
+	LWP::Resource::Audio audioReload_;
 
 
 	std::string runPath_ = "run.mp3";
 	std::string slidePath_ = "slide2.mp3";
 	std::string healPath_ = "heal.mp3";
+	std::string shotPath_ = "shot.mp3";
+	std::string reloadPath_ = "reload.mp3";
 
 
 };

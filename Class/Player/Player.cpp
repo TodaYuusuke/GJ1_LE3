@@ -87,6 +87,8 @@ Player::Player()
 	audioRun_.Load(audioPath_ + runPath_);
 	audioSlide_.Load(audioPath_ + slidePath_);
 	audioGetHeal_.Load(audioPath_ + healPath_);
+	audioShot_.Load(audioPath_ + shotPath_);
+	audioReload_.Load(audioPath_ + reloadPath_);
 }
 
 Player::~Player()
@@ -276,6 +278,8 @@ void Player::ReloadBullet(float delta)
 
 				//弾増加
 				parameters_.bulletData.ammoRemaining_ += parameters_.bulletData.simultaneouslyLoaded_;
+				
+				audioReload_.Play();
 
 				//最大量を超えたら修正
 				if (parameters_.bulletData.ammoRemaining_ > parameters_.bulletData.maxAmmoNum_) {
@@ -299,6 +303,8 @@ bool Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 	if (parameters_.bulletData.ammoRemaining_ <= 0) {
 		return false;
 	}
+
+	audioShot_.Play();
 
 	//弾減らす処理
 	parameters_.bulletData.ammoRemaining_--;
