@@ -19,6 +19,7 @@ public://構造体＆enum群
 		A_Damage,
 		A_Recovery,
 		A_Dead,
+		A_CutBack,
 		_countAnimeType
 	};
 
@@ -69,7 +70,7 @@ public://構造体＆enum群
 		//ヒット時の吹っ飛ぶX方向
 		float hitDirection_;
 		//吹っ飛ぶときの角度
-		float hitHeight_ = 1.0f;
+		float hitHeight_ = 0.3f;
 		//初速
 		float hitVelocity_ = 20.0f;
 
@@ -96,7 +97,7 @@ public://構造体＆enum群
 		float shotSlope = 0.0f;
 
 		//反動の角度
-		float jumpSlope_ = 0.3f;
+		float jumpSlope_ = 0.6f;
 
 		//反動初期ベクトル
 		float startVelo = 20.0f;
@@ -113,8 +114,20 @@ public://構造体＆enum群
 		float jumpSlope_ = 1.5f;
 	};
 
+	struct DeadData {
+		//傾き
+		float slope=1.0f;
+		//初速
+		float startVelo = 10.0f;
+
+		float gravity = 20.0f;
+	};
+
 	struct  ActiveFlag
 	{
+		//生きているか
+		bool isActive = true;
+
 		//ジャンプできるか
 		bool jump = false;
 
@@ -164,6 +177,9 @@ public://構造体＆enum群
 		//弾関連
 		BulletData bulletData;
 
+		//死亡関連
+		DeadData deadData;
+
 		//各有効処理フラグ
 		ActiveFlag activeFlag;
 	};
@@ -185,18 +201,24 @@ public:
 		Jump,		//ジャンプ処理
 		SlideStopShot,
 		HitSomeone,//ヒット時処理
+		Dead,		//死亡処理
 		_countBehavior
 	};
 
-	//プレイヤーの現在の状態を取得
-	Behavior& GetBehavior() { return behavior_; }
+	
 
 public:
+
+	//プレイヤーの現在の状態を取得
+	Behavior& GetBehavior() { return behavior_; }
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 
 	//-1,1で向きを返却
 	float GetPlayerDirection();
+
+	//生きているかどうか（生きてる:true。４:false)
+	bool GetIsActive() { return parameters_.activeFlag.isActive; }
 private:// ** 処理をまとめた関数 ** //
 	//デバッグ処理
 	void Debug();
@@ -213,6 +235,7 @@ private:// ** 処理をまとめた関数 ** //
 	void InitializeJump();
 	void InitializeSlideStopShot(); //スライディングキャンセルする発砲処理
 	void InitializeHitSomeone();
+	void InitializeDead();
 
 	void UpdateMove();				//移動更新
 	void UpdateSlide();				//スライド更新
@@ -220,6 +243,7 @@ private:// ** 処理をまとめた関数 ** //
 	void UpdateJump();
 	void UpdateSlideStopShot();     //スライディングキャンセルする発砲処理
 	void UpdateHitSomeone();
+	void UpdateDead();
 #pragma endregion
 
 	//各状態関係なく更新
@@ -287,7 +311,8 @@ private: // ** 変数 ** //
 		"09_Land",
 		"10_Damage",
 		"11_Recovery",
-		"12_Dead"
+		"12_Dead",
+		"13_CutBack"
 	};
 
 	//アニメーションセット
@@ -307,6 +332,9 @@ private: // ** 変数 ** //
 		AABBCollider() : aabb(collider.SetBroadShape(LWP::Object::Collider::AABB())) {}
 	}aabb_;
 
+
+	//プレ座標
+	std::optional<LWP::Math::Vector3> prePos_=std::nullopt;
 
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
@@ -338,7 +366,8 @@ private: // ** 変数 ** //
 		"QuitSlide",
 		"Jump",
 		"SlideStopShot",
-		"HitSomeone"
+		"HitSomeone",
+		"Dead"
 	};
 
 	//デバッグ用無敵フラグ
@@ -352,11 +381,15 @@ private: // ** 変数 ** //
 	LWP::Resource::Audio audioRun_;
 	LWP::Resource::Audio audioSlide_;
 	LWP::Resource::Audio audioGetHeal_;
+	LWP::Resource::Audio audioShot_;
+	LWP::Resource::Audio audioReload_;
 
 
 	std::string runPath_ = "run.mp3";
 	std::string slidePath_ = "slide2.mp3";
 	std::string healPath_ = "heal.mp3";
+	std::string shotPath_ = "shot.mp3";
+	std::string reloadPath_ = "reload.mp3";
 
 
 };

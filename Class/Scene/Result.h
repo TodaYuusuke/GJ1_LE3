@@ -18,4 +18,9 @@ public:
 
 private: //*** これより先に必要な処理や変数を記述 ***//
 
+	//オーディオがあるフォルダまでのパス
+	std::string audioPath_ = "BGM/";
+	//bgm
+	LWP::Resource::Audio bgm_;
+	std::string bgmPath_ = "clear1.mp3";
 };
