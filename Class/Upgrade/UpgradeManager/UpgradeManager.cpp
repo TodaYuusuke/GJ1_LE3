@@ -118,6 +118,22 @@ void UpgradeManager::Update()
 		CursorInput();
 		// 全てのアップグレードとカーソルの当たり判定を検証する
 		CheckCollisionUpgrades();
+
+		// スペースまたはBボタンが押されている、またはスキルポイントが１つもない場合
+		if (Input::Keyboard::GetPress(DIK_ESCAPE) || Input::Controller::GetPress(XBOX_B) || skillPoint_ <= 0) {
+			// 終了待機時間に加算
+			finishStandByTime_ += Info::GetDeltaTimeF();
+
+			// 終了待機時間が既定値を超えている場合
+			if (finishStandByTime_ >= 2.5f) {
+				// アップグレードメニューを閉じる
+				isOpenObserver_.t = false;
+			}
+		}
+		else { // いずれの条件にも当てはまらない場合
+			// カウントリセット
+			finishStandByTime_ = 0.0f;
+		}
 	}
 }
 
@@ -350,8 +366,8 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	// 説明テキスト表示を切り替える
 	upgradeText_.isActive = isDisplay;
 
-	// アップグレードUIの表示状態が切り替えフラグの状態を変更
-	isOpenUpgradeWindow_ = isDisplay;
+	// 終了待機時間リセット
+	finishStandByTime_ = 0.0f;
 }
 
 void UpgradeManager::CheckCollisionUpgrades()
@@ -389,8 +405,8 @@ void UpgradeManager::CheckCollisionUpgrades()
 							it->second.ui.worldTF.scale, Math::Vector3(0.75f, 0.75f, 1.0f), 0.25f
 						);
 
-					// スペースキーが押されたら
-					if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+					// スペースキーまたはAボタンが押されたら
+					if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Controller::GetPress(XBOX_A)) {
 						// 適用関数を呼び出す
 						it->second.upgrade->Apply(player_, drone_);
 						// スプライトの色を少し薄くする
@@ -436,7 +452,7 @@ void UpgradeManager::CheckCollisionUpgrades()
 							);
 
 						// スペースキーが押されたら
-						if (Input::Keyboard::GetTrigger(DIK_SPACE)) {
+						if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Controller::GetPress(XBOX_A)) {
 							// 適用関数を呼び出す
 							it->second.upgrade->Apply(player_, drone_);
 							// スプライトの色を少し薄くする
@@ -497,16 +513,20 @@ bool UpgradeManager::CheckCollision2Upgrade(const LWP::Math::Vector2& p1, const 
 
 void UpgradeManager::CursorInput()
 {
+	// 入力ベクトル変数
 	Math::Vector2 input = {
 		0.0f, 0.0f
 	};
 
+	// 左スティック入力を取得
+	input = Input::Controller::GetLStick();
+
 	// キーボード入力によってカーソルの移動ベクトルを設定する
 	if (Input::Keyboard::GetPress(DIK_UPARROW)) {
-		input.y = -1.0f;
+		input.y = 1.0f;
 	}
 	if (Input::Keyboard::GetPress(DIK_DOWNARROW)) {
-		input.y = 1.0f;
+		input.y = -1.0f;
 	}
 	if (Input::Keyboard::GetPress(DIK_LEFTARROW)) {
 		input.x = -1.0f;
@@ -519,7 +539,7 @@ void UpgradeManager::CursorInput()
 	input = input.Normalize();
 
 	// カーソルの座標を移動させる
-	cursorSprite_->worldTF.translation += Math::Vector3(input.x, input.y, 0.0f) * 10.0f;
+	cursorSprite_->worldTF.translation += Math::Vector3(input.x, -input.y, 0.0f) * 10.0f;
 
 	/// カーソルの移動範囲を画面内に制限する
 	// X軸
