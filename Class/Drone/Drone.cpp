@@ -38,7 +38,7 @@ void Drone::Update() {
 			ImGui::DragFloat("kSlerpT", &kSlerpT_, 0.01f);
 			if (ImGui::TreeNode("UpgradeParameter")) {
 				ImGui::Text("SuctionedDeadBody : %d", suctionedDeadBody_);
-				ImGui::DragInt("kNeedDeadBody", &upgradeParamater.kNeedDeadBody, 0.01f);
+				ImGui::InputInt("kNeedDeadBody", &upgradeParamater.kNeedDeadBody, 0.01f);
 				ImGui::DragFloat("kSuctionNeedTime", &upgradeParamater.kSuctionNeedTime, 0.01f);
 				ImGui::TreePop();
 			}
@@ -89,6 +89,14 @@ void Drone::Update() {
 
 	// モデルの座標更新
 	model_.worldTF.translation = Utility::Interp::Lerp(model_.worldTF.translation, goalPosition_, kSlerpT_);
+
+	// エリア外にいけないように
+	if (model_.worldTF.translation.x < -outArea_) {
+		model_.worldTF.translation.x = -outArea_;
+	}
+	else if (model_.worldTF.translation.x > outArea_) {
+		model_.worldTF.translation.x = outArea_;
+	}
 
 	// 回復アイテム更新
 	for (HealItem& h : heals_) {

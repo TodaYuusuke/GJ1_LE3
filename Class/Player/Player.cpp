@@ -154,6 +154,14 @@ void Player::GlovalUpdate()
 	velo_ += acce_ * delta;
 	model_.worldTF.translation += velo_ * delta;
 
+	// エリア外にいけないように
+	if (model_.worldTF.translation.x < -outArea_) {
+		model_.worldTF.translation.x = -outArea_;
+	}
+	else if (model_.worldTF.translation.x > outArea_) {
+		model_.worldTF.translation.x = outArea_;
+	}
+
 	//0以下の時落下量を消す
 	if (model_.worldTF.translation.y < 0) {
 		model_.worldTF.translation.y = 0;

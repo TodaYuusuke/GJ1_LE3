@@ -64,4 +64,6 @@ private: // ** 初期化時に確定するデータ ** //
 	// プレイヤーから画面外への距離
 	float screenOutDistance_ = 15.0f;
 
+	// 場外判定
+	float outArea_ = 94.0f;
 };

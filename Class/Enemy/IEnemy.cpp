@@ -56,6 +56,14 @@ void IEnemy::Update() {
 	if (invincibleTime_ < 0.0f) {
 		invincibleTime_ = 0.0f;
 	}
+
+	// エリア外にいけないように
+	if (model_.worldTF.translation.x < -outArea_) {
+		model_.worldTF.translation.x = -outArea_;
+	}
+	else if (model_.worldTF.translation.x > outArea_) {
+		model_.worldTF.translation.x = outArea_;
+	}
 }
 
 void IEnemy::SlidingHit() {

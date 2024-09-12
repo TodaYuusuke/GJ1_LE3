@@ -266,10 +266,12 @@ private: // ** パラメータ ** //
 	  
 	MinMax slideAABB_;
 
+	// 場外判定
+	float outArea_ = 94.0f;
+
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
-
 
 
 	std::string animeName_[_countAnimeType] = {
