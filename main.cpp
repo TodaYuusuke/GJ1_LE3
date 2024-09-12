@@ -3,6 +3,7 @@
 #include "Class/Scene/GameScene.h"
 #include "Class/Scene/Result.h"
 #include "Class/Scene/TestScene.h"
+#include"Class/Scene/TutorialScene.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -13,7 +14,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #else
 	LWP::Window::ChangeFullScreenMode();
 	LWP::Info::ChangeShowDebugGUI();
-	LWP::System::Run(new Title);
+	LWP::System::Run(new TutorialScene);
 #endif
 	return 0;
 }
