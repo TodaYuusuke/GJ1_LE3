@@ -19,7 +19,10 @@ public:
 	// 自分のタイプを返す関数
 	EnemyType GetType() override { return EnemyType::Spider; }
 
+	void SetVolume(float volume) override;
 
+	//死んだ瞬間
+	void InitDeadBody() override;	// 死体
 private: // ** ステートパターン ** //
 
 	// 通常
@@ -39,4 +42,22 @@ private: // ** パラメータ ** //
 
 	//移動速度
 	float spd_ = 1.8f;
+
+	//歩く時間カウント
+	float currentWalkSE_ = 0;
+	float walkSEsec_ = 0.5f;
+
+	//オーディオがあるフォルダまでのパス
+	std::string audioPath_ = "SE/spider/";
+	//音量
+	float audioVolume_ = 0.8f;
+	float  volume_;
+	//走る音
+	LWP::Resource::Audio audioWalk_;
+	LWP::Resource::Audio audioDead_;
+
+
+	std::string walkPath_ = "walk.mp3";
+	std::string deadPath_ = "dead1.mp3";
+
 };

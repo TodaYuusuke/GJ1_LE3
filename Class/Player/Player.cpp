@@ -1,5 +1,7 @@
 #include "Player.h"
+#include "../Mask/Mask.h"
 #include<numbers>
+
 using namespace LWP;
 using namespace LWP::Object;
 
@@ -29,13 +31,14 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 
 Player::Player()
 {
-	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
 	SetAnimation(A_Idle);
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	aabb_.collider.SetFollowTarget(&model_.worldTF);
+	aabb_.collider.mask.SetBelongFrag(GJMask::Player());	// フラグ設定
+	aabb_.collider.mask.SetHitFrag(GJMask::Enemy() | GJMask::HealItem());
 	aabb_.collider.name = "player";
 
 	standAABB_.min = { -0.4f,0.0f,-0.4f };
@@ -57,6 +60,7 @@ Player::Player()
 			if (parameters_.hp++ > parameters_.maxHp) {
 				parameters_.hp = parameters_.maxHp;
 			}
+			audioGetHeal_.Play();
 			return;
 		}
 
@@ -75,6 +79,9 @@ Player::Player()
 		};
 
 
+	audioRun_.Load(audioPath_ + runPath_);
+	audioSlide_.Load(audioPath_ + slidePath_);
+	audioGetHeal_.Load(audioPath_ + healPath_);
 }
 
 Player::~Player()
@@ -150,6 +157,14 @@ void Player::GlovalUpdate()
 	//加算処理
 	velo_ += acce_ * delta;
 	model_.worldTF.translation += velo_ * delta;
+
+	// エリア外にいけないように
+	if (model_.worldTF.translation.x < -outArea_) {
+		model_.worldTF.translation.x = -outArea_;
+	}
+	else if (model_.worldTF.translation.x > outArea_) {
+		model_.worldTF.translation.x = outArea_;
+	}
 
 	//0以下の時落下量を消す
 	if (model_.worldTF.translation.y < 0) {
@@ -349,6 +364,24 @@ void Player::ToJump() {
 
 void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
+	//歩行サウンドに関する処理
+	if (nowPlayAnimeName_ == animeName_[A_Run]) {
+		audioRun_.Stop();
+	}
+	else if (animeName_[type] == animeName_[A_Run]) {
+		audioRun_.Play(audioVolume_,255);
+	}
+
+	//スライドサウンド
+	//単発系はこれでいい
+	if (animeName_[type] == animeName_[A_SlidingStart]) {
+		audioSlide_.Play(0.5f);
+	}
+	//聞こえてほしくないモーションの時削除
+	if ((nowPlayAnimeName_ == animeName_[A_SlidingStart]|| nowPlayAnimeName_ == animeName_[A_Sliding])&&(animeName_[type] == animeName_[A_JumpStart]|| animeName_[type] == animeName_[A_Damage])) {
+		audioSlide_.Stop();
+	}
+
 	animation.Play(animeName_[type], loop);
 	nowPlayAnimeName_ = animeName_[type];
 }
@@ -489,7 +522,7 @@ void (Player::* Player::BehaviorUpdate[])() = {
 void Player::InitializeMove()
 {
 	//ベクトル初期化
-	//velo_ = { 0,0,0 };
+	velo_ = { 0,0,0 };
 	//SetAnimation(A_Run);
 
 	parameters_.currentInertia = 0;
@@ -573,6 +606,7 @@ void Player::InitializeSlideStopShot()
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
+
 }
 void Player::InitializeHitSomeone()
 {
@@ -591,6 +625,8 @@ void Player::InitializeHitSomeone()
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
 	model_.isActive = false;
+
+
 }
 
 #pragma endregion

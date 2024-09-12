@@ -1,4 +1,5 @@
 #include "IEnemy.h"
+#include "../Mask/Mask.h"
 
 using namespace LWP;
 using namespace LWP::Math;
@@ -24,6 +25,8 @@ void IEnemy::Init() {
 			invincibleTime_ = kInvincibleTime_;
 		}
 	};
+	collider_.mask.SetBelongFrag(GJMask::Enemy());	// フラグ設定
+	collider_.mask.SetHitFrag(GJMask::Player() | GJMask::Bullet());
 	
 	// 子クラスの初期化
 	ChildInit();
@@ -52,6 +55,14 @@ void IEnemy::Update() {
 	invincibleTime_ -= LWP::Info::GetDeltaTimeF();
 	if (invincibleTime_ < 0.0f) {
 		invincibleTime_ = 0.0f;
+	}
+
+	// エリア外にいけないように
+	if (model_.worldTF.translation.x < -outArea_) {
+		model_.worldTF.translation.x = -outArea_;
+	}
+	else if (model_.worldTF.translation.x > outArea_) {
+		model_.worldTF.translation.x = outArea_;
 	}
 }
 
@@ -85,6 +96,10 @@ void IEnemy::DebugGUI() {
 	if (ImGui::Button("Knockback")) { behaviorReq_ = Knockback; }
 	if (ImGui::Button("Dying")) { behaviorReq_ = Dying; }
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
+}
+
+void IEnemy::SetVolume(float volume)
+{
 }
 
 //初期化関数ポンタテーブル

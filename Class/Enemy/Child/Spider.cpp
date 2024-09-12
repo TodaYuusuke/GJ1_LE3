@@ -13,6 +13,10 @@ void Spider::ChildInit() {
 	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
 	aabb.min.y = -0.17f;
 	aabb.max.y = 0.7f;
+
+	audioWalk_.Load(audioPath_ + walkPath_);
+	audioDead_.Load(audioPath_ + deadPath_);
+
 }
 
 void Spider::ChildUpdate() {}
@@ -40,6 +44,19 @@ void Spider::DebugGUI() {
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
 }
 
+void Spider::SetVolume(float volume)
+{
+
+	volume_ = (audioVolume_ / volume);
+
+}
+
+void Spider::InitDeadBody()
+{
+	audioWalk_.Stop();
+	audioDead_.Play(volume_);
+}
+
 void Spider::InitNormal() {
 	// アニメーション再生
 	animation_.Play("01_Walk", true);
@@ -52,6 +69,14 @@ void Spider::UpdateNormal() {
 	velo.y = 0;
 	//移動速度をかけた分移動
 	model_.worldTF.translation += velo * (spd_ * delta);
+
+	//歩行サウンド処理
+	currentWalkSE_ += delta;
+	if (currentWalkSE_ > walkSEsec_) {
+		currentWalkSE_ -= walkSEsec_;
+
+		audioWalk_.Play(volume_);
+	}
 }
 
 void Spider::InitKnockback() {

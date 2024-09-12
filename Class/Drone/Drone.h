@@ -44,6 +44,8 @@ private: // ** メンバ変数 ** //
 	// 生成した回復アイテムのインスタンス保持
 	std::list<HealItem> heals_;
 
+	// 場外判定
+	float outArea_ = 94.0f;
 	// アクティブ切り替え
 	bool isActive_ = true;
 

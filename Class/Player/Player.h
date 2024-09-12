@@ -266,10 +266,12 @@ private: // ** パラメータ ** //
 	  
 	MinMax slideAABB_;
 
+	// 場外判定
+	float outArea_ = 94.0f;
+
 private: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
-
 
 
 	std::string animeName_[_countAnimeType] = {
@@ -321,7 +323,7 @@ private: // ** 変数 ** //
 	std::string slideShot = "SlidingBullet";
 
 	//状態リクエスト
-	std::optional<Behavior> behaviorReq_ = std::nullopt;
+	std::optional<Behavior> behaviorReq_ = Moving;
 	//状態
 	Behavior behavior_ = Moving;
 	//変更前の状態
@@ -341,5 +343,20 @@ private: // ** 変数 ** //
 
 	//デバッグ用無敵フラグ
 	bool isHitOnDebug_ = true;
+
+	//オーディオがあるフォルダまでのパス
+	std::string audioPath_ ="SE/player/";
+	//音量
+	float audioVolume_ = 1.0f;
+	//走る音
+	LWP::Resource::Audio audioRun_;
+	LWP::Resource::Audio audioSlide_;
+	LWP::Resource::Audio audioGetHeal_;
+
+
+	std::string runPath_ = "run.mp3";
+	std::string slidePath_ = "slide2.mp3";
+	std::string healPath_ = "heal.mp3";
+
 
 };

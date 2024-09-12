@@ -46,8 +46,8 @@ void EnemyManager::Update() {
 			if (ImGui::TreeNode("EnemyProperty")) {
 				for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
 					if (ImGui::TreeNode(classText[i])) {
-						ImGui::DragInt("spawn", &enemyProperty_[i].spawn, 1);
-						ImGui::DragInt("kMaxSpawn", &enemyProperty_[i].kMaxSpawn, 1);
+						ImGui::InputInt("spawn", &enemyProperty_[i].spawn);
+						ImGui::InputInt("kMaxSpawn", &enemyProperty_[i].kMaxSpawn, 1);
 						ImGui::Text("summonInterval : %f", enemyProperty_[i].summonInterval_);
 						ImGui::DragFloat("kSummonInterval", &enemyProperty_[i].kSummonInterval_, 0.01f);
 						ImGui::TreePop();
@@ -94,6 +94,9 @@ void EnemyManager::Update() {
 		currentSpawn[static_cast<int>(enemy->GetType())] += 1;
 	}
 
+	for (auto& enemy : enemies_) {
+		enemy->SetVolume(currentSpawn[static_cast<int>(enemy->GetType())]);
+	}
 
 	// 敵生成処理
 	if (isSummon) {
@@ -113,10 +116,22 @@ void EnemyManager::Update() {
 					Vector3 summonPos = { player_->GetWorldPosition().x,0.0f,0.0f };
 					switch (Utility::GenerateRandamNum<int>(0, 1)) {
 						case 0:
-							summonPos.x += screenOutDistance_;
+							// 場外じゃないかチェック
+							if (summonPos.x + screenOutDistance_ > outArea_) {
+								summonPos.x -= screenOutDistance_;
+							}
+							else {
+								summonPos.x += screenOutDistance_;
+							}
 							break;
 						case 1:
-							summonPos.x -= screenOutDistance_;
+							// 場外じゃないかチェック
+							if (summonPos.x - screenOutDistance_ < outArea_) {
+								summonPos.x += screenOutDistance_;
+							}
+							else {
+								summonPos.x -= screenOutDistance_;
+							}
 							break;
 					}
 
