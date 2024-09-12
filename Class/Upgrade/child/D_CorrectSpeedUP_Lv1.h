@@ -23,8 +23,11 @@ public: // メンバ関数
 	/// <param name="player_">プレイヤー本体</param>
 	/// <param name="drone">ドローン本体</param>
 	void Apply(Player* player_, Drone* drone) override { 
-		// プレイヤーのジャンプを有効にする
-		player_->parameters_.activeFlag.jump = true; 
+		// 上昇率
+		float percent = 5.0f;
+
+		// 収集速度を割合で短縮
+		drone->upgradeParamater.kSuctionNeedTime *= (100.0f - percent) / 100.0f;
 		// 適用フラグをtrue
 		isApplied_ = true;
 	}
