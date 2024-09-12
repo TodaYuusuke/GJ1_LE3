@@ -7,14 +7,12 @@ using namespace LWP::Input;
 
 // 初期化
 void GameScene::Initialize() {
-	// 黒背景
-	backGround_.worldTF.translation.z = 1000.0f;
-	backGround_.worldTF.scale = { 3000.0f,3000.0f,1.0f };
-	backGround_.worldTF.Parent(&mainCamera.transform);
-	backGround_.material.enableLighting = false;
-	backGround_.material.color = Utility::ColorPattern::BLACK;
+	// ステージ初期化
+	stage_.Init(&mainCamera);
+	// パーティクル初期化
+	particleManager_.Init();
 
-	player_.Initialize();
+	player_.Initialize(&particleManager_);
 	followCamera_.Initialize(&mainCamera);
 	enemyManager_.Initialize(&player_);
 	drone_.Initialize(&player_, &enemyManager_);
@@ -24,55 +22,65 @@ void GameScene::Initialize() {
 	// アップグレードマネージャーの初期化
 	upgradeManager_.Initialize(&player_, &drone_);
 
-	// 配置物初期化
-	stage_.LoadShortPath("Stage/Stage.gltf");	// 下水道
-	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
-	sun_.rotation.x = 3.14f;	// 下から照らす
-	sun_.color = { 36,42,52,255 };	// 色決定
-
-	bgm_.Load(audioPath_ + bgmPath_);
-	bgm_.Play(0.1f, 255);
+	// Wave1スタート
+	enemyManager_.StartWave(wave_);
 }
 
 // 更新
 void GameScene::Update() {
-#if DEMO
-	ImGui::Begin("Game");
-	if (ImGui::BeginTabBar("LWP")) {
-		if (ImGui::BeginTabItem("Wave")) {
-			ImGui::SliderInt("Begin Wave", &wave_, 1, 10);
-			if (ImGui::Button("Start")) { enemyManager_.StartWave(wave_); }
-			ImGui::Checkbox("FreeMode", &freeMode_);
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
+	ImGui::Begin("Test");
+	ImGui::InputInt("i", &uiInitFlag);
 	ImGui::End();
-#endif
+	// UIの遅延用
+	if (uiInitFlag == 0) {
+		gameUIManager_.SetUp();
+		uiInitFlag++;
+	}
+	else if(uiInitFlag == -1) {
+		uiInitFlag++;
+	}
+
+	// Nキーで次のシーンへ
+	if (Keyboard::GetTrigger(DIK_N)) {
+		nextSceneFunction = []() { return new Result(); };
+	}
+
+	// ウェーブが終わったかを確認
+	if (!waveEnd_ && enemyManager_.GetEndWave()) {
+		waveEnd_ = true;
+		// スキルポイント+1
+		upgradeManager_.AddSkilPoint(1);
+		upgradeManager_.SetIsDisplay(true);
+	}
 
 	// ウェーブ終了後処理
-	if (enemyManager_.GetEndWave() && !freeMode_) {
+	if (waveEnd_) {
 		// ウェーブ10終了でゲーム終了
 		if (wave_ >= 10) {
-			bgm_.Stop();
 			nextSceneFunction = []() { return new Result(); };
 		}
-		
-		// アップグレード確認して次のウェーブへ
-		//enemyManager_.StartWave(++wave_);
+		else {
+
+			// アップグレードが終わったか確認
+			if (!upgradeManager_.GetIsDisplay()) {
+				// アップグレード確認して次のウェーブへ
+				enemyManager_.StartWave(++wave_);
+				waveEnd_ = false;
+			}
+		}
 	}
 	// ウェーブ中処理
 	else {
 		player_.Update();
 		followCamera_.Update(player_.GetWorldPosition());
 		enemyManager_.Update();
+		drone_.Update();
 	}
 
 	// いったん外に出す
-	drone_.Update();
 	gameUIManager_.Update();
 	upgradeManager_.Update();
-
 	// ゲームUIの表示非表示を切り替える
 	gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
+
 }

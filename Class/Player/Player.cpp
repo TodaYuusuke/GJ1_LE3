@@ -95,7 +95,7 @@ Player::~Player()
 {
 }
 
-void Player::Initialize()
+void Player::Initialize(ParticleManager* particle)
 {
 
 	model_.worldTF.translation = { 0,0,0 };
@@ -105,7 +105,7 @@ void Player::Initialize()
 	velo_ = { 0,0,0 };
 	acce_ = { 0,0,0 };
 
-	bullets_->Initialize();
+	bullets_->Initialize(particle);
 
 	//元の値に修正
 	parameters_.bulletData = BulletData{};

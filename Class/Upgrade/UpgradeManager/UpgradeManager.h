@@ -153,11 +153,12 @@ private: // メンバ変数
 
 	// ウィンドウ管理用オブザーバー
 	LWP::Utility::Observer<bool> isOpenObserver_ = false;
-	// アップグレードウィンドウが開かれているか
-	bool isOpenUpgradeWindow_ = false;
 	
 	// 所持中のスキルポイント
 	int skillPoint_ = 0;
+
+	// 終了待機時間
+	float finishStandByTime_ = 0.0f;
 
 	// 背景用スプライト
 	LWP::Primitive::Sprite backGround_;

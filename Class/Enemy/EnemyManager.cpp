@@ -6,19 +6,23 @@
 using namespace LWP;
 using namespace LWP::Math;
 
+EnemyManager::~EnemyManager() {
+	for (IEnemy* i : enemies_) {
+		delete i;
+	}
+	enemies_.clear();
+}
+
 void EnemyManager::Initialize(Player* ptr) {
 	player_ = ptr;
 
 	enemyProperty_[int(EnemyType::Spider)].kMaxSpawn = 5;
+	enemyProperty_[int(EnemyType::Spider)].summonFunction_ = [this](Vector3 pos) { enemies_.push_back(new Spider(player_, pos)); };
 	enemyProperty_[int(EnemyType::Slime)].kMaxSpawn = 2;
+	enemyProperty_[int(EnemyType::Slime)].summonFunction_ = [this](Vector3 pos) { enemies_.push_back(new Slime(player_, pos)); };
 }
 
 void EnemyManager::Update() {
-	// デバッグ用の召喚関数をセット
-	static std::vector<std::function<void(Vector3 pos)>> summonFunction{
-		[this](Vector3 pos) { enemies_.push_back(new Spider(player_, pos)); },
-		[this](Vector3 pos) { enemies_.push_back(new Slime(player_, pos)); }
-	};
 #if DEMO
 	// ** ImGui用変数 ** //
 	static int selectedClass = 0;	// 生成クラス
@@ -58,7 +62,7 @@ void EnemyManager::Update() {
 			// 実験用召喚ボタン
 			ImGui::Text("--- Summon Enemy ---");
 			ImGui::Combo("Select Type", &selectedClass, classText.data(), static_cast<int>(EnemyType::Count));
-			if (ImGui::Button("Summon")) { summonFunction[selectedClass](Vector3{ 0.0f,0.0f,0.0f }); }
+			if (ImGui::Button("Summon")) { enemyProperty_[selectedClass].summonFunction_(Vector3{0.0f,0.0f,0.0f}); }
 			ImGui::Text("");
 			// 一覧
 			ImGui::Text("--- Enemy List ---");
@@ -136,7 +140,7 @@ void EnemyManager::Update() {
 					}
 
 					// 召喚
-					summonFunction[i](summonPos);
+					prop.summonFunction_(summonPos);
 					// 召喚したのでクールタイムリセット
 					prop.summonInterval_ = prop.kSummonInterval_;
 				}

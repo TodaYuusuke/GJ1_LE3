@@ -15,8 +15,9 @@ PlayerBullets::~PlayerBullets()
 	bullets_.clear();
 }
 
-void PlayerBullets::Initialize()
+void PlayerBullets::Initialize(ParticleManager* particle)
 {
+	particle_ = particle;
 	bullets_.clear();
 }
 
@@ -54,15 +55,15 @@ void PlayerBullets::Update()
 
 void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vector3& velo, const std::string& cName)
 {
-
 	float delta = Info::GetDeltaTimeF();
 
 	BulletData& newdata = bullets_.emplace_back() ;
 	newdata.model.LoadSphere();
 	newdata.model.worldTF.translation = pos;
+	newdata.model.worldTF.scale = { 0.1f,0.1f,0.1f };
 	newdata.collider.SetFollowTarget(&newdata.model.worldTF);
 	newdata.collider.mask.SetBelongFrag(GJMask::Bullet());	// フラグ設定
-	newdata.collider.mask.SetHitFrag(GJMask::Enemy());
+	newdata.collider.mask.SetHitFrag(GJMask::Enemy() | GJMask::Ceiling());
 	LWP::Object::Collider::Capsule& cap = newdata.collider.SetBroadShape(Collider::Capsule());
 	cap.end = (velo * -1) * delta;
 	cap.radius = 0.2f;

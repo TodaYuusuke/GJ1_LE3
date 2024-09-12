@@ -21,11 +21,12 @@ namespace GJMask {
     static int Layer9() { return LWP::Config::Collider::MaskLayer::Layer9; }
     static int Layer10() { return LWP::Config::Collider::MaskLayer::Layer10; }
     static int Layer11() { return LWP::Config::Collider::MaskLayer::Layer11; }
-    static int Layer12() { return LWP::Config::Collider::MaskLayer::Layer12; }
     // パーティクル
-    static int Particle() { return LWP::Config::Collider::MaskLayer::Layer13; }
+    static int Particle() { return LWP::Config::Collider::MaskLayer::Layer12; }
     // 地面（パーティクル用）
-    static int Ground() { return LWP::Config::Collider::MaskLayer::Layer14; }
+    static int Ground() { return LWP::Config::Collider::MaskLayer::Layer13; }
+    // 天井（パーティクル用）
+    static int Ceiling() { return LWP::Config::Collider::MaskLayer::Layer14; }
     // 水面（パーティクル用）
     static int WaterSurface() { return LWP::Config::Collider::MaskLayer::Layer15; }
     static int ALL() { return LWP::Config::Collider::MaskLayer::ALL; }

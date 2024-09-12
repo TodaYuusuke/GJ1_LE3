@@ -2,6 +2,8 @@
 #include <Adapter.h>
 #include "scene/IScene.h"
 
+#include "../Stage/Stage.h"
+
 class Title final
 	: public IScene {
 public:
@@ -17,5 +19,21 @@ public:
 
 
 private: //*** これより先に必要な処理や変数を記述 ***//
+	struct Skins {
+		LWP::Resource::SkinningModel model;
+		LWP::Resource::Animation anim;
+	};
 
+	// プレイヤー
+	Skins player_;
+	// ドローン
+	Skins drone_;
+	LWP::Object::PointLight droneLight_;
+
+	// 敵
+	Skins spider_[3];
+
+	Stage stage_;
+
+	LWP::Primitive::Sprite sprite_;
 };

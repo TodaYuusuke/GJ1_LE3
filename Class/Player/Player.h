@@ -189,7 +189,7 @@ public:
 	~Player();
 
 	//初期化
-	void Initialize();
+	void Initialize(ParticleManager* particle);
 	//更新
 	void Update();
 
