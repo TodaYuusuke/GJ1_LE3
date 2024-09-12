@@ -14,6 +14,12 @@ void Slime::ChildInit() {
 
 	float s = 0.5f;
 	model_.worldTF.scale = { s,s,s };
+
+	//音声関係
+	audioJump_.Load(audioPath_ + jumpPath_);
+	audioLand_.Load(audioPath_ + landPath_);
+	audioDead_.Load(audioPath_ + deadPath_);
+
 }
 
 void Slime::ChildUpdate() {
@@ -26,6 +32,11 @@ void Slime::ChildUpdate() {
 	// スライムが地面に埋まらないように
 	if (model_.worldTF.translation.y < 0.0f) {
 		model_.worldTF.translation.y = 0.0f;
+
+		if (isJump_) {
+			isJump_ = false;
+			audioLand_.Play();
+		}
 	}
 }
 
@@ -50,6 +61,11 @@ void Slime::DebugGUI() {
 	if (ImGui::Button("Knockback")) { behaviorReq_ = Knockback; }
 	if (ImGui::Button("Dying")) { behaviorReq_ = Dying; }
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
+}
+
+void Slime::InitDeadBody()
+{
+	audioDead_.Play();
 }
 
 void Slime::InitNormal() {
@@ -81,6 +97,10 @@ void Slime::UpdateNormal() {
 		// 速度加算
 		normal_.velocity = normal_.kJumpVelocity;
 		normal_.velocity.x *= dir;
+
+		//音を再生とフラグをON
+		isJump_ = true;
+		audioJump_.Play();
 	}
 }
 void Slime::InitKnockback() {

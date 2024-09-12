@@ -367,7 +367,7 @@ void Player::SetAnimation(AnimatinNameType type, bool loop)
 		audioSlide_.Play(0.5f);
 	}
 	//聞こえてほしくないモーションの時削除
-	if (animeName_[type] == animeName_[A_JumpStart]|| animeName_[type] == animeName_[A_Damage]) {
+	if ((nowPlayAnimeName_ == animeName_[A_SlidingStart]|| nowPlayAnimeName_ == animeName_[A_Sliding])&&(animeName_[type] == animeName_[A_JumpStart]|| animeName_[type] == animeName_[A_Damage])) {
 		audioSlide_.Stop();
 	}
 
@@ -511,7 +511,7 @@ void (Player::* Player::BehaviorUpdate[])() = {
 void Player::InitializeMove()
 {
 	//ベクトル初期化
-	//velo_ = { 0,0,0 };
+	velo_ = { 0,0,0 };
 	//SetAnimation(A_Run);
 
 	parameters_.currentInertia = 0;
