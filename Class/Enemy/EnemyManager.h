@@ -61,6 +61,9 @@ private: // ** メンバ変数 ** //
 	};
 	std::map<int, EnemyProperty> enemyProperty_;
 
+	// 一番近くの敵を指すビルボード
+	LWP::Primitive::Billboard3D billboard_;
+
 
 private: // ** 初期化時に確定するデータ ** //
 

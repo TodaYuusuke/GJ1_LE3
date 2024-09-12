@@ -16,6 +16,9 @@ EnemyManager::~EnemyManager() {
 void EnemyManager::Initialize(Player* ptr) {
 	player_ = ptr;
 
+	// ビルボード
+	billboard_.material.texture = LWP::Resource::LoadTexture("UI/Arrow.png");
+
 	enemyProperty_[int(EnemyType::Spider)].kMaxSpawn = 5;
 	enemyProperty_[int(EnemyType::Spider)].summonFunction_ = [this](Vector3 pos) { enemies_.push_back(new Spider(player_, pos)); };
 	enemyProperty_[int(EnemyType::Slime)].kMaxSpawn = 2;
@@ -93,11 +96,43 @@ void EnemyManager::Update() {
 
 	// 現在召喚されている敵の数をカウント
 	int currentSpawn[static_cast<int>(EnemyType::Count)] = {0};
+	// プレイヤーと一番近い敵を探す
+	bool searched = false;	// 見つかったかフラグ
+	float distance = 99999999.0f;
+	LWP::Math::Vector3 enemyPos;
+
 	for (auto& enemy : enemies_) {
 		enemy->Update();
-		currentSpawn[static_cast<int>(enemy->GetType())] += 1;
+
+		IEnemy::Behavior behavior = enemy->behavior_;
+		// 死体には処理を行わない
+		if (behavior != IEnemy::Behavior::Dying && behavior != IEnemy::Behavior::DeadBody) {
+			currentSpawn[static_cast<int>(enemy->GetType())] += 1;
+
+			// ビルボードと近いやつを求める
+			float d = Vector3::Distance(enemy->GetWorldPosition(), billboard_.worldTF.GetWorldPosition());
+			if (d < distance) {
+				enemyPos = enemy->GetWorldPosition();
+				searched = true;
+			}
+		}
 	}
 
+	// ビルボードの座標更新
+	billboard_.worldTF.translation = player_->GetWorldPosition();
+	billboard_.worldTF.translation.y = 6.0f;
+	// 一番近い敵の方向にむかせる
+	if (searched) {
+		billboard_.isActive = true;
+		billboard_.worldTF.rotation = Quaternion::DirectionToDirection(Vector3::UnitY(), Vector3(enemyPos - billboard_.worldTF.GetWorldPosition()).Normalize());
+	}
+	else {
+		// 見つからなかったら非表示
+		billboard_.isActive = false;
+	}
+
+
+	// 音量調整
 	for (auto& enemy : enemies_) {
 		enemy->SetVolume(currentSpawn[static_cast<int>(enemy->GetType())]);
 	}

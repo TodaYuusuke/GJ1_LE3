@@ -293,9 +293,11 @@ private: // ** パラメータ ** //
 	// 場外判定
 	float outArea_ = 94.0f;
 
-private: // ** 変数 ** //
+public: // ** 変数 ** //
 	//モデル
 	LWP::Resource::SkinningModel model_;
+
+private:
 
 
 	std::string animeName_[_countAnimeType] = {

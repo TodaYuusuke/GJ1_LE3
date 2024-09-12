@@ -40,7 +40,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	ParticleManager particleManager_;
 
 	// ウェーブ数
-	int wave_ = 10;
+	int wave_ = 1;
 	// ウェーブ終了フラグ
 	bool waveEnd_ = false;
 

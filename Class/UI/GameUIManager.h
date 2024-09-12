@@ -7,8 +7,7 @@ class Player;
 /// <summary>
 /// ゲームUIマネージャー
 /// </summary>
-class GameUIManager
-{
+class GameUIManager {
 public: // コンストラクタ等
 
 	/// <summary>
@@ -19,6 +18,7 @@ public: // コンストラクタ等
 	/// デストラクタ
 	/// </summary>
 	~GameUIManager() = default;
+
 
 public: // メンバ関数
 
