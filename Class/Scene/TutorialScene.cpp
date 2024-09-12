@@ -10,9 +10,13 @@ using namespace LWP::Object;
 
 void TutorialScene::Initialize()
 {
-
-	player_.Initialize();
+	// パーティクル初期化
+	particleManager_.Init();
+	player_.Initialize(&particleManager_);
 	followCamera_.Initialize(&mainCamera);
+	enemyManager_.Initialize(&player_);
+	drone_.Initialize(&player_,&enemyManager_);
+	stage_.Init(&mainCamera);
 
 	//タスクを追加
 	taskDatas_.reserve(5);
@@ -44,6 +48,7 @@ void TutorialScene::Update()
 	//状態更新処理
 	(this->*TaskUpdate[tasks_])();
 
+	drone_.Update();
 	player_.Update();
 	followCamera_.Update(player_.GetWorldPosition());
 

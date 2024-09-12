@@ -4,6 +4,8 @@
 #include"../Player/Player.h"
 #include"../FollowCamera/FollowCamera.h"
 #include"../Drone/Drone.h"
+#include"../Stage/Stage.h"
+#include "../Upgrade/UpgradeManager/UpgradeManager.h"
 
 class TutorialScene final
 	: public IScene {
@@ -68,7 +70,10 @@ private://変数
 	FollowCamera followCamera_;
 	Player player_;
 	Drone drone_;
-
+	Stage stage_;
+	// パーティクル管理
+	ParticleManager particleManager_;
+	EnemyManager enemyManager_; // 敵管理
 
 	//タスク表
 	enum Tasks {
