@@ -56,9 +56,9 @@ void GameScene::Update() {
 		// ウェーブ10終了でゲーム終了
 		if (wave_ >= 10) {
 			nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+			upgradeManager_.SetIsDisplay(false);	// アップグレードUIを表示しない
 		}
 		else {
-
 			// アップグレードが終わったか確認
 			if (!upgradeManager_.GetIsDisplay()) {
 				// アップグレード確認して次のウェーブへ

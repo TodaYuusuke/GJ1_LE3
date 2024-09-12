@@ -7,7 +7,7 @@
 class Drone final {
 public:
 	Drone() = default;
-	~Drone() = default;
+	~Drone();
 
 	// ** メンバ関数 ** //
 
