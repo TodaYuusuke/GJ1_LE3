@@ -1,5 +1,6 @@
 #include "Title.h"
 #include "GameScene.h"
+#include "NullScene.h"
 
 using namespace LWP;
 using namespace LWP::Input;
@@ -45,15 +46,12 @@ void Title::Initialize() {
 	spider_[0].anim.Play("00_Idle", true);
 	spider_[1].anim.Play("00_Idle", true, 0.4f);
 	spider_[2].anim.Play("00_Idle", true, 0.7f);
-
-	slime_;
-
 }
 
 // 更新
 void Title::Update() {
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
-		nextSceneFunction = []() { return new GameScene(); };
+		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 }

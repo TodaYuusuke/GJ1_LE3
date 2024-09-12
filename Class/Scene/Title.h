@@ -32,7 +32,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// 敵
 	Skins spider_[3];
-	Skins slime_;
 
 	Stage stage_;
 };

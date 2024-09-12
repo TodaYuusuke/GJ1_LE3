@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #else
 	LWP::Window::ChangeFullScreenMode();
 	LWP::Info::ChangeShowDebugGUI();
-	LWP::System::Run(new Title);
+	LWP::System::Run(new GameScene);
 #endif
 	return 0;
 }

@@ -28,6 +28,11 @@ void GameScene::Initialize() {
 
 // 更新
 void GameScene::Update() {
+	// Nキーで次のシーンへ
+	if (Keyboard::GetTrigger(DIK_N)) {
+		nextSceneFunction = []() { return new Result(); };
+	}
+
 	// ウェーブ終了後処理
 	if (enemyManager_.GetEndWave()) {
 		// ウェーブ10終了でゲーム終了
