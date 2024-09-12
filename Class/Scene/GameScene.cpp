@@ -28,9 +28,6 @@ void GameScene::Initialize() {
 
 // 更新
 void GameScene::Update() {
-	ImGui::Begin("Test");
-	ImGui::InputInt("i", &uiInitFlag);
-	ImGui::End();
 	// UIの遅延用
 	if (uiInitFlag == 0) {
 		gameUIManager_.SetUp();
