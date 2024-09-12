@@ -1,5 +1,6 @@
 #include "TutorialScene.h"
 #include"GameScene.h"
+#include "NullScene.h"
 
 using namespace LWP;
 using namespace LWP::Input;
@@ -15,29 +16,40 @@ float LerpX(const float start, const float end, float t) {
 
 void TutorialScene::Initialize()
 {
-	// パーティクル初期化
+	// クラス初期化
 	particleManager_.Init();
 	player_.Initialize(&particleManager_);
 	followCamera_.Initialize(&mainCamera);
 	enemyManager_.Initialize(&player_);
-	drone_.Initialize(&player_,&enemyManager_);
+	drone_.Initialize(&player_, &enemyManager_);
 	stage_.Init(&mainCamera);
+
 
 	//タスクを追加
 	for (int i = 0; i < _countTasks; i++) {
 		taskDatas_[taskName_[i]] = false;
 	}
 
+	//曲追加
 	bgm_.Load(audioPath_ + bgmPath_);
 	bgm_.Play(0.2f, 255);
 
+	//画像データを先に読み込んで保存
+	taskBoads_[Move] = LWP::Resource::LoadTexture("tutorial/boad1.png");
+	taskBoads_[Slide] = LWP::Resource::LoadTexture("tutorial/boad2.png");
+	taskBoads_[Shot] = LWP::Resource::LoadTexture("tutorial/boad3.png");
+	taskBoads_[SlideShot] = LWP::Resource::LoadTexture("tutorial/boad4.png");
+	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad5.png");
+
+
+	//ボードスプライト初期化
 	spriteBoad_.isUI = true;
 	spriteBoad_.material.enableLighting = false;
-	spriteBoad_.material.texture = LWP::Resource::LoadTexture("tutorial/boad.png");
-	spriteBoad_.worldTF.translation = {960,220,0};
+	//spriteBoad_.material.texture = LWP::Resource::LoadTexture("tutorial/boad.png");
+	spriteBoad_.worldTF.translation = { 960,220,0 };
 	spriteBoad_.anchorPoint = { 0.5f,0.5f };
 
-
+	//ゲージスプライト初期化
 	spriteGage_.isUI = true;
 	spriteGage_.material.enableLighting = false;
 	spriteGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gage.png");
@@ -54,7 +66,7 @@ void TutorialScene::Initialize()
 
 void TutorialScene::Update()
 {
-
+	//デバッグ
 	Debug();
 
 	//状態リクエストがある時実行
@@ -64,15 +76,20 @@ void TutorialScene::Update()
 		taskReq_ = std::nullopt;
 		//初期化処理
 		(this->*TaskInitialize[(int)tasks_])();
+
+		//ゲージのサイズを初期化
 		spriteGage_.worldTF.scale = { 2.0f,1.0f,1.0f };
 	}
 	//状態更新処理
 	(this->*TaskUpdate[tasks_])();
 
+	//クラス更新
 	drone_.Update();
 	player_.Update();
 	followCamera_.Update(player_.GetWorldPosition());
+	enemyManager_.Update();
 
+	//シーン変更処理
 	SceneChange();
 }
 
@@ -90,7 +107,7 @@ void TutorialScene::Debug()
 			case TutorialScene::Move:
 
 				ImGui::Text("move count : %4.1f", normas_.move.currentMoving);
-				ImGui::DragFloat("move need move sec",&normas_.move.needMovingSec);
+				ImGui::DragFloat("move need move sec", &normas_.move.needMovingSec);
 				break;
 			case TutorialScene::Slide:
 				ImGui::Text("slide isCount : %d / count : %d", normas_.slide.isCount, normas_.slide.currentCount);
@@ -136,9 +153,11 @@ void TutorialScene::Debug()
 
 void TutorialScene::SceneChange()
 {
-
+	//シーン変更フラグがONの時
 	if (isSceneChange_) {
-		nextSceneFunction = []() { return new GameScene(); };
+		//曲を止めてシーン変更
+		bgm_.Stop();
+		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 
 #ifdef DEMO
@@ -161,31 +180,36 @@ void (TutorialScene::* TutorialScene::TaskInitialize[])() = {
 
 void (TutorialScene::* TutorialScene::TaskUpdate[])() = {
 	&TutorialScene::MoveUpdate,
-	& TutorialScene::SlideUpdate,
-	& TutorialScene::ShotUpdate,
-	& TutorialScene::SlideShotUpdate,
-	& TutorialScene::AnotherUpdate
+	&TutorialScene::SlideUpdate,
+	&TutorialScene::ShotUpdate,
+	&TutorialScene::SlideShotUpdate,
+	&TutorialScene::AnotherUpdate
 };
 
 #pragma region 各タスク初期化
 void TutorialScene::MoveInitialize()
 {
+	spriteBoad_.material.texture = taskBoads_[Move];
 }
 
 void TutorialScene::SlideInitialize()
 {
+	spriteBoad_.material.texture = taskBoads_[Slide];
 }
 
 void TutorialScene::ShotInitialize()
 {
+	spriteBoad_.material.texture = taskBoads_[Shot];
 }
 
 void TutorialScene::SlideShotInitialize()
 {
+	spriteBoad_.material.texture = taskBoads_[SlideShot];
 }
 
 void TutorialScene::AnotherInitialize()
 {
+	spriteBoad_.material.texture = taskBoads_[Another];
 }
 #pragma endregion
 
@@ -198,15 +222,18 @@ void TutorialScene::MoveUpdate()
 	//移動状態の時カウント増やす
 	float delta = Info::GetDeltaTimeF();
 
+	//modelアニメーションが走るの時のみカウント
 	if (player_.GetAnimationType() == "01_Run") {
 		normas_.move.currentMoving += delta;
 
 	}
 
+	//カウント進行度でゲージのサイズ調整
 	float t = (normas_.move.currentMoving / normas_.move.needMovingSec);
 	float scale = LerpX(2, 0, t);
 	spriteGage_.worldTF.scale.x = scale;
 
+	//条件達成で次のタスクへ
 	if (normas_.move.currentMoving >= normas_.move.needMovingSec) {
 		taskDatas_[taskName_[Move]] = true;
 		spriteGage_.worldTF.scale.x = 0;
@@ -229,7 +256,8 @@ void TutorialScene::SlideUpdate()
 		normas_.slide.isCount = false;
 	}
 
-	float t = (float) (normas_.slide.currentCount / (float)normas_.slide.maxCount);
+	//カウント進行度でゲージのサイズ調整
+	float t = (float)(normas_.slide.currentCount / (float)normas_.slide.maxCount);
 	float scale = LerpX(2, 0, t);
 	spriteGage_.worldTF.scale.x = scale;
 
@@ -255,7 +283,7 @@ void TutorialScene::ShotUpdate()
 		normas_.shot.currentCount++;
 		normas_.shot.isCount = false;
 	}
-
+	//カウント進行度でゲージのサイズ調整
 	float t = (float)(normas_.shot.currentCount / (float)normas_.shot.maxCount);
 	float scale = LerpX(2, 0, t);
 	spriteGage_.worldTF.scale.x = scale;
@@ -281,7 +309,7 @@ void TutorialScene::SlideShotUpdate()
 		normas_.slideShot.currentCount++;
 		normas_.slideShot.isCount = false;
 	}
-
+	//カウント進行度でゲージのサイズ調整
 	float t = (float)(normas_.slideShot.currentCount / (float)normas_.slideShot.maxCount);
 	float scale = LerpX(2, 0, t);
 	spriteGage_.worldTF.scale.x = scale;
@@ -301,20 +329,20 @@ void TutorialScene::AnotherUpdate()
 	float delta = Info::GetDeltaTimeF();
 
 	//if (player_.GetAnimationType() == "01_Run") {
-		normas_.another.currentMoving += delta;
+	normas_.another.currentMoving += delta;
 
 	//}
-
-		float t =  (normas_.another.currentMoving / normas_.another.needMovingSec);
-		float scale = LerpX(2, 0, t);
-		spriteGage_.worldTF.scale.x = scale;
+	//カウント進行度でゲージのサイズ調整
+	float t = (normas_.another.currentMoving / normas_.another.needMovingSec);
+	float scale = LerpX(2, 0, t);
+	spriteGage_.worldTF.scale.x = scale;
 
 	if (normas_.another.currentMoving >= normas_.another.needMovingSec) {
 		taskDatas_[taskName_[Another]] = true;
 		spriteGage_.worldTF.scale.x = 0;
 		//最後なので
-		isSceneChange_ =true;
-		
+		isSceneChange_ = true;
+
 	}
 }
 
