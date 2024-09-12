@@ -46,6 +46,12 @@ void Title::Initialize() {
 	spider_[0].anim.Play("00_Idle", true);
 	spider_[1].anim.Play("00_Idle", true, 0.4f);
 	spider_[2].anim.Play("00_Idle", true, 0.7f);
+
+	// タイトル
+	sprite_.worldTF.translation = { 926.0f, 116.0f, 0.0f };
+	sprite_.material.texture = LWP::Resource::LoadTexture("UI/TitleLogo.png");
+	sprite_.material.enableLighting = false;
+	sprite_.isUI = true;
 }
 
 // 更新

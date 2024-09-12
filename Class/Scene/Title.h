@@ -34,4 +34,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	Skins spider_[3];
 
 	Stage stage_;
+
+	LWP::Primitive::Sprite sprite_;
 };
