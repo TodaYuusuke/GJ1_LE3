@@ -1,4 +1,5 @@
 #include "IEnemy.h"
+#include "../Mask/Mask.h"
 
 using namespace LWP;
 using namespace LWP::Math;
@@ -24,6 +25,8 @@ void IEnemy::Init() {
 			invincibleTime_ = kInvincibleTime_;
 		}
 	};
+	collider_.mask.SetBelongFrag(GJMask::Enemy());	// フラグ設定
+	collider_.mask.SetHitFrag(GJMask::Player() | GJMask::Bullet());
 	
 	// 子クラスの初期化
 	ChildInit();

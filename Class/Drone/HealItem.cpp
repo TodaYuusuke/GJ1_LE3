@@ -1,4 +1,5 @@
 #include "HealItem.h"
+#include "../Mask/Mask.h"
 
 using namespace LWP;
 using namespace LWP::Math;
@@ -20,6 +21,8 @@ void HealItem::Init(LWP::Math::Vector3 pos) {
 			isUsed_ = true;
 		}
 	};
+	collider_.mask.SetBelongFrag(GJMask::HealItem());	// フラグ設定
+	collider_.mask.SetHitFrag(GJMask::Player());
 }
 void HealItem::Update() {
 	// アニメーション

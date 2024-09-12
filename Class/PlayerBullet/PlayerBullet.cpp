@@ -1,4 +1,5 @@
 #include "PlayerBullet.h"
+#include "../Mask/Mask.h"
 
 using namespace LWP;
 using namespace LWP::Object;
@@ -47,7 +48,7 @@ void PlayerBullets::Update()
 			return true;
 		}
 		return false;
-		});
+	});
 
 }
 
@@ -60,6 +61,8 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 	newdata.model.LoadSphere();
 	newdata.model.worldTF.translation = pos;
 	newdata.collider.SetFollowTarget(&newdata.model.worldTF);
+	newdata.collider.mask.SetBelongFrag(GJMask::Bullet());	// フラグ設定
+	newdata.collider.mask.SetHitFrag(GJMask::Enemy());
 	LWP::Object::Collider::Capsule& cap = newdata.collider.SetBroadShape(Collider::Capsule());
 	cap.end = (velo * -1) * delta;
 	cap.radius = 0.2f;

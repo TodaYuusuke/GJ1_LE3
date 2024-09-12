@@ -9,7 +9,7 @@ struct BulletData {
 
 	//一応時間制限で死亡
 	float deadCount=0;
-	float maxDeadCount = 5;
+	float maxDeadCount = 7.5f;
 
 	bool isAlive = true;
 };

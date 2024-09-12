@@ -1,5 +1,7 @@
 #include "Player.h"
+#include "../Mask/Mask.h"
 #include<numbers>
+
 using namespace LWP;
 using namespace LWP::Object;
 
@@ -29,13 +31,14 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 
 Player::Player()
 {
-	//model_.LoadCube();
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
 	SetAnimation(A_Idle);
 	bullets_ = std::make_unique<PlayerBullets>();
 
 	aabb_.collider.SetFollowTarget(&model_.worldTF);
+	aabb_.collider.mask.SetBelongFrag(GJMask::Player());	// フラグ設定
+	aabb_.collider.mask.SetHitFrag(GJMask::Enemy() | GJMask::HealItem());
 	aabb_.collider.name = "player";
 
 	standAABB_.min = { -0.4f,0.0f,-0.4f };
