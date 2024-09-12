@@ -13,6 +13,11 @@ public:
 	/// </summary>
 	void Init();
 
+	/// <summary>
+	/// ImGui
+	/// </summary>
+	void DebugGUI();
+
 
 public: // ** パーティクル生成関数 ** //
 
@@ -24,6 +29,12 @@ public: // ** パーティクル生成関数 ** //
 
 private: // ** メンバ変数 ** //
 
+	// 地形のコライダー
+	LWP::Object::Collider::Collider ground_[4];
+	// 水面のコライダー
+	LWP::Object::Collider::Collider waterSurface_;
+
 	// パーティクル
 	CeilingFragment ceilingFragment_;
+	int ceilingFragmentNum_ = 10;	// 生成数
 };
