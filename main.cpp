@@ -8,9 +8,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::StartUp("Window Title");
 	// ReleaseのFPSチェックのためにImGui表示
 #if DEMO
+	LWP::System::Run(new TestScene);
 #else
-	LWP::Info::ChangeShowDebugGUI();
+	LWP::Window::ChangeFullScreenMode();
+	LWP::System::Run(new Title);
 #endif
-	LWP::System::Run(new GameScene);
 	return 0;
 }

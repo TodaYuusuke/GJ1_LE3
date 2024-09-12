@@ -43,7 +43,4 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// ウェーブ数
 	int wave_ = 1;
-
-	// デバッグ用
-	bool freeMode_ = false;
 };

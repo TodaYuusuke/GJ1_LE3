@@ -1,8 +1,17 @@
 #include "ParticleManager.h"
 
+using namespace LWP::Math;
 using namespace LWP::Object::Collider;
 
 void ParticleManager::Init() {
+	// スケール変更用
+	float s;
+
+	ceilingFragment_.model.LoadShortPath("Debris/Debris.gltf");
+	s = 0.05f;
+	ceilingFragment_.model.worldTF.scale = { s,s,s };
+
+#pragma region 当たり判定生成
 	// フラグ設定
 	for (int i = 0; i < 3; i++) {
 		ground_[i].mask.SetBelongFrag(GJMask::Ground());
@@ -28,6 +37,42 @@ void ParticleManager::Init() {
 	g3.min = g1.min;
 	g3.max = g1.max;
 
+	// 天井のコライダー
+	ceiling_.worldTF.translation.y = 7.28f;
+	ceiling_.mask.SetBelongFrag(GJMask::Ceiling());
+	ceiling_.mask.SetHitFrag(GJMask::Bullet());
+	ceiling_.enterLambda = [this](Collider* col) {
+		Capsule& c = std::get<Capsule>(col->broad);
+		Vector3 start = c.start + col->GetWorldPosition();
+		Vector3 end = c.end + col->GetWorldPosition();
+
+		// 天井の座標を求める
+		// 2点間のY成分が同じ場合、Y=7の地点がない可能性がある
+		if (start.y == end.y) {
+			//return std::nullopt;
+		}
+
+		// パラメータtを計算
+		float t = (7.0f - start.y) / (end.y - start.y);
+
+		// tが0から1の範囲外なら、Y=7の地点は2点の間に存在しない
+		if (t < 0.0f || t > 1.0f) {
+			//return std::nullopt;
+		}
+
+		// tを使ってX, Z座標を計算
+		Vector3 result;
+		result.x = start.x + t * (end.x - start.x);
+		result.y = 7.0f;  // Y座標は7
+		result.z = start.z + t * (end.z - start.z);
+
+		Ceiling(result);
+	};
+	ceiling_.name = "Ceiling";
+	AABB& c = ceiling_.SetBroadShape(AABB());
+	c.min = g0.min;
+	c.max = g0.max;
+
 	// 水面のコライダー
 	waterSurface_.mask.SetBelongFrag(GJMask::WaterSurface());
 	waterSurface_.mask.SetHitFrag(GJMask::Particle());
@@ -35,13 +80,7 @@ void ParticleManager::Init() {
 	AABB& w = waterSurface_.SetBroadShape(AABB());
 	w.min = { -250.0f, -1.0f, -25.0f };
 	w.max = { 250.0f, -0.5f, 25.0f };
-
-	// スケール変更用
-	float s;
-
-	ceilingFragment_.model.LoadShortPath("Debris/Debris.gltf");
-	s = 0.05f;
-	ceilingFragment_.model.worldTF.scale = { s,s,s };
+#pragma endregion
 }
 void ParticleManager::DebugGUI() {
 

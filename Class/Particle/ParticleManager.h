@@ -31,10 +31,12 @@ private: // ** メンバ変数 ** //
 
 	// 地形のコライダー
 	LWP::Object::Collider::Collider ground_[4];
+	// 天井のコライダー
+	LWP::Object::Collider::Collider ceiling_;
 	// 水面のコライダー
 	LWP::Object::Collider::Collider waterSurface_;
 
 	// パーティクル
 	CeilingFragment ceilingFragment_;
-	int ceilingFragmentNum_ = 10;	// 生成数
+	int ceilingFragmentNum_ = 6;	// 生成数
 };

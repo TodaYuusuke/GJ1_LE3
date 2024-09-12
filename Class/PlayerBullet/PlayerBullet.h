@@ -1,5 +1,6 @@
 #pragma once
 #include <Adapter.h>
+#include "../Particle/ParticleManager.h"
 
 struct BulletData {
 	LWP::Resource::RigidModel model;
@@ -21,7 +22,7 @@ public:
 	~PlayerBullets();
 
 	//データの初期化処理
-	void Initialize();
+	void Initialize(ParticleManager* particle);
 
 	void Update();
 
@@ -39,6 +40,7 @@ private:
 	//弾のmodel名
 	std::string modelname_ = "";
 
-
+	// パーティクル管理クラス
+	ParticleManager* particle_ = nullptr;
 
 };

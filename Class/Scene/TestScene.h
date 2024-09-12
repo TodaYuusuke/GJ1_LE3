@@ -1,13 +1,14 @@
 #pragma once
-#include "../Enemy/EnemyManager.h"
-
 #include "scene/IScene.h"
 
 #include"../Player/Player.h"
 #include"../Drone/Drone.h"
 #include"../FollowCamera/FollowCamera.h"
-#include "../Upgrade/UpgradeManager/UpgradeManager.h"
 #include "../UI/GameUIManager.h"
+#include "../Upgrade/UpgradeManager/UpgradeManager.h"
+#include "../Enemy/EnemyManager.h"
+
+#include "../Particle/ParticleManager.h"
 
 class TestScene final
 	: public IScene {
@@ -24,17 +25,25 @@ public:
 
 
 private: //*** これより先に必要な処理や変数を記述 ***//
-	FollowCamera followCamera_;
-	Player player_;
-	EnemyManager enemyManager_;
-	Drone drone_;
+	// 背景
+	LWP::Primitive::Surface backGround_;
 
-	// ゲーム内UIマネージャー
-	GameUIManager gameUIManager_;
+	Player player_;	// プレイヤー
+	FollowCamera followCamera_;	// 追従カメラ
+	EnemyManager enemyManager_; // 敵管理
+	Drone drone_;	// ドローン
 
-	// アップグレードマネージャー
-	UpgradeManager upgradeManger_;
+	GameUIManager gameUIManager_;	// ゲーム内UIマネージャー
+	UpgradeManager upgradeManager_; // アップグレードマネージャー
 
-	LWP::Resource::RigidModel stage_;
-	LWP::Object::DirectionLight sun_;
+	LWP::Resource::RigidModel stage_;	// ステージ
+	LWP::Object::DirectionLight sun_;	// 太陽
+	// パーティクル管理
+	ParticleManager particleManager_;
+
+	// ウェーブ数
+	int wave_ = 1;
+
+	// デバッグ用
+	bool freeMode_ = false;
 };
