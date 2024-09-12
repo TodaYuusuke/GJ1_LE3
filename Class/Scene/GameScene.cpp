@@ -29,6 +29,8 @@ void GameScene::Initialize() {
 	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
 	sun_.rotation.x = 3.14f;	// 下から照らす
 	sun_.color = { 36,42,52,255 };	// 色決定
+
+	particleManager_.Init();
 }
 
 // 更新
@@ -45,6 +47,8 @@ void GameScene::Update() {
 		ImGui::EndTabBar();
 	}
 	ImGui::End();
+
+	particleManager_.DebugGUI();
 #endif
 
 	// ウェーブ終了後処理

@@ -119,4 +119,7 @@ protected: // ** パラメーター ** //
 		float kTotalTime = 0.5f;	// ノックバック拘束時間
 		float kDistance = 5.0f;	// 移動距離
 	}knockback_;
+
+	// 場外判定
+	float outArea_ = 94.0f;
 };

@@ -8,6 +8,8 @@
 #include "../Upgrade/UpgradeManager/UpgradeManager.h"
 #include "../Enemy/EnemyManager.h"
 
+#include "../Particle/ParticleManager.h"
+
 class GameScene final
 	: public IScene {
 public:
@@ -36,6 +38,8 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	LWP::Resource::RigidModel stage_;	// ステージ
 	LWP::Object::DirectionLight sun_;	// 太陽
+	// パーティクル管理
+	ParticleManager particleManager_;
 
 	// ウェーブ数
 	int wave_ = 1;
