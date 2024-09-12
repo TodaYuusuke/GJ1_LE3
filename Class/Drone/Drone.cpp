@@ -131,8 +131,8 @@ void Drone::UpdatePlayerFollow() {
 	goalPosition_ = player_->GetWorldPosition() + offset;
 
 	// プレイヤーがジャンプしても上に貫通しないように
-	if (model_.worldTF.translation.y > 4.0f) {
-		model_.worldTF.translation.y = 4.0f;
+	if (goalPosition_.y > 4.0f) {
+		goalPosition_.y = 4.0f;
 	}
 
 	// 近くに死体があるかチェック
