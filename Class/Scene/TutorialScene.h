@@ -38,9 +38,12 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	void SlideShotUpdate();
 	void AnotherUpdate();
 
+	void Debug();
+
+	void SceneChange();
 private://パラメータ
 	struct MoveTask {
-		float needMovingSec = 3.0f;
+		float needMovingSec = 5.0f;//かかる時間
 		float currentMoving = 0.0f;
 	};
 	struct SlideTask
@@ -51,7 +54,7 @@ private://パラメータ
 	};
 	struct ShotTask
 	{
-		int maxCount = 10;
+		int maxCount = 5;
 		int currentCount = 0;
 		bool isCount = true;
 	};
@@ -65,6 +68,14 @@ private://パラメータ
 		float needMovingSec = 3.0f;
 		float currentMoving = 0.0f;
 	};
+
+	struct TaskNormas {
+		MoveTask move;
+		SlideTask slide;
+		ShotTask shot;
+		SlideShotTask slideShot;
+		AnotherTask another;
+	}normas_;
 
 private://変数
 	FollowCamera followCamera_;
@@ -84,7 +95,7 @@ private://変数
 		Another,
 		_countTasks
 	}tasks_;
-	std::optional<Tasks>taskReq_ = std::nullopt;
+	std::optional<Tasks>taskReq_ = Move;
 
 	//プレイヤータスク
 	std::string taskName_[_countTasks] = {
@@ -94,15 +105,27 @@ private://変数
 		"SlideShot",
 		"anotherText"
 	};
-	std::vector<std::map<std::string, bool>>taskDatas_;
+	std::map<std::string, bool>taskDatas_;
 
+	//シーン変更フラグ
+	bool isSceneChange_ = false;
 
+#pragma region 音関係
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "BGM/";
 	//bgm
 	LWP::Resource::Audio bgm_;
-	std::string bgmPath_ = "game2.mp3";
+	std::string bgmPath_ = "game3.mp3";
 
-	LWP::Primitive::Sprite testSprite_;
+#pragma endregion
+
+	//説明ボード
+	LWP::Primitive::Sprite spriteBoad_;
+
+	//進捗ゲージ
+	LWP::Primitive::Sprite spriteGage_;
+
+
+
 };
