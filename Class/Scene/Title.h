@@ -35,5 +35,8 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	Stage stage_;
 
-	LWP::Primitive::Sprite sprite_;
+	// タイトルロゴ
+	LWP::Primitive::Sprite logo_;
+	// BGM
+	LWP::Resource::Audio bgm_;
 };

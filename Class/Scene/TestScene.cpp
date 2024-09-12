@@ -60,7 +60,7 @@ void TestScene::Update() {
 
 	// いったん外に出す
 	drone_.Update();
-	gameUIManager_.Update();
+	gameUIManager_.Update(wave_, enemyManager_.GetRemainingEnemy());
 	upgradeManager_.Update();
 
 	// ゲームUIの表示非表示を切り替える

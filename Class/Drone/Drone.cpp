@@ -3,6 +3,12 @@
 using namespace LWP;
 using namespace LWP::Math;
 
+Drone::~Drone() {
+	if (suction_.enemy) {
+		delete suction_.enemy;
+	}
+}
+
 void Drone::Initialize(Player* playerPtr, EnemyManager* enemyPtr) {
 	player_ = playerPtr;
 	enemies_ = enemyPtr;

@@ -37,6 +37,12 @@ public:
 	/// <param name="pos"></param>
 	/// <returns>敵の実態</returns>
 	IEnemy* GetNearDeadBody(LWP::Math::Vector3 pos);
+	/// <summary>
+	/// 敵の残り数を返す
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns>敵の実態</returns>
+	int GetRemainingEnemy();
 
 private: // ** メンバ変数 ** //
 
@@ -54,6 +60,9 @@ private: // ** メンバ変数 ** //
 		std::function<void(LWP::Math::Vector3 pos)> summonFunction_;
 	};
 	std::map<int, EnemyProperty> enemyProperty_;
+
+	// 一番近くの敵を指すビルボード
+	LWP::Primitive::Billboard3D billboard_;
 
 
 private: // ** 初期化時に確定するデータ ** //

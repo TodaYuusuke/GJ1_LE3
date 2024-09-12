@@ -2,6 +2,8 @@
 #include <Adapter.h>
 #include "scene/IScene.h"
 
+#include "../Stage/Stage.h"
+
 class Result final
 	: public IScene {
 public:
@@ -23,4 +25,29 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	//bgm
 	LWP::Resource::Audio bgm_;
 	std::string bgmPath_ = "clear1.mp3";
+
+	// ステージ
+	Stage stage_;
+
+	struct Skins {
+		LWP::Resource::SkinningModel model;
+		LWP::Resource::Animation anim;
+	};
+	// プレイヤー
+	Skins player_;
+	// ドローン
+	Skins drone_;
+	LWP::Object::PointLight droneLight_;
+
+	// 演出用ポストプロセス
+	struct PP {
+		bool flag = false;	// 演出開始フラグ
+		float grayScaleIntensity = 0.66f;	// グレースケールの最終強度
+		float radialBlurIntensity = 0.01f;	// ラジアルブラーの最終強度
+
+		// ポストプロセスの演出変化にかかる時間
+		float totalTime = 0.5f;
+		// 経過時間
+		float time = 0.0f;
+	}ppParameter;
 };

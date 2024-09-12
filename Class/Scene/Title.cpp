@@ -24,7 +24,7 @@ void Title::Initialize() {
 	drone_.model.LoadShortPath("Drone/Drone.gltf");
 	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
 	drone_.anim.Play("00_Idle", true);
-	drone_.model.worldTF.translation = { -33.0f, 3.0f, 7.6f };
+	drone_.model.worldTF.translation = { -32.76f, 2.0f, 9.25f };
 	droneLight_.transform.Parent(&drone_.model.worldTF);
 	droneLight_.transform.translation.y = -0.72f;
 	droneLight_.intensity = 0.5f;
@@ -48,16 +48,21 @@ void Title::Initialize() {
 	spider_[2].anim.Play("00_Idle", true, 0.7f);
 
 	// タイトル
-	sprite_.worldTF.translation = { 926.0f, 116.0f, 0.0f };
-	sprite_.material.texture = LWP::Resource::LoadTexture("UI/TitleLogo.png");
-	sprite_.material.enableLighting = false;
-	sprite_.isUI = true;
+	logo_.worldTF.translation = { 926.0f, 116.0f, 0.0f };
+	logo_.material.texture = LWP::Resource::LoadTexture("UI/TitleLogo.png");
+	logo_.material.enableLighting = false;
+	logo_.isUI = true;
+
+	// BGM
+	bgm_.Load("BGM/title.mp3");
+	bgm_.Play(0.1f, 255);
 }
 
 // 更新
 void Title::Update() {
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
+		bgm_.Stop();
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 }

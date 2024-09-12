@@ -2,6 +2,7 @@
 #include "../Player/Player.h"
 
 using namespace LWP;
+using namespace LWP::Math;
 
 void GameUIManager::Initialize(Player* player)
 {
@@ -48,8 +49,7 @@ void GameUIManager::Initialize(Player* player)
 	}
 }
 
-void GameUIManager::Update()
-{
+void GameUIManager::Update(int wave, int enemyCount) {
 	// デバッグ
 	Debug();
 
@@ -71,6 +71,10 @@ void GameUIManager::Update()
 		HPGaugeUpdate();
 		// 弾ゲージ更新
 		BulletGaugeUpdate();
+		// ウェーブ更新
+		waveSprite_.Update(wave);
+		// エネミー更新
+		enemySprite_.Update(enemyCount);
 	}
 }
 
@@ -190,6 +194,13 @@ void GameUIManager::SetUp()
 			BulletsUI_[i].isActive = false;
 		}
 	}
+	
+	// 強制リロード
+	player_->parameters_.bulletData.ammoRemaining_ = player_->parameters_.bulletData.maxAmmoNum_;
+
+	// 初期化
+	waveSprite_.Init({ 753.0f,24.0f,0.0f });
+	enemySprite_.Init({ 834.0f,137.0f,0.0f });
 }
 
 void GameUIManager::Debug()
@@ -256,5 +267,104 @@ void GameUIManager::SwitchDisplayUI(bool isDisplay)
 	for (int i = 0; i < player_->parameters_.bulletData.maxAmmoNum_; i++) {
 		BulletsUI_[i].isActive = isDisplay;
 	}
+
+	// ウェーブとエネミーも非表示
+	waveSprite_.text.isActive = isDisplay;
+	enemySprite_.text.isActive = isDisplay;
+
+	// 数字はどちらにしろfalseで
+	for (int i = 0; i < 10; i++) {
+		waveSprite_.number.n[i].isActive = false;
+		enemySprite_.numFirst.n[i].isActive = false;
+		enemySprite_.numSecond.n[i].isActive = false;
+	}
 }
 
+void GameUIManager::WaveSprite::Init(LWP::Math::Vector3 pos) {
+	text.material.texture = LWP::Resource::LoadTexture("UI/Text/Wave.png");
+	text.material.enableLighting = false;
+	text.isUI = true;
+	text.worldTF.translation = pos;
+	text.worldTF.scale = { 0.3f,0.3f,0.3f };
+
+	// 
+	for (int i = 0; i < 10; i++) {
+		number.n[i].worldTF.Parent(&text.worldTF);
+		number.n[i].worldTF.translation = { 955.0f,-35.0f,0.0f };
+		number.n[i].worldTF.scale = { 0.3f,0.3,0.3f };
+		number.n[i].isActive = false;
+		number.n[i].material.enableLighting = false;
+		number.n[i].isUI = true;
+	}
+}
+void GameUIManager::WaveSprite::Update(int wave) {
+	ImGui::Begin("WaveTest");
+	if (ImGui::TreeNode("Text")) {
+		text.DebugGUI();
+	}
+	ImGui::DragFloat3("1t", &number.n[1].worldTF.translation.x, 5.0f);
+	ImGui::DragFloat3("1s", &number.n[1].worldTF.scale.x, 0.01f);
+	ImGui::End();
+
+	// 初期化
+	for (int i = 0; i < 10; i++) {
+		number.n[i].isActive = false;
+	}
+
+	// 10は特殊処理
+	if (wave >= 10) {
+		number.n[1].isActive = true;
+		number.n[0].isActive = true;
+		number.n[0].worldTF.translation.x = 1165.0f;
+	}
+	// それ以外は通常処理
+	else {
+		number.n[wave].isActive = true;
+	}
+}
+
+void GameUIManager::EnemySprite::Init(LWP::Math::Vector3 pos) {
+	text.material.texture = LWP::Resource::LoadTexture("UI/Text/Enemy.png");
+	text.material.enableLighting = false;
+	text.isUI = true;
+	text.worldTF.translation = pos;
+	text.worldTF.scale = { 0.15f,0.15f,0.15f };
+
+	// 
+	for (int i = 0; i < 10; i++) {
+		numFirst.n[i].worldTF.Parent(&text.worldTF);
+		numFirst.n[i].worldTF.translation = { 1345.0f,25.0f,0.0f };
+		numFirst.n[i].worldTF.scale = { 0.2f,0.2f,0.2f };
+		numFirst.n[i].isActive = false;
+		numFirst.n[i].material.enableLighting = false;
+		numFirst.n[i].isUI = true;
+		numSecond.n[i].worldTF.Parent(&text.worldTF);
+		numSecond.n[i].worldTF.translation = { 1165.0f,25.0f,0.0f };
+		numSecond.n[i].worldTF.scale = { 0.2f,0.2f,0.2f };
+		numSecond.n[i].isActive = false;
+		numSecond.n[i].material.enableLighting = false;
+		numSecond.n[i].isUI = true;
+	}
+}
+void GameUIManager::EnemySprite::Update(int enemy) {
+	ImGui::Begin("EnemyTest");
+	if (ImGui::TreeNode("Text")) {
+		text.DebugGUI();
+	}
+	ImGui::DragFloat3("3t", &numFirst.n[3].worldTF.translation.x, 5.0f);
+	ImGui::DragFloat3("3s", &numFirst.n[3].worldTF.scale.x, 0.01f);
+	ImGui::DragFloat3("0t", &numSecond.n[0].worldTF.translation.x, 5.0f);
+	ImGui::DragFloat3("0s", &numSecond.n[0].worldTF.scale.x, 0.01f);
+	ImGui::End();
+	// 初期化
+	for (int i = 0; i < 10; i++) {
+		numFirst.n[i].isActive = false;
+		numSecond.n[i].isActive = false;
+	}
+
+	int second = enemy / 10;
+	int first = enemy % 10;
+
+	numSecond.n[second].isActive = true;
+	numFirst.n[first].isActive = true;
+}
