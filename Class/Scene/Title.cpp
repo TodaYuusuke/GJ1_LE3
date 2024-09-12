@@ -16,6 +16,7 @@ void Title::Initialize() {
 	
 	player_.model.LoadShortPath("Robot/Player_Boned_IK.gltf");
 	player_.anim.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &player_.model);
+	player_.anim.Play("14_Title", true);
 	player_.model.worldTF.translation = { -34.0f, 0.0f, 7.0f };
 	player_.model.worldTF.rotation = { 0.0f, 0.948f, 0.0f, -0.319f };
 	
