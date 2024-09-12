@@ -53,13 +53,6 @@ void GameUIManager::Update()
 	// デバッグ
 	Debug();
 
-	// UI関係のセットアップが終わっていない場合セットアップを行う
-	if (!isSetUpUI_) {
-		SetUp();
-		// フラグをtrue
-		isSetUpUI_ = true;
-	}
-
 	// UIの表示状態が切り替わっている場合
 	if (isDisplayObserver_.GetChanged()) {
 		SwitchDisplayUI(isDisplayObserver_.t);
@@ -72,6 +65,9 @@ void GameUIManager::Update()
 		// 弾ゲージ更新
 		BulletGaugeUpdate();
 	}
+
+	// セットアップを行う
+	SetUp();
 }
 
 void GameUIManager::DebugGUI()
@@ -194,7 +190,7 @@ void GameUIManager::SetUp()
 
 void GameUIManager::Debug()
 {
-	// デバッグ時のみ実行
+	// デバッグ時のみ実行aa
 #ifdef _DEBUG
 
 	// セットアップを毎フレーム実行
@@ -204,6 +200,7 @@ void GameUIManager::Debug()
 	DebugGUI();
 
 #endif // _DEBUG
+
 }
 
 void GameUIManager::HPGaugeUpdate()

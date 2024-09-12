@@ -141,6 +141,10 @@ void UpgradeManager::DebugGUI()
 {
 #if DEMO
 
+	
+
+#endif // DEMO
+
 	// ImGui開始
 	ImGui::Begin("Game");
 	if (ImGui::BeginTabBar("LWP")) {
@@ -203,11 +207,9 @@ void UpgradeManager::DebugGUI()
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
-	}
+}
 	// ImGui終了
 	ImGui::End();
-
-#endif // DEMO
 
 }
 
