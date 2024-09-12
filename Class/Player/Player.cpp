@@ -60,6 +60,7 @@ Player::Player()
 			if (parameters_.hp++ > parameters_.maxHp) {
 				parameters_.hp = parameters_.maxHp;
 			}
+			audioGetHeal_.Play();
 			return;
 		}
 
@@ -78,6 +79,9 @@ Player::Player()
 		};
 
 
+	audioRun_.Load(audioPath_ + runPath_);
+	audioSlide_.Load(audioPath_ + slidePath_);
+	audioGetHeal_.Load(audioPath_ + healPath_);
 }
 
 Player::~Player()
@@ -360,6 +364,24 @@ void Player::ToJump() {
 
 void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
+	//歩行サウンドに関する処理
+	if (nowPlayAnimeName_ == animeName_[A_Run]) {
+		audioRun_.Stop();
+	}
+	else if (animeName_[type] == animeName_[A_Run]) {
+		audioRun_.Play(audioVolume_,255);
+	}
+
+	//スライドサウンド
+	//単発系はこれでいい
+	if (animeName_[type] == animeName_[A_SlidingStart]) {
+		audioSlide_.Play(0.5f);
+	}
+	//聞こえてほしくないモーションの時削除
+	if ((nowPlayAnimeName_ == animeName_[A_SlidingStart]|| nowPlayAnimeName_ == animeName_[A_Sliding])&&(animeName_[type] == animeName_[A_JumpStart]|| animeName_[type] == animeName_[A_Damage])) {
+		audioSlide_.Stop();
+	}
+
 	animation.Play(animeName_[type], loop);
 	nowPlayAnimeName_ = animeName_[type];
 }
@@ -500,7 +522,7 @@ void (Player::* Player::BehaviorUpdate[])() = {
 void Player::InitializeMove()
 {
 	//ベクトル初期化
-	//velo_ = { 0,0,0 };
+	velo_ = { 0,0,0 };
 	//SetAnimation(A_Run);
 
 	parameters_.currentInertia = 0;
@@ -584,6 +606,7 @@ void Player::InitializeSlideStopShot()
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
+
 }
 void Player::InitializeHitSomeone()
 {
@@ -602,6 +625,8 @@ void Player::InitializeHitSomeone()
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
 	model_.isActive = false;
+
+
 }
 
 #pragma endregion

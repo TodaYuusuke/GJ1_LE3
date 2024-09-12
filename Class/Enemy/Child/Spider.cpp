@@ -13,6 +13,11 @@ void Spider::ChildInit() {
 	Collider::AABB& aabb = collider_.SetBroadShape(Collider::AABB());
 	aabb.min.y = -0.17f;
 	aabb.max.y = 0.7f;
+
+	audioWalk_.Load(audioPath_ + walkPath_);
+	audioDead_.Load(audioPath_ + deadPath_);
+
+	audioWalk_.Play(1.0f, 255);
 }
 
 void Spider::ChildUpdate() {}
@@ -38,6 +43,12 @@ void Spider::DebugGUI() {
 	if (ImGui::Button("Knockback")) { behaviorReq_ = Knockback; }
 	if (ImGui::Button("Dying")) { behaviorReq_ = Dying; }
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
+}
+
+void Spider::InitDeadBody()
+{
+	audioWalk_.Stop();
+	audioDead_.Play();
 }
 
 void Spider::InitNormal() {
