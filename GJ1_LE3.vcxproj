@@ -162,6 +162,7 @@
     <ClCompile Include="Class\Scene\Result.cpp" />
     <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
+    <ClCompile Include="Class\Stage\Stage.cpp" />
     <ClCompile Include="Class\Upgrade\UpgradeManager\UpgradeManager.cpp" />
     <ClCompile Include="Class\UI\GameUIManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Class\Scene\Result.h" />
     <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
+    <ClInclude Include="Class\Stage\Stage.h" />
     <ClInclude Include="Class\Upgrade\child\D_CorrectSpeedUP_Lv1.h" />
     <ClInclude Include="Class\Upgrade\child\D_CorrectSpeedUP_Lv2.h" />
     <ClInclude Include="Class\Upgrade\child\D_CorrectSpeedUP_Lv3.h" />
