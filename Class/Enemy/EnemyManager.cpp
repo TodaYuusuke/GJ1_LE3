@@ -208,3 +208,14 @@ IEnemy* EnemyManager::GetNearDeadBody(LWP::Math::Vector3 pos) {
 
 	return result;
 }
+
+int EnemyManager::GetRemainingEnemy() {
+	// 召喚予定の残敵
+	int result = enemies_.size();
+
+	for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
+		result += enemyProperty_[i].spawn;
+	}
+
+	return result;
+}

@@ -31,7 +31,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 更新関数
 	/// </summary>
-	void Update();
+	void Update(int wave, int enemyCount);
 
 	/// <summary>
 	/// ImGui表示関数
@@ -96,6 +96,43 @@ private: // メンバ変数
 	std::vector<LWP::Primitive::Sprite> hpGauge_;	// 本体
 	// 弾用
 	std::vector<LWP::Primitive::Sprite> BulletsUI_; // 弾ゲージ
+
+	// 数字
+	struct NumberSprite {
+		LWP::Primitive::Sprite n[10];
+
+		NumberSprite() {
+			n[0].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/0.png");
+			n[1].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/1.png");
+			n[2].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/2.png");
+			n[3].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/3.png");
+			n[4].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/4.png");
+			n[5].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/5.png");
+			n[6].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/6.png");
+			n[7].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/7.png");
+			n[8].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/8.png");
+			n[9].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/9.png");
+		}
+	};
+
+	// ウェーブ表示
+	struct WaveSprite {
+		LWP::Primitive::Sprite text;
+		NumberSprite number;
+
+		void Init(LWP::Math::Vector3 pos);
+		void Update(int wave);
+	}waveSprite_;
+	// 残敵表示
+	struct EnemySprite {
+		LWP::Primitive::Sprite text;
+		NumberSprite numFirst;	// 1桁目
+		NumberSprite numSecond;	// 2桁目
+
+		void Init(LWP::Math::Vector3 pos);
+		void Update(int enemy);
+	}enemySprite_;
+	
 
 	/// UI用変数群
 	// 体力ゲージ変数群

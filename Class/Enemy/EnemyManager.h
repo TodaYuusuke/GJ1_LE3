@@ -37,6 +37,12 @@ public:
 	/// <param name="pos"></param>
 	/// <returns>敵の実態</returns>
 	IEnemy* GetNearDeadBody(LWP::Math::Vector3 pos);
+	/// <summary>
+	/// 敵の残り数を返す
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns>敵の実態</returns>
+	int GetRemainingEnemy();
 
 private: // ** メンバ変数 ** //
 

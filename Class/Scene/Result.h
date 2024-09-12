@@ -2,6 +2,8 @@
 #include <Adapter.h>
 #include "scene/IScene.h"
 
+#include "../Stage/Stage.h"
+
 class Result final
 	: public IScene {
 public:
@@ -23,4 +25,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	//bgm
 	LWP::Resource::Audio bgm_;
 	std::string bgmPath_ = "clear1.mp3";
+
+	// ステージ
+	Stage stage_;
 };

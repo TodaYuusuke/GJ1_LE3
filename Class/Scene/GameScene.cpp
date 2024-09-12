@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "Result.h"
+#include "NullScene.h"
 
 using namespace LWP;
 using namespace LWP::Math;
@@ -39,7 +40,7 @@ void GameScene::Update() {
 
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
-		nextSceneFunction = []() { return new Result(); };
+		nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
 	}
 
 	// ウェーブが終わったかを確認
@@ -54,13 +55,14 @@ void GameScene::Update() {
 	if (waveEnd_) {
 		// ウェーブ10終了でゲーム終了
 		if (wave_ >= 10) {
-			nextSceneFunction = []() { return new Result(); };
+			nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
 		}
 		else {
 
 			// アップグレードが終わったか確認
 			if (!upgradeManager_.GetIsDisplay()) {
 				// アップグレード確認して次のウェーブへ
+				gameUIManager_.SetUp();	// UI更新
 				enemyManager_.StartWave(++wave_);
 				waveEnd_ = false;
 			}
@@ -75,7 +77,7 @@ void GameScene::Update() {
 	}
 
 	// いったん外に出す
-	gameUIManager_.Update();
+	gameUIManager_.Update(wave_, enemyManager_.GetRemainingEnemy());
 	upgradeManager_.Update();
 	// ゲームUIの表示非表示を切り替える
 	gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
