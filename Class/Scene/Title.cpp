@@ -61,7 +61,7 @@ void Title::Initialize() {
 // 更新
 void Title::Update() {
 	// Nキーで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_N)) {
+	if (Keyboard::GetTrigger(DIK_N) || Controller::GetTrigger(XBOX_A)) {
 		bgm_.Stop();
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
