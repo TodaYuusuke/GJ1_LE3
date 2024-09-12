@@ -212,6 +212,8 @@ public:
 	//プレイヤーの現在の状態を取得
 	Behavior& GetBehavior() { return behavior_; }
 
+	const std::string& GetAnimationType() { return nowPlayAnimeName_; }
+
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 
 	//-1,1で向きを返却
