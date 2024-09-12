@@ -62,7 +62,7 @@ void EnemyManager::Update() {
 			// 実験用召喚ボタン
 			ImGui::Text("--- Summon Enemy ---");
 			ImGui::Combo("Select Type", &selectedClass, classText.data(), static_cast<int>(EnemyType::Count));
-			if (ImGui::Button("Summon")) { summonFunction[selectedClass](Vector3{ 0.0f,0.0f,0.0f }); }
+			if (ImGui::Button("Summon")) { enemyProperty_[selectedClass].summonFunction_(Vector3{0.0f,0.0f,0.0f}); }
 			ImGui::Text("");
 			// 一覧
 			ImGui::Text("--- Enemy List ---");

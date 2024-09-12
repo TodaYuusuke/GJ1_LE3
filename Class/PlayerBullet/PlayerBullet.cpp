@@ -60,6 +60,7 @@ void PlayerBullets::SetData(const LWP::Math::Vector3& pos, const LWP::Math::Vect
 	BulletData& newdata = bullets_.emplace_back() ;
 	newdata.model.LoadSphere();
 	newdata.model.worldTF.translation = pos;
+	newdata.model.worldTF.scale = { 0.1f,0.1f,0.1f };
 	newdata.collider.SetFollowTarget(&newdata.model.worldTF);
 	newdata.collider.mask.SetBelongFrag(GJMask::Bullet());	// フラグ設定
 	newdata.collider.mask.SetHitFrag(GJMask::Enemy() | GJMask::Ceiling());

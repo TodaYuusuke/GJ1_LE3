@@ -43,4 +43,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	int wave_ = 1;
 	// ウェーブ終了フラグ
 	bool waveEnd_ = false;
+
+	// UI初期化用
+	int uiInitFlag = -1;
 };
