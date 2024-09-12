@@ -26,6 +26,7 @@ void Stage::Init(LWP::Object::Camera* camera) {
 
 	// 太陽
 	sun_.rotation.x = 3.14f;	// 下から照らす
+	sun_.intensity = 1.8f;	// 色決定
 	sun_.color = { 36,42,52,255 };	// 色決定
 	
 	// ドアライト

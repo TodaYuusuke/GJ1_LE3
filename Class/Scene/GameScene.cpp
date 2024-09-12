@@ -33,19 +33,28 @@ void GameScene::Update() {
 		nextSceneFunction = []() { return new Result(); };
 	}
 
+	// ウェーブが終わったかを確認
+	if (!waveEnd_ && enemyManager_.GetEndWave()) {
+		waveEnd_ = true;
+		// スキルポイント+1
+		upgradeManager_.AddSkilPoint(1);
+		upgradeManager_.SetIsDisplay(true);
+	}
+
 	// ウェーブ終了後処理
-	if (enemyManager_.GetEndWave()) {
+	if (waveEnd_) {
 		// ウェーブ10終了でゲーム終了
 		if (wave_ >= 10) {
 			nextSceneFunction = []() { return new Result(); };
 		}
 		else {
-			// スキルポイント+1
-			upgradeManager_.AddSkilPoint(1);
-			upgradeManager_.SetIsDisplay(true);
-			
-			// アップグレード確認して次のウェーブへ
-			//enemyManager_.StartWave(++wave_);
+
+			// アップグレードが終わったか確認
+			if (!upgradeManager_.GetIsDisplay()) {
+				// アップグレード確認して次のウェーブへ
+				enemyManager_.StartWave(++wave_);
+				waveEnd_ = false;
+			}
 		}
 	}
 	// ウェーブ中処理
@@ -59,7 +68,7 @@ void GameScene::Update() {
 	// いったん外に出す
 	gameUIManager_.Update();
 	upgradeManager_.Update();
-
 	// ゲームUIの表示非表示を切り替える
 	gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
+
 }
