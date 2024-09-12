@@ -113,8 +113,20 @@ public://構造体＆enum群
 		float jumpSlope_ = 1.5f;
 	};
 
+	struct DeadData {
+		//傾き
+		float slope=1.0f;
+		//初速
+		float startVelo = 10.0f;
+
+		float gravity = 20.0f;
+	};
+
 	struct  ActiveFlag
 	{
+		//生きているか
+		bool isActive = true;
+
 		//ジャンプできるか
 		bool jump = false;
 
@@ -164,6 +176,9 @@ public://構造体＆enum群
 		//弾関連
 		BulletData bulletData;
 
+		//死亡関連
+		DeadData deadData;
+
 		//各有効処理フラグ
 		ActiveFlag activeFlag;
 	};
@@ -185,6 +200,7 @@ public:
 		Jump,		//ジャンプ処理
 		SlideStopShot,
 		HitSomeone,//ヒット時処理
+		Dead,		//死亡処理
 		_countBehavior
 	};
 
@@ -213,6 +229,7 @@ private:// ** 処理をまとめた関数 ** //
 	void InitializeJump();
 	void InitializeSlideStopShot(); //スライディングキャンセルする発砲処理
 	void InitializeHitSomeone();
+	void InitializeDead();
 
 	void UpdateMove();				//移動更新
 	void UpdateSlide();				//スライド更新
@@ -220,6 +237,7 @@ private:// ** 処理をまとめた関数 ** //
 	void UpdateJump();
 	void UpdateSlideStopShot();     //スライディングキャンセルする発砲処理
 	void UpdateHitSomeone();
+	void UpdateDead();
 #pragma endregion
 
 	//各状態関係なく更新
@@ -338,7 +356,8 @@ private: // ** 変数 ** //
 		"QuitSlide",
 		"Jump",
 		"SlideStopShot",
-		"HitSomeone"
+		"HitSomeone",
+		"Dead"
 	};
 
 	//デバッグ用無敵フラグ

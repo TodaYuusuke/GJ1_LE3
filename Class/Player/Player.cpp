@@ -73,10 +73,15 @@ Player::Player()
 			parameters_.bulletData.currentReloadStartSec_ = 0;
 			behaviorReq_ = HitSomeone;
 
+			if (parameters_.hp <= 0) {
+				behaviorReq_ = Dead;
+			}
+
 			//SetAnimation(A_Damage, false);
 		}
 
 		};
+
 
 
 	audioRun_.Load(audioPath_ + runPath_);
@@ -247,7 +252,7 @@ void Player::HitUpdate()
 			parameters_.hitData.animeCount_ = 0;
 			parameters_.hitData.isHit_ = true;
 			model_.isActive = true;
-			behaviorReq_ = Moving;
+			//behaviorReq_ = Moving;
 		}
 	}
 }
@@ -349,7 +354,7 @@ bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 }
 
 void Player::ToJump() {
-	if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_A)) {
+	if (parameters_.activeFlag.jump && (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_A))) {
 		//残弾がある時のみ処理
 		if (parameters_.bulletData.ammoRemaining_ > 0) {
 			parameters_.bulletData.ammoRemaining_--;
@@ -369,7 +374,7 @@ void Player::SetAnimation(AnimatinNameType type, bool loop)
 		audioRun_.Stop();
 	}
 	else if (animeName_[type] == animeName_[A_Run]) {
-		audioRun_.Play(audioVolume_,255);
+		audioRun_.Play(audioVolume_, 255);
 	}
 
 	//スライドサウンド
@@ -378,7 +383,7 @@ void Player::SetAnimation(AnimatinNameType type, bool loop)
 		audioSlide_.Play(0.5f);
 	}
 	//聞こえてほしくないモーションの時削除
-	if ((nowPlayAnimeName_ == animeName_[A_SlidingStart]|| nowPlayAnimeName_ == animeName_[A_Sliding])&&(animeName_[type] == animeName_[A_JumpStart]|| animeName_[type] == animeName_[A_Damage])) {
+	if ((nowPlayAnimeName_ == animeName_[A_SlidingStart] || nowPlayAnimeName_ == animeName_[A_Sliding]) && (animeName_[type] == animeName_[A_JumpStart] || animeName_[type] == animeName_[A_Damage])) {
 		audioSlide_.Stop();
 	}
 
@@ -469,7 +474,7 @@ void Player::Debug()
 				ImGui::DragFloat("no hit sec", &parameters_.hitData.noHitSec_);
 				ImGui::DragFloat("hit height", &parameters_.hitData.hitHeight_);
 				ImGui::DragFloat("hit velo", &parameters_.hitData.hitVelocity_);
-				ImGui::DragInt("tenmetsu count",& parameters_.hitData.tenmetuCount_);
+				ImGui::DragInt("tenmetsu count", &parameters_.hitData.tenmetuCount_);
 
 				ImGui::TreePop();
 			}
@@ -506,7 +511,8 @@ void (Player::* Player::BehaviorInitialize[])() = {
 	&Player::InitializeQuitSlide,
 	&Player::InitializeJump,
 	&Player::InitializeSlideStopShot,
-	&Player::InitializeHitSomeone
+	&Player::InitializeHitSomeone,
+	&Player::InitializeDead
 };
 //更新初期化関数ポインタテーブル
 void (Player::* Player::BehaviorUpdate[])() = {
@@ -515,7 +521,8 @@ void (Player::* Player::BehaviorUpdate[])() = {
 	&Player::UpdateQuitSlide,
 	&Player::UpdateJump,
 	&Player::UpdateSlideStopShot,
-	&Player::UpdateHitSomeone
+	&Player::UpdateHitSomeone,
+	&Player::UpdateDead
 };
 
 #pragma region 各状態の初期化
@@ -620,11 +627,29 @@ void Player::InitializeHitSomeone()
 	parameters_.hitData.animeCount_ = 0;
 
 
-	SetAnimation(A_Damage,false);
+	SetAnimation(A_Damage, false);
 
 	//多分上に吹っ飛ぶので一応
 	parameters_.jumpData.isJump_ = true;
 	model_.isActive = false;
+
+
+}
+
+void Player::InitializeDead()
+{
+	parameters_.activeFlag.isActive = false;
+	SetAnimation(A_Dead, false);
+
+	//向きベクトル計算
+	Math::Vector3 ve = Math::Vector3{ parameters_.hitData.hitDirection_,0,0 }.Normalize();
+	ve.y = parameters_.deadData.slope;
+	ve = ve.Normalize();
+
+	velo_ = ve * parameters_.deadData.startVelo;
+	acce_.y = -parameters_.gravity;
+
+	parameters_.jumpData.isJump_ = true;
 
 
 }
@@ -687,7 +712,7 @@ void Player::UpdateMove()
 #pragma region アニメーション変更処理
 
 	//弾の発射モーション以外は着地モーション優先
-	if (nowPlayAnimeName_ != animeName_[A_Land]&& nowPlayAnimeName_ != animeName_[A_Recovery]) {
+	if (nowPlayAnimeName_ != animeName_[A_Land] && nowPlayAnimeName_ != animeName_[A_Recovery]) {
 
 		if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
 
@@ -748,7 +773,10 @@ void Player::UpdateSlide()
 {
 
 	//過去位置と現在（1F前)との距離を検索
-	float pLeng = (parameters_.slideData.startPos - model_.worldTF.GetWorldPosition()).Length();
+	float pLeng = (parameters_.slideData.startPos.x - model_.worldTF.GetWorldPosition().x);
+	if (pLeng < 0) {
+		pLeng *= -1;
+	}
 
 	//指定した距離より離れた場合に減速処理
 	if (parameters_.slideData.length < pLeng) {
@@ -760,7 +788,7 @@ void Player::UpdateSlide()
 		SetAnimation(A_Sliding);
 	}
 
-	//
+	//スライディング中の発砲処理
 	float x = 0;
 	if (Input::Keyboard::GetPress(DIK_D)) {
 		x += 1;
@@ -784,15 +812,23 @@ void Player::UpdateSlide()
 	else {
 		x = 0;
 	}
-
 	//スライド中に攻撃
 	std::string type;
-	bool ans=false;
+	bool ans = false;
 	//水平射撃か
 	if (x != 0) {
-		type = standShot;
-
-		ans = ShotBullet(Math::Vector3{ x,parameters_.slideData.shotSlope,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
+		//逆噴射処理
+		if (parameters_.activeFlag.slidingStopShot) {
+			type = standShot;
+			ans = ShotBullet(Math::Vector3{ x,parameters_.slideData.shotSlope,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
+		}
+		else {
+			//通常処理
+			if (Input::Keyboard::GetTrigger(DIK_C)) {
+				type = slideShot;
+				ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
+			}
+		}
 	}
 	else {
 		if (Input::Keyboard::GetTrigger(DIK_C)) {
@@ -800,6 +836,8 @@ void Player::UpdateSlide()
 			ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 		}
 	}
+
+
 
 
 
@@ -813,7 +851,7 @@ void Player::UpdateSlide()
 		}
 
 		//0じゃないとき処理
-		if (x != 0) {
+		if (x != 0&&parameters_.activeFlag.slidingStopShot) {
 			behaviorReq_ = SlideStopShot;
 		}
 	}
@@ -865,8 +903,8 @@ void Player::UpdateQuitSlide()
 void Player::UpdateJump()
 {
 	//ジャンプ開始処理と
-	if (nowPlayAnimeName_ == animeName_[A_JumpStart]&&!animation.GetPlaying()) {
-   		SetAnimation(A_Jumping, true);
+	if (nowPlayAnimeName_ == animeName_[A_JumpStart] && !animation.GetPlaying()) {
+		SetAnimation(A_Jumping, true);
 	}
 
 
@@ -893,7 +931,11 @@ void Player::UpdateHitSomeone()
 		SetAnimation(A_Recovery, false);
 		behaviorReq_ = Moving;
 	}
-	
+
+}
+
+void Player::UpdateDead()
+{
 }
 
 
