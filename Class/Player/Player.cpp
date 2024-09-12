@@ -833,14 +833,14 @@ void Player::UpdateSlide()
 		}
 		else {
 			//通常処理
-			if (Input::Keyboard::GetTrigger(DIK_C)) {
+			if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
 				type = slideShot;
 				ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 			}
 		}
 	}
 	else {
-		if (Input::Keyboard::GetTrigger(DIK_C)) {
+		if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
 			type = slideShot;
 			ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 		}
