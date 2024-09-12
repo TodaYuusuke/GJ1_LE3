@@ -7,7 +7,7 @@
 class EnemyManager final {
 public:
 	EnemyManager() = default;
-	~EnemyManager() = default;
+	~EnemyManager();
 
 	// ** メンバ関数 ** //
 
@@ -50,6 +50,8 @@ private: // ** メンバ変数 ** //
 
 		float summonInterval_ = 0.0f;	// 召喚までの時間
 		float kSummonInterval_ = 4.5f;	// 召喚間隔
+		// 敵の召喚関数
+		std::function<void(LWP::Math::Vector3 pos)> summonFunction_;
 	};
 	std::map<int, EnemyProperty> enemyProperty_;
 
