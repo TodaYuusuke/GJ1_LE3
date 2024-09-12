@@ -331,6 +331,9 @@ private: // ** 変数 ** //
 	}aabb_;
 
 
+	//プレ座標
+	std::optional<LWP::Math::Vector3> prePos_=std::nullopt;
+
 	//移動ベクトル
 	LWP::Math::Vector3 velo_;
 	

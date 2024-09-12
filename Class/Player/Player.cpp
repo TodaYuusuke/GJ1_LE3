@@ -551,6 +551,8 @@ void Player::InitializeSlide()
 	aabb_.aabb.min = slideAABB_.min;
 	aabb_.aabb.max = slideAABB_.max;
 
+
+	prePos_ = std::nullopt;
 }
 
 void Player::InitializeQuitSlide()
@@ -771,6 +773,13 @@ void Player::UpdateMove()
 }
 void Player::UpdateSlide()
 {
+	//もし座標変更が行われていなかった場合
+	if (prePos_ == model_.worldTF.translation) {
+		//状態を変更して状態遷移
+		behaviorReq_ = QuitSlide;
+		return;
+	}
+	prePos_ = model_.worldTF.translation;
 
 	//過去位置と現在（1F前)との距離を検索
 	float pLeng = (parameters_.slideData.startPos.x - model_.worldTF.GetWorldPosition().x);
@@ -851,7 +860,7 @@ void Player::UpdateSlide()
 		}
 
 		//0じゃないとき処理
-		if (x != 0&&parameters_.activeFlag.slidingStopShot) {
+		if (x != 0 && parameters_.activeFlag.slidingStopShot) {
 			behaviorReq_ = SlideStopShot;
 		}
 	}
