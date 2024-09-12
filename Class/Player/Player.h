@@ -69,7 +69,7 @@ public://構造体＆enum群
 		//ヒット時の吹っ飛ぶX方向
 		float hitDirection_;
 		//吹っ飛ぶときの角度
-		float hitHeight_ = 1.0f;
+		float hitHeight_ = 0.3f;
 		//初速
 		float hitVelocity_ = 20.0f;
 
