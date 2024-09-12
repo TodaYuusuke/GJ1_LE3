@@ -5,6 +5,7 @@
 #include"../Drone/Drone.h"
 #include"../FollowCamera/FollowCamera.h"
 #include "../UI/GameUIManager.h"
+#include "../Upgrade/UpgradeManager/UpgradeManager.h"
 #include "../Enemy/EnemyManager.h"
 
 class GameScene final
@@ -31,6 +32,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	Drone drone_;	// ドローン
 
 	GameUIManager gameUIManager_;	// ゲーム内UIマネージャー
+	UpgradeManager upgradeManager_; // アップグレードマネージャー
 
 	LWP::Resource::RigidModel stage_;	// ステージ
 	LWP::Object::DirectionLight sun_;	// 太陽

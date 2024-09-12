@@ -21,6 +21,8 @@ void GameScene::Initialize() {
 
 	// ゲームUIマネージャーの初期化
 	gameUIManager_.Initialize(&player_);
+	// アップグレードマネージャーの初期化
+	upgradeManager_.Initialize(&player_, &drone_);
 
 	// 配置物初期化
 	stage_.LoadShortPath("Stage/Stage.gltf");	// 下水道
@@ -65,4 +67,8 @@ void GameScene::Update() {
 	// いったん外に出す
 	drone_.Update();
 	gameUIManager_.Update();
+	upgradeManager_.Update();
+
+	// ゲームUIの表示非表示を切り替える
+	gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
 }

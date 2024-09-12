@@ -6,6 +6,7 @@
 #include"../Player/Player.h"
 #include"../Drone/Drone.h"
 #include"../FollowCamera/FollowCamera.h"
+#include "../Upgrade/UpgradeManager/UpgradeManager.h"
 #include "../UI/GameUIManager.h"
 
 class TestScene final
@@ -30,6 +31,9 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// ゲーム内UIマネージャー
 	GameUIManager gameUIManager_;
+
+	// アップグレードマネージャー
+	UpgradeManager upgradeManger_;
 
 	LWP::Resource::RigidModel stage_;
 	LWP::Object::DirectionLight sun_;
