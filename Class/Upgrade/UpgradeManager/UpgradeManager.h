@@ -173,6 +173,22 @@ private: // メンバ変数
 
 	// アップグレードテキストスプライト
 	LWP::Primitive::Sprite upgradeText_;
+
+
+	//オーディオがあるフォルダまでのパス
+	std::string audioPath_ = "SE/upgrade/";
+	//音量
+	float audioVolume_ = 1.0f;
+	//走る音
+	LWP::Resource::Audio audioHit_;
+	LWP::Resource::Audio audioSeelect_;
+
+
+
+	std::string hitPath_ = "hit.mp3";
+	std::string selectPath_ = "Select.mp3";
+
+	std::string preHitName_ = "";
 };
 
 

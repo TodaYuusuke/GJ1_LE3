@@ -99,6 +99,9 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	}; // 座標を設定
 	upgradeText_.worldTF.scale = { 1.0f, 1.0f }; // スケール調整
 	upgradeText_.isActive = false;
+
+	audioHit_.Load(audioPath_ + hitPath_);
+	audioSeelect_.Load(audioPath_ + selectPath_);
 }
 
 void UpgradeManager::Update()
@@ -366,6 +369,9 @@ void UpgradeManager::CheckCollisionUpgrades()
 	// アップグレートの当たり判定半径
 	float upgradeRadius = 40.0f;
 
+	// いずれかのアップグレードに触れているフラグ
+	bool isCollisionUpgrade = false;
+
 	// 全アップグレートとカーソルとの当たり判定を取る
 	for (auto it = upgrades_.begin(); it != upgrades_.end(); it++) {
 		// アップグレートのアイコンのワールド座標を取得する
@@ -381,6 +387,16 @@ void UpgradeManager::CheckCollisionUpgrades()
 				// テキストを選択した説明のモノに変更する
 				upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
 				
+				// 衝突した時点でフラグtrue
+				isCollisionUpgrade = true;
+
+				if (it->second.upgrade->name_!=preHitName_) {
+					//選択音を発生
+					audioHit_.Play();
+				}
+
+				preHitName_ = it->second.upgrade->name_;
+
 				// スキルポイントが1以上なら
 				if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
 					// スケールを線形補間で大きくする
@@ -398,6 +414,8 @@ void UpgradeManager::CheckCollisionUpgrades()
 
 						// スキルポイントを - 1
 						skillPoint_--;
+
+						audioSeelect_.Play();
 					}
 				}
 				else { // それ以外であれば
@@ -427,6 +445,9 @@ void UpgradeManager::CheckCollisionUpgrades()
 					// テキストを選択した説明のモノに変更する
 					upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
 					
+					// 衝突した時点でフラグtrue
+					isCollisionUpgrade = true;
+
 					// スキルポイントが1以上かつ、適用していない状態であれば
 					if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
 						// スケールを線形補間で大きくする
@@ -444,6 +465,8 @@ void UpgradeManager::CheckCollisionUpgrades()
 
 							// スキルポイントを - 1
 							skillPoint_--;
+
+							audioSeelect_.Play();
 						}
 					}
 					else { // それ以外であれば
@@ -482,7 +505,14 @@ void UpgradeManager::CheckCollisionUpgrades()
 				Utility::Interp::Lerp(
 					it->second.ui.worldTF.scale, Math::Vector3(0.5f, 0.5f, 1.0f), 0.35f
 				);
+
+			
 		}
+	}
+
+	// 何とも衝突していなければ
+	if (!isCollisionUpgrade) {
+		preHitName_ = "";
 	}
 }
 
