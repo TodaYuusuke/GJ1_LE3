@@ -49,4 +49,20 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// BGM
 	LWP::Resource::Audio bgm_;
+
+	// 死亡時の演出
+	struct DeadStaging {
+		// 演出開始
+		bool flag = false;
+
+		// 演出にかかる時間
+		float totalTime = 1.5f;
+		// 経過時間
+		float time = 0.0f;
+
+		// グレースケールの強度
+		float grayInt = 1.0f;
+		// ビネットの強度
+		float vignetInt = 16.0f;
+	}deadStaging_;
 };

@@ -10,11 +10,6 @@ using namespace LWP::Math;
 using namespace LWP::Utility;
 using namespace LWP::Object;
 
-float ResultLerp(const float start, const float end, float t) {
-	// 線形補間した値を返す
-	return(start * (1.0f - t) + end * t);
-}
-
 // 初期化
 void Result::Initialize() {
 	//	音関係の初期化と発生

@@ -21,3 +21,10 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	LWP::Primitive::Sprite sprite_;
 };
+
+
+// 仕方ないのでここでグローバルに関数宣言
+static float ResultLerp(const float start, const float end, float t) {
+	// 線形補間した値を返す
+	return(start * (1.0f - t) + end * t);
+}

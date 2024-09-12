@@ -83,8 +83,23 @@ void GameScene::Update() {
 
 		// 死亡チェック
 		if (!player_.GetIsActive()) {
-			// 
+			// 演出開始
+			deadStaging_.flag = true;
 		}
+	}
+
+	// 死亡演出
+	if (deadStaging_.flag) {
+		// 時間更新
+		deadStaging_.time += Info::GetDeltaTimeF();
+		if (deadStaging_.time > deadStaging_.totalTime) {
+			deadStaging_.time = deadStaging_.totalTime;
+			bgm_.Stop();
+			nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+		}
+
+		mainCamera.pp.grayScale.intensity = ResultLerp(0.0f, deadStaging_.grayInt, deadStaging_.time / deadStaging_.totalTime);
+		mainCamera.pp.vignetting.intensity = ResultLerp(0.0f, deadStaging_.vignetInt, deadStaging_.time / deadStaging_.totalTime);
 	}
 
 	// いったん外に出す

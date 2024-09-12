@@ -298,14 +298,6 @@ void GameUIManager::WaveSprite::Init(LWP::Math::Vector3 pos) {
 	}
 }
 void GameUIManager::WaveSprite::Update(int wave) {
-	ImGui::Begin("WaveTest");
-	if (ImGui::TreeNode("Text")) {
-		text.DebugGUI();
-	}
-	ImGui::DragFloat3("1t", &number.n[1].worldTF.translation.x, 5.0f);
-	ImGui::DragFloat3("1s", &number.n[1].worldTF.scale.x, 0.01f);
-	ImGui::End();
-
 	// 初期化
 	for (int i = 0; i < 10; i++) {
 		number.n[i].isActive = false;
@@ -347,15 +339,6 @@ void GameUIManager::EnemySprite::Init(LWP::Math::Vector3 pos) {
 	}
 }
 void GameUIManager::EnemySprite::Update(int enemy) {
-	ImGui::Begin("EnemyTest");
-	if (ImGui::TreeNode("Text")) {
-		text.DebugGUI();
-	}
-	ImGui::DragFloat3("3t", &numFirst.n[3].worldTF.translation.x, 5.0f);
-	ImGui::DragFloat3("3s", &numFirst.n[3].worldTF.scale.x, 0.01f);
-	ImGui::DragFloat3("0t", &numSecond.n[0].worldTF.translation.x, 5.0f);
-	ImGui::DragFloat3("0s", &numSecond.n[0].worldTF.scale.x, 0.01f);
-	ImGui::End();
 	// 初期化
 	for (int i = 0; i < 10; i++) {
 		numFirst.n[i].isActive = false;
