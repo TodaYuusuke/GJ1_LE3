@@ -98,6 +98,10 @@ void IEnemy::DebugGUI() {
 	if (ImGui::Button("DeadBody")) { behaviorReq_ = DeadBody; }
 }
 
+void IEnemy::SetVolume(float volume)
+{
+}
+
 //初期化関数ポンタテーブル
 void (IEnemy::* IEnemy::BehaviorInitialize[])() = {
 	&IEnemy::InitNormal,

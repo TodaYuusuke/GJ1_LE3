@@ -94,6 +94,9 @@ void EnemyManager::Update() {
 		currentSpawn[static_cast<int>(enemy->GetType())] += 1;
 	}
 
+	for (auto& enemy : enemies_) {
+		enemy->SetVolume(currentSpawn[static_cast<int>(enemy->GetType())]);
+	}
 
 	// 敵生成処理
 	if (isSummon) {
