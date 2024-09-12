@@ -28,5 +28,14 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// ステージ
 	Stage stage_;
+
+	struct Skins {
+		LWP::Resource::SkinningModel model;
+		LWP::Resource::Animation anim;
+	};
 	// プレイヤー
+	Skins player_;
+	// ドローン
+	Skins drone_;
+	LWP::Object::PointLight droneLight_;
 };
