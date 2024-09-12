@@ -38,7 +38,7 @@ void Drone::Update() {
 			ImGui::DragFloat("kSlerpT", &kSlerpT_, 0.01f);
 			if (ImGui::TreeNode("UpgradeParameter")) {
 				ImGui::Text("SuctionedDeadBody : %d", suctionedDeadBody_);
-				ImGui::InputInt("kNeedDeadBody", &upgradeParamater.kNeedDeadBody, 0.01f);
+				ImGui::InputInt("kNeedDeadBody", &upgradeParamater.kNeedDeadBody);
 				ImGui::DragFloat("kSuctionNeedTime", &upgradeParamater.kSuctionNeedTime, 0.01f);
 				ImGui::TreePop();
 			}

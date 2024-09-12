@@ -8,8 +8,7 @@ using namespace LWP::Object::Collider;
 void HealItem::Init(LWP::Math::Vector3 pos) {
 	model_.LoadShortPath("Drone/HealItem/HealItem.gltf");
 	model_.worldTF.translation = pos;
-	model_.worldTF.scale = {0.3f,0.3f,0.3f};
-	//model_.materials[0].color = Utility::ColorPattern::GREEN;
+	model_.worldTF.scale = {1.5f,1.5f,1.5f};
 
 	AABB& aabb = collider_.SetBroadShape(AABB());
 	aabb.min *= 0.5f;
