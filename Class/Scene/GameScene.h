@@ -46,4 +46,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// UI初期化用
 	int uiInitFlag = -1;
+
+	// BGM
+	LWP::Resource::Audio bgm_;
 };
