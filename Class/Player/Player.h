@@ -204,15 +204,20 @@ public:
 		_countBehavior
 	};
 
-	//プレイヤーの現在の状態を取得
-	Behavior& GetBehavior() { return behavior_; }
+	
 
 public:
+
+	//プレイヤーの現在の状態を取得
+	Behavior& GetBehavior() { return behavior_; }
 
 	const LWP::Math::Vector3 GetWorldPosition() { return model_.worldTF.GetWorldPosition(); }
 
 	//-1,1で向きを返却
 	float GetPlayerDirection();
+
+	//生きているかどうか（生きてる:true。４:false)
+	bool GetIsActive() { return parameters_.activeFlag.isActive; }
 private:// ** 処理をまとめた関数 ** //
 	//デバッグ処理
 	void Debug();
