@@ -118,6 +118,22 @@ void UpgradeManager::Update()
 		CursorInput();
 		// 全てのアップグレードとカーソルの当たり判定を検証する
 		CheckCollisionUpgrades();
+
+		// スペースまたはBボタンが押されている、またはスキルポイントが１つもない場合
+		if (Input::Keyboard::GetPress(DIK_ESCAPE) || Input::Controller::GetPress(XBOX_B) || skillPoint_ <= 0) {
+			// 終了待機時間に加算
+			finishStandByTime_ += Info::GetDeltaTimeF();
+
+			// 終了待機時間が既定値を超えている場合
+			if (finishStandByTime_ >= 2.5f) {
+				// アップグレードメニューを閉じる
+				isOpenObserver_.t = false;
+			}
+		}
+		else { // いずれの条件にも当てはまらない場合
+			// カウントリセット
+			finishStandByTime_ = 0.0f;
+		}
 	}
 }
 
@@ -350,8 +366,8 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	// 説明テキスト表示を切り替える
 	upgradeText_.isActive = isDisplay;
 
-	// アップグレードUIの表示状態が切り替えフラグの状態を変更
-	isOpenUpgradeWindow_ = isDisplay;
+	// 終了待機時間リセット
+	finishStandByTime_ = 0.0f;
 }
 
 void UpgradeManager::CheckCollisionUpgrades()
