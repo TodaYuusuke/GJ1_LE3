@@ -342,4 +342,7 @@ private: // ** 変数 ** //
 	//デバッグ用無敵フラグ
 	bool isHitOnDebug_ = true;
 
+
+
+	LWP::Resource::Audio audio_;
 };
