@@ -19,6 +19,7 @@ public://構造体＆enum群
 		A_Damage,
 		A_Recovery,
 		A_Dead,
+		A_CutBack,
 		_countAnimeType
 	};
 
@@ -96,7 +97,7 @@ public://構造体＆enum群
 		float shotSlope = 0.0f;
 
 		//反動の角度
-		float jumpSlope_ = 0.3f;
+		float jumpSlope_ = 0.6f;
 
 		//反動初期ベクトル
 		float startVelo = 20.0f;
@@ -310,7 +311,8 @@ private: // ** 変数 ** //
 		"09_Land",
 		"10_Damage",
 		"11_Recovery",
-		"12_Dead"
+		"12_Dead",
+		"13_CutBack"
 	};
 
 	//アニメーションセット

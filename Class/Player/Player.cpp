@@ -617,7 +617,7 @@ void Player::InitializeSlideStopShot()
 	parameters_.bulletData.currentPutBulletInSec_ = 0;
 	parameters_.bulletData.currentReloadStartSec_ = 0;
 
-	SetAnimation(A_Idle);
+	SetAnimation(A_CutBack,false);
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
@@ -720,7 +720,7 @@ void Player::UpdateMove()
 #pragma region アニメーション変更処理
 
 	//弾の発射モーション以外は着地モーション優先
-	if (nowPlayAnimeName_ != animeName_[A_Land] && nowPlayAnimeName_ != animeName_[A_Recovery]) {
+	if (nowPlayAnimeName_ != animeName_[A_Land] && nowPlayAnimeName_ != animeName_[A_Recovery]&& nowPlayAnimeName_ != animeName_[A_CutBack]) {
 
 		if (nowPlayAnimeName_ != animeName_[A_StandShot]) {
 
