@@ -42,4 +42,12 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// デバッグ用
 	bool freeMode_ = false;
+
+	//オーディオがあるフォルダまでのパス
+	std::string audioPath_ = "BGM/";
+	//bgm
+	LWP::Resource::Audio bgm_;
+
+	std::string bgmPath_ = "game1.mp3";
+
 };

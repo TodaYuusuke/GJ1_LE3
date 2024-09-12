@@ -29,6 +29,9 @@ void GameScene::Initialize() {
 	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
 	sun_.rotation.x = 3.14f;	// 下から照らす
 	sun_.color = { 36,42,52,255 };	// 色決定
+
+	bgm_.Load(audioPath_ + bgmPath_);
+	bgm_.Play(0.1f, 255);
 }
 
 // 更新
@@ -51,6 +54,7 @@ void GameScene::Update() {
 	if (enemyManager_.GetEndWave() && !freeMode_) {
 		// ウェーブ10終了でゲーム終了
 		if (wave_ >= 10) {
+			bgm_.Stop();
 			nextSceneFunction = []() { return new Result(); };
 		}
 		
