@@ -112,6 +112,7 @@ void EnemyManager::Update() {
 			// ビルボードと近いやつを求める
 			float d = Vector3::Distance(enemy->GetWorldPosition(), billboard_.worldTF.GetWorldPosition());
 			if (d < distance) {
+				distance = d;
 				enemyPos = enemy->GetWorldPosition();
 				searched = true;
 			}
@@ -224,6 +225,7 @@ IEnemy* EnemyManager::GetNearDeadBody(LWP::Math::Vector3 pos) {
 	int index = -1; // 一番近いインデックス
 	int i = 0;
 	float distance = 99999999.0f;	// 距離
+
 	for (auto& enemy : enemies_) {
 		float d = Vector3::Distance(enemy->GetWorldPosition(), pos);
 		// 死体かつ最も近かった場合 -> 返す対象を変更
