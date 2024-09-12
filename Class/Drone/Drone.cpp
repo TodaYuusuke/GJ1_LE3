@@ -4,7 +4,7 @@ using namespace LWP;
 using namespace LWP::Math;
 
 Drone::~Drone() {
-	if (suction_.enemy) {
+	if (suction_.enemy != nullptr) {
 		delete suction_.enemy;
 	}
 }
@@ -175,6 +175,7 @@ void Drone::UpdateSuction() {
 	// 経過時間を過ぎたら吸収完了
 	if (suction_.time > upgradeParamater.kSuctionNeedTime) {
 		delete suction_.enemy;
+		suction_.enemy = nullptr;
 		suctionedDeadBody_++;	// 吸収数+1
 		// アイテム生成
 		if (suctionedDeadBody_ >= upgradeParamater.kNeedDeadBody) {

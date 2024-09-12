@@ -48,45 +48,7 @@ void GameScene::Update() {
 		nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
 	}
 
-	// ウェーブが終わったかを確認
-	if (!waveEnd_ && enemyManager_.GetEndWave()) {
-		waveEnd_ = true;
-		// スキルポイント+1
-		upgradeManager_.AddSkilPoint(1);
-		upgradeManager_.SetIsDisplay(true);
-	}
 
-	// ウェーブ終了後処理
-	if (waveEnd_) {
-		// ウェーブ10終了でゲーム終了
-		if (wave_ >= 10) {
-			bgm_.Stop();
-			nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
-			upgradeManager_.SetIsDisplay(false);	// アップグレードUIを表示しない
-		}
-		else {
-			// アップグレードが終わったか確認
-			if (!upgradeManager_.GetIsDisplay()) {
-				// アップグレード確認して次のウェーブへ
-				gameUIManager_.SetUp();	// UI更新
-				enemyManager_.StartWave(++wave_);
-				waveEnd_ = false;
-			}
-		}
-	}
-	// ウェーブ中処理
-	else {
-		player_.Update();
-		followCamera_.Update(player_.GetWorldPosition());
-		enemyManager_.Update();
-		drone_.Update();
-
-		// 死亡チェック
-		if (!player_.GetIsActive()) {
-			// 演出開始
-			deadStaging_.flag = true;
-		}
-	}
 
 	// 死亡演出
 	if (deadStaging_.flag) {
@@ -101,11 +63,52 @@ void GameScene::Update() {
 		mainCamera.pp.grayScale.intensity = ResultLerp(0.0f, deadStaging_.grayInt, deadStaging_.time / deadStaging_.totalTime);
 		mainCamera.pp.vignetting.intensity = ResultLerp(0.0f, deadStaging_.vignetInt, deadStaging_.time / deadStaging_.totalTime);
 	}
+	// 通常処理
+	else {
+		// ウェーブが終わったかを確認
+		if (!waveEnd_ && enemyManager_.GetEndWave()) {
+			waveEnd_ = true;
+			// スキルポイント+1
+			upgradeManager_.AddSkilPoint(1);
+			upgradeManager_.SetIsDisplay(true);
+		}
 
-	// いったん外に出す
-	gameUIManager_.Update(wave_, enemyManager_.GetRemainingEnemy());
-	upgradeManager_.Update();
-	// ゲームUIの表示非表示を切り替える
-	gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
+		// ウェーブ終了後処理
+		if (waveEnd_) {
+			// ウェーブ10終了でゲーム終了
+			if (wave_ >= 10) {
+				bgm_.Stop();
+				nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+				upgradeManager_.SetIsDisplay(false);	// アップグレードUIを表示しない
+			}
+			else {
+				// アップグレードが終わったか確認
+				if (!upgradeManager_.GetIsDisplay()) {
+					// アップグレード確認して次のウェーブへ
+					gameUIManager_.SetUp();	// UI更新
+					enemyManager_.StartWave(++wave_);
+					waveEnd_ = false;
+				}
+			}
+		}
+		// ウェーブ中処理
+		else {
+			player_.Update();
+			followCamera_.Update(player_.GetWorldPosition());
+			enemyManager_.Update();
+			drone_.Update();
 
+			// 死亡チェック
+			if (!player_.GetIsActive()) {
+				// 演出開始
+				deadStaging_.flag = true;
+			}
+		}
+
+		// 外で更新
+		gameUIManager_.Update(wave_, enemyManager_.GetRemainingEnemy());
+		upgradeManager_.Update();
+		// ゲームUIの表示非表示を切り替える
+		gameUIManager_.SetIsDisplay(!upgradeManager_.GetIsDisplay());
+	}
 }
