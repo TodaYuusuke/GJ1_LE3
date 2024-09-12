@@ -40,7 +40,7 @@ public:
 	// 自分のタイプを返す関数
 	virtual EnemyType GetType() = 0;
 
-
+	virtual void SetVolume(float volume);
 public: // ** メンバ変数 ** //
 
 	// モデル
