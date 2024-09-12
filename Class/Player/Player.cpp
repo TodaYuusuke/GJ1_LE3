@@ -600,7 +600,8 @@ void Player::InitializeJump()
 	aabb_.aabb.min = standAABB_.min;
 	aabb_.aabb.max = standAABB_.max;
 
-
+	// ジャンプで射撃
+	audioShot_.Play();
 }
 void Player::InitializeSlideStopShot()
 {
