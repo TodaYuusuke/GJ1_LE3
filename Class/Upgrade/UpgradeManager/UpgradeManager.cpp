@@ -206,7 +206,7 @@ void UpgradeManager::AddUpgrades()
 	AddUI(data1, BODY, Math::Vector2(400.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/BodyIcon.png", "UI/Upgrade/Text/ActiveCutBack.png", "ActiveJump");
 	// プレイヤーの体力増加Lv1
 	HealthUPLv1* data2 = new HealthUPLv1(); // インスタンス生成
-	AddUI(data2, BODY, Math::Vector2(-0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png");
+	AddUI(data2, BODY, Math::Vector2(0.0f, 500.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png");
 	// プレイヤーの体力増加Lv2
 	HealthUPLv2* data3 = new HealthUPLv2(); // インスタンス生成
 	AddUI(data3, BODY, Math::Vector2(0.0f, 850.0f), 0.5f, "UI/Upgrade/Icon/HealthUpgradeIcon.png", "UI/Upgrade/Text/HealthUpgrade.png", "HealthUPLv1");
@@ -375,14 +375,14 @@ void UpgradeManager::CheckCollisionUpgrades()
 		};
 
 		// 前提アップグレードが存在しない場合
-		if (it->second.upgrade->prevUpgradeName_ == "" && !it->second.upgrade->isApplied_) {
+		if (it->second.upgrade->prevUpgradeName_ == "") {
 			// 衝突判定を検証する
 			if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
 				// テキストを選択した説明のモノに変更する
 				upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
 				
 				// スキルポイントが1以上なら
-				if (skillPoint_ >= 1) {
+				if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
 					// スケールを線形補間で大きくする
 					it->second.ui.worldTF.scale =
 						Utility::Interp::Lerp(
@@ -428,7 +428,7 @@ void UpgradeManager::CheckCollisionUpgrades()
 					upgradeText_.material.texture = LWP::Resource::LoadTexture(it->second.textTex);
 					
 					// スキルポイントが1以上かつ、適用していない状態であれば
-					if (skillPoint_ >= 1) {
+					if (skillPoint_ >= 1 && !it->second.upgrade->isApplied_) {
 						// スケールを線形補間で大きくする
 						it->second.ui.worldTF.scale =
 							Utility::Interp::Lerp(
