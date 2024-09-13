@@ -6,7 +6,7 @@
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	LWP::System::StartUp("3005_アンダーガンナー");
+	LWP::System::StartUp(L"3005_アンダーガンナー");
 #if DEMO
 	LWP::System::Run(new Result(true));
 #else
