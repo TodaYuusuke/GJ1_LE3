@@ -66,8 +66,9 @@ Player::Player()
 
 		//ヒットフラグが有効の時
 		if (isHitOnDebug_ && parameters_.hitData.isHit_) {
-			parameters_.hitData.isHit_ = false;
-			parameters_.hp--;
+			if (parameters_.hitData.isDownHP_) {
+				parameters_.hp--;
+			}
 			parameters_.hitData.hitDirection_ = (model_.worldTF.GetWorldPosition() - data->GetWorldPosition()).x;
 			parameters_.bulletData.currentPutBulletInSec_ = 0;
 			parameters_.bulletData.currentReloadStartSec_ = 0;
@@ -75,6 +76,9 @@ Player::Player()
 
 			if (parameters_.hp <= 0) {
 				behaviorReq_ = Dead;
+			}
+			else {
+				parameters_.hitData.isHit_ = false;
 			}
 
 			//SetAnimation(A_Damage, false);
@@ -395,6 +399,16 @@ void Player::SetAnimation(AnimatinNameType type, bool loop)
 
 	animation.Play(animeName_[type], loop);
 	nowPlayAnimeName_ = animeName_[type];
+}
+
+void Player::SetArea()
+{
+	if (model_.worldTF.translation.x < -12.0f) {
+		model_.worldTF.translation.x = -12.0f;
+	}
+	else if (model_.worldTF.translation.x > 12.0f) {
+		model_.worldTF.translation.x = 12.0f;
+	}
 }
 
 float Player::GetPlayerDirection()

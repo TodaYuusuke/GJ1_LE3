@@ -6,6 +6,7 @@
 #include"../Drone/Drone.h"
 #include"../Stage/Stage.h"
 #include "../Upgrade/UpgradeManager/UpgradeManager.h"
+#include "../UI/GameUIManager.h"
 
 #include "FadeManager.h"
 
@@ -55,7 +56,7 @@ private://パラメータ
 	};
 	struct SlideTask
 	{
-		int maxCount = 5;	//必要な行動回数
+		int maxCount = 3;	//必要な行動回数
 		int currentCount = 0;//カウント
 		bool isCount = true;//カウント有効フラグ
 	};
@@ -67,7 +68,7 @@ private://パラメータ
 	};
 	struct SlideShotTask
 	{
-		int maxCount = 5;
+		int maxCount = 2;
 		int currentCount = 0;
 		bool isCount = true;
 	};
@@ -127,13 +128,15 @@ private://変数
 
 
 	//各必要な奴
-	FollowCamera followCamera_;
+	
 	Player player_;
 	Drone drone_;
 	Stage stage_;
 	// パーティクル管理
 	ParticleManager particleManager_;
 	EnemyManager enemyManager_; // 敵管理
+	GameUIManager gameUIManager_;	// ゲーム内UIマネージャー
+
 
 	// フェードインアウト
 	FadeManager fade_;

@@ -16,14 +16,17 @@ float LerpX(const float start, const float end, float t) {
 
 void TutorialScene::Initialize()
 {
+	mainCamera.transform.translation.y = 2.5f;
+	mainCamera.transform.translation.z = -30.0f;
+
 	// クラス初期化
 	particleManager_.Init();
 	player_.Initialize(&particleManager_);
-	followCamera_.Initialize(&mainCamera);
+	player_.parameters_.hitData.isDownHP_ = false;//あたってもHPが減らない
 	enemyManager_.Initialize(&player_);
 	drone_.Initialize(&player_, &enemyManager_);
 	stage_.Init(&mainCamera);
-
+	gameUIManager_.Initialize(&player_);
 
 	//タスクを追加
 	for (int i = 0; i < _countTasks; i++) {
@@ -82,8 +85,10 @@ void TutorialScene::Update()
 	//クラス更新
 	drone_.Update();
 	player_.Update();
-	followCamera_.Update(player_.GetWorldPosition());
+	player_.SetArea();
 	enemyManager_.Update();
+	// 外で更新
+	gameUIManager_.Update();
 
 	//シーン変更処理
 	SceneChange();
@@ -173,7 +178,7 @@ void (TutorialScene::* TutorialScene::TaskInitialize[])() = {
 	&TutorialScene::MoveInitialize,
 	&TutorialScene::SlideInitialize,
 	&TutorialScene::ShotInitialize,
-	&TutorialScene::SlideInitialize,
+	&TutorialScene::SlideShotInitialize,
 	&TutorialScene::AnotherInitialize
 };
 
@@ -204,6 +209,8 @@ void TutorialScene::ShotInitialize()
 void TutorialScene::SlideShotInitialize()
 {
 	spriteBoad_.material.texture = taskBoads_[SlideShot];
+
+	enemyManager_.SummonSpider({0,0,0});
 }
 
 void TutorialScene::AnotherInitialize()
@@ -273,14 +280,14 @@ void TutorialScene::SlideUpdate()
 void TutorialScene::ShotUpdate()
 {
 	//任意処理を行っていないとき
-	if (player_.GetAnimationType() != "05_StandShot") {
-		//次の任意入力で反応するように
-		normas_.shot.isCount = true;
-	}
+	//if (player_.GetAnimationType() != "05_StandShot") {
+	//	//次の任意入力で反応するように
+	//	normas_.shot.isCount = true;
+	//}
 	//任意入力があった時
-	if (normas_.shot.isCount && player_.GetAnimationType() == "05_StandShot") {
+	if ((Input::Keyboard::GetTrigger(DIK_C)|| Input::Pad::GetTrigger(XBOX_RT))&&player_.parameters_.bulletData.ammoRemaining_>0 ){
 		normas_.shot.currentCount++;
-		normas_.shot.isCount = false;
+		//normas_.shot.isCount = false;
 	}
 	//カウント進行度でゲージのサイズ調整
 	float t = (float)(normas_.shot.currentCount / (float)normas_.shot.maxCount);
@@ -298,15 +305,13 @@ void TutorialScene::ShotUpdate()
 
 void TutorialScene::SlideShotUpdate()
 {
-	//任意処理を行っていないとき
-	if (player_.GetAnimationType() != "06_SlidingShot") {
-		//次の任意入力で反応するように
-		normas_.slideShot.isCount = true;
-	}
+
 	//任意入力があった時
-	if (normas_.slideShot.isCount && player_.GetAnimationType() == "06_SlidingShot") {
+	if (enemyManager_.GetRemainingEnemy()==0) {
 		normas_.slideShot.currentCount++;
-		normas_.slideShot.isCount = false;
+		if (normas_.slideShot.currentCount < normas_.slideShot.maxCount) {
+			enemyManager_.SummonSpider({ 0,0,0 });
+		}
 	}
 	//カウント進行度でゲージのサイズ調整
 	float t = (float)(normas_.slideShot.currentCount / (float)normas_.slideShot.maxCount);
