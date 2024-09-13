@@ -56,8 +56,6 @@ private: // ** パラメータ ** //
 	LWP::Resource::Audio audioWalk_;
 	LWP::Resource::Audio audioDead_;
 
-
 	std::string walkPath_ = "walk.mp3";
 	std::string deadPath_ = "dead1.mp3";
-
 };
