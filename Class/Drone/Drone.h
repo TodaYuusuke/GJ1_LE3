@@ -53,7 +53,7 @@ public: // ** アップグレードされるパブリックな変数 ** //
 
 	struct UpgradeParameter {
 		// アイテム生成に必要な敵の数
-		int kNeedDeadBody = 1;
+		int kNeedDeadBody = 8;
 		// 吸収に必要な時間
 		float kSuctionNeedTime = 3.0f;
 	}upgradeParamater;
