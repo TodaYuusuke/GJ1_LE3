@@ -32,6 +32,7 @@ Math::Vector3 rotateZ(const Math::Vector3& velo, float theta) {
 Player::Player()
 {
 	model_.LoadShortPath("Robot/Player_Boned_IK.gltf");
+	model_.materials["HeadDisplay"].enableLighting = false;
 	animation.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &model_);
 	SetAnimation(A_Idle);
 	bullets_ = std::make_unique<PlayerBullets>();

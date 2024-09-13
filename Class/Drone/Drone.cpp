@@ -1,5 +1,6 @@
 #include "Drone.h"
 
+
 using namespace LWP;
 using namespace LWP::Math;
 
@@ -14,6 +15,7 @@ void Drone::Initialize(Player* playerPtr, EnemyManager* enemyPtr) {
 	enemies_ = enemyPtr;
 
 	model_.LoadShortPath("Drone/Drone.gltf");
+	model_.materials["Gage"].enableLighting = false;
 	animation_.LoadFullPath("resources/model/Drone/Drone.gltf", &model_);
 	animation_.Play("00_Idle", true);
 
@@ -108,6 +110,16 @@ void Drone::Update() {
 		model_.worldTF.translation.x = outArea_;
 	}
 
+	// アイテム生成
+	if (suctionedDeadBody_ >= upgradeParamater.kNeedDeadBody) {
+		heals_.emplace_back();
+		heals_.back().Init(model_.worldTF.GetWorldPosition());
+		suctionedDeadBody_ = 0;
+	}
+	// 吸収数に応じてマテリアル調整
+	float t = float(suctionedDeadBody_) / float(upgradeParamater.kNeedDeadBody);
+	model_.materials["Gage"].uvTransform.translation.y = (0.0f * (1.0f - t) - 0.5f * t);
+
 	// 回復アイテム更新
 	for (HealItem& h : heals_) {
 		h.Update();
@@ -186,12 +198,6 @@ void Drone::UpdateSuction() {
 		delete suction_.enemy;
 		suction_.enemy = nullptr;
 		suctionedDeadBody_++;	// 吸収数+1
-		// アイテム生成
-		if (suctionedDeadBody_ >= upgradeParamater.kNeedDeadBody) {
-			heals_.emplace_back();
-			heals_.back().Init(model_.worldTF.GetWorldPosition());
-			suctionedDeadBody_ = 0;
-		}
 
 		behaviorReq_ = PlayerFollow;	// プレイヤー追従に戻る
 	}

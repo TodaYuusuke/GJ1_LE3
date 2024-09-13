@@ -24,7 +24,7 @@ public: // メンバ関数
 	/// <param name="drone">ドローン本体</param>
 	void Apply(Player* player_, Drone* drone) override {
 		// 必要敵数を減らす
-		drone->upgradeParamater.kNeedDeadBody -= 1;
+		drone->upgradeParamater.kNeedDeadBody -= 2;
 		// 適用フラグをtrue
 		isApplied_ = true;
 	}

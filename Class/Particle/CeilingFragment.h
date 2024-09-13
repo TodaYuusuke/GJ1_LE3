@@ -6,6 +6,10 @@
 /// ステージの破片を散らばらすパーティクル（天井）
 /// </summary>
 class CeilingFragment : public LWP::Object::Particle<LWP::Resource::RigidModel> {
+public:	// ** パブリックなメンバ ** //
+	// ミルククラウンを生成する座標
+	std::vector<LWP::Math::Vector3> milkPosition;
+
 private: // ** 純粋仮想関数のオーバーライド ** //
 
 	/// <summary>
@@ -31,7 +35,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 		newData.collider->SetFollowTarget(&newData.m.worldTF);
 		newData.collider->mask.SetBelongFrag(GJMask::Particle());	// フラグ設定
 		newData.collider->mask.SetHitFrag(GJMask::Ground() | GJMask::WaterSurface());
-		newData.collider->enterLambda = [&newData](lwp::Collider::Collider* col) {
+		newData.collider->enterLambda = [&newData, this](lwp::Collider::Collider* col) {
 			// 地面だった場合の処理
 			if (col->name == "Ground") {
 				// 跳ねる
@@ -42,6 +46,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 			// 水面だった場合の処理
 			else if (col->name == "WaterSurface") {
 				newData.elapsedFrame = 180;	// パーティクルを終わらす
+				milkPosition.push_back(newData.m.worldTF.GetWorldPosition());
 			}
 		};
 

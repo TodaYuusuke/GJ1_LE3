@@ -9,7 +9,7 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::StartUp("Window Title");
 #if DEMO
-	LWP::System::Run(new Title);
+	LWP::System::Run(new GameScene);
 #else
 	LWP::Window::ChangeFullScreenMode();
 	LWP::Info::ChangeShowDebugGUI();

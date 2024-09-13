@@ -12,6 +12,11 @@ void ParticleManager::Init() {
 	ceilingFragment_.model.worldTF.scale = { s,s,s };
 	jumpFragment_.model.LoadShortPath("Debris/Debris.gltf");
 	jumpFragment_.model.worldTF.scale = { s,s,s };
+	milkCrown_.model.LoadSphere();
+	milkCrown_.model.worldTF.scale = { s,s,s };
+	milkCrown_.model.materials["Material0"].color = { 0,30,102,255 };
+
+	waterSE_.LoadShortPath("SE/WaterSound/water3.mp3");
 
 #pragma region 当たり判定生成
 	// フラグ設定
@@ -84,6 +89,28 @@ void ParticleManager::Init() {
 	w.max = { 250.0f, -0.5f, 25.0f };
 #pragma endregion
 }
+
+void ParticleManager::Update() {
+	bool summoned = false;
+	// ミルククラウンポジションがあれば生成
+	for (Vector3& pos : ceilingFragment_.milkPosition) {
+		milkCrown_.Add(milkCrownNum_, pos);
+		summoned = true;
+	}
+	ceilingFragment_.milkPosition.clear();
+	for (Vector3& pos : jumpFragment_.milkPosition) {
+		milkCrown_.Add(milkCrownNum_, pos);
+		summoned = true;
+	}
+	jumpFragment_.milkPosition.clear();
+
+	// 一度でも再生したらSEを鳴らす
+	if (summoned) {
+		waterSE_.Play();
+		waterSE_.SetVolume(0.1f);
+	}
+}
+
 void ParticleManager::DebugGUI() {
 #if DEMO
 	// ** ImGui用変数 ** //
@@ -108,6 +135,12 @@ void ParticleManager::DebugGUI() {
 				if (ImGui::Button("Generate")) { jumpFragment_.Add(jumpFragmentNum_); }
 				ImGui::InputInt("Num", &jumpFragmentNum_);
 				jumpFragment_.DebugGUI();
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("MilkCrown")) {
+				if (ImGui::Button("Generate")) { milkCrown_.Add(milkCrownNum_); }
+				ImGui::InputInt("Num", &milkCrownNum_);
+				milkCrown_.DebugGUI();
 				ImGui::TreePop();
 			}
 
