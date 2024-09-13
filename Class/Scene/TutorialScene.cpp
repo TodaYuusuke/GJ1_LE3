@@ -56,16 +56,16 @@ void TutorialScene::Initialize()
 	spriteGage_.isUI = true;
 	spriteGage_.material.enableLighting = false;
 	spriteGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gage.png");
-	spriteGage_.worldTF.translation = { 760,440,0 };
+	spriteGage_.worldTF.translation = { 1160,440,0 };
 	spriteGage_.worldTF.scale = { 2.0f,1.0f,1.0f };
-	spriteGage_.anchorPoint = { 0.0f,0.5f };
+	spriteGage_.anchorPoint = { 1.0f,0.5f };
 
 	spriteGageBack_.isUI = true;
 	spriteGageBack_.material.enableLighting = false;
 	spriteGageBack_.material.texture = LWP::Resource::LoadTexture("tutorial/gageBG.png");
-	spriteGageBack_.worldTF.translation = { 760,440,0 };
+	spriteGageBack_.worldTF.translation = { 1160,440,0 };
 	spriteGageBack_.worldTF.scale = { 2.0f,1.0f,1.0f };
-	spriteGageBack_.anchorPoint = { 0.0f,0.5f };
+	spriteGageBack_.anchorPoint = { 1.0f,0.5f };
 
 	fade_.Init();
 }
@@ -155,6 +155,11 @@ void TutorialScene::Debug()
 			}
 			if (ImGui::TreeNode("gage")) {
 				spriteGage_.DebugGUI();
+
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("gageBack")) {
+				spriteGageBack_.DebugGUI();
 
 				ImGui::TreePop();
 			}

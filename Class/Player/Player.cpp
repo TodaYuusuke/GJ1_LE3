@@ -66,6 +66,7 @@ Player::Player()
 
 		//ヒットフラグが有効の時
 		if (isHitOnDebug_ && parameters_.hitData.isHit_) {
+			audioHit_.Play();
 			if (parameters_.hitData.isDownHP_) {
 				parameters_.hp--;
 			}
@@ -93,6 +94,7 @@ Player::Player()
 	audioGetHeal_.Load(audioPath_ + healPath_);
 	audioShot_.Load(audioPath_ + shotPath_);
 	audioReload_.Load(audioPath_ + reloadPath_);
+	audioHit_.Load(audioPath_ + hitPath_);
 }
 
 Player::~Player()

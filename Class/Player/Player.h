@@ -392,13 +392,13 @@ private:
 	LWP::Resource::Audio audioGetHeal_;
 	LWP::Resource::Audio audioShot_;
 	LWP::Resource::Audio audioReload_;
-
+	LWP::Resource::Audio audioHit_;
 
 	std::string runPath_ = "run.mp3";
 	std::string slidePath_ = "slide2.mp3";
 	std::string healPath_ = "heal.mp3";
 	std::string shotPath_ = "shot.mp3";
 	std::string reloadPath_ = "reload.mp3";
-
+	std::string hitPath_ = "hitEnemy.mp3";
 
 };
