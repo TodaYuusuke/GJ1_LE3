@@ -90,8 +90,9 @@ void TutorialScene::Initialize()
 	decoy2_->collider_.isActive = false;
 }
 
-void TutorialScene::Update()
-{
+void TutorialScene::Update() {
+	stage_.Update();
+
 	//デバッグ
 	Debug();
 

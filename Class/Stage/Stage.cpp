@@ -23,6 +23,13 @@ void Stage::Init(LWP::Object::Camera* camera) {
 	stage_.LoadShortPath("Stage/Stage.gltf");
 	stage_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY(), 1.57f);
 	stage_.materials["LumpMaterial"].enableLighting = false;
+	// 水
+	water_.worldTF.translation.y = -0.5f;
+	water_.worldTF.rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitX(), 1.57f);
+	water_.worldTF.scale = { 720.0f,720.0f,1.0f };
+	water_.material.uvTransform.scale = { 720.0f,720.0f,1.0f };
+	water_.material.texture = LWP::Resource::LoadTexture("UI/WaterSurface.png");
+	water_.name = "Water";
 
 	// 太陽
 	sun_.rotation.x = 3.14f;	// 下から照らす
@@ -36,4 +43,16 @@ void Stage::Init(LWP::Object::Camera* camera) {
 		doorLight_[i].color = { 255,0,0,255 };
 		doorLight_[i].radius = 1.19f;
 	}
+}
+
+void Stage::Update() {
+	// radian更新
+	radian_ += LWP::Info::GetDeltaTimeF();
+	if (radian_ > 6.28f) {
+		radian_ -= 6.28f;
+	}
+
+	// 水面のアニメーション
+	water_.material.uvTransform.translation.x += LWP::Info::GetDeltaTimeF() * 0.6f;
+	water_.material.uvTransform.translation.y = std::sinf(radian_) * 0.1f;
 }
