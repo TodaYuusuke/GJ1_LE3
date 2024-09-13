@@ -23,8 +23,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// 勝利フラグ
 	bool winFlag_ = false;
-	// 次のシーンフラグ（0 ... Title, 1 ... GameScene）
-	int nextTitle = -1;
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "BGM/";
