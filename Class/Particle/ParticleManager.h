@@ -1,6 +1,7 @@
 #pragma once
 #include "CeilingFragment.h"
 #include "JumpFragment.h"
+#include "MilkCrown.h"
 
 class ParticleManager final {
 public:
@@ -41,10 +42,13 @@ private: // ** メンバ変数 ** //
 	// 水面のコライダー
 	LWP::Object::Collider::Collider waterSurface_;
 
-	// パーティクル
+	// 天井破片
 	CeilingFragment ceilingFragment_;
-	int ceilingFragmentNum_ = 6;	// 生成数
-	// パーティクル
+	int ceilingFragmentNum_ = 11;	// 生成数
+	// ジャンプ破片
 	JumpFragment jumpFragment_;
 	int jumpFragmentNum_ = 6;	// 生成数
+	// 水面表現破片
+	MilkCrown milkCrown_;
+	int milkCrownNum_ = 12;	// 生成数
 };

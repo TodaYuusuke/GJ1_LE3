@@ -143,10 +143,10 @@ public://構造体＆enum群
 	struct Parameters
 	{
 		//体力
-		int hp = 3;
+		int hp = 4;
 
 		//最大HP
-		int maxHp = 3;
+		int maxHp = 4;
 
 		//移動速度
 		float moveSpd = 10.0f;

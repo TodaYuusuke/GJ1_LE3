@@ -3,9 +3,9 @@
 #include "../Mask/Mask.h"
 
 /// <summary>
-/// ステージの破片を散らばらすパーティクル（天井）
+/// 水面に落ちた破片が出す水しぶき
 /// </summary>
-class CeilingFragment : public LWP::Object::Particle<LWP::Resource::RigidModel> {
+class MilkCrown : public LWP::Object::Particle<LWP::Resource::RigidModel> {
 private: // ** 純粋仮想関数のオーバーライド ** //
 
 	/// <summary>
