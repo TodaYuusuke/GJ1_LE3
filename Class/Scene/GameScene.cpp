@@ -55,6 +55,7 @@ void GameScene::Update() {
 	if (fade_.GetOut()) {
 		bgm_.Stop();
 		bool b = !deadStaging_.flag;
+		player_.StopAllLoopSE();
 		nextSceneFunction = [b]() { return new NullScene([b]() { return new Result(b); }); };
 	}
 	// フェードインが終わるまで処理しない
