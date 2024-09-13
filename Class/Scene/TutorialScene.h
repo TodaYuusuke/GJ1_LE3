@@ -65,7 +65,7 @@ private://パラメータ
 	};
 	struct ShotTask
 	{
-		int maxCount = 8;
+		int maxCount = 4;
 		int currentCount = 0;
 		bool isCount = true;
 	};
