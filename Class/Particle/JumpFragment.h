@@ -20,11 +20,11 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 
 		// 速度ベクトルを生成
 		int dir1 = LWP::Utility::GenerateRandamNum<int>(-25, 25);
-		int dir2 = LWP::Utility::GenerateRandamNum<int>(-100, 0);
+		int dir2 = LWP::Utility::GenerateRandamNum<int>(0, 100);
 		int dir3 = LWP::Utility::GenerateRandamNum<int>(-25, 25);
 		// 発射のベクトル
 		LWP::Math::Vector3 dir{ dir1 / 100.0f,dir2 / 100.0f, dir3 / 100.0f };
-		float multiply = LWP::Utility::GenerateRandamNum<int>(20, 50) / 100.0f;
+		float multiply = LWP::Utility::GenerateRandamNum<int>(10, 30) / 100.0f;
 		newData.velocity = dir.Normalize() * multiply;
 		
 		newData.collider = new lwp::Collider::Collider;

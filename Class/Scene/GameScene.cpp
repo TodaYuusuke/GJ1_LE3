@@ -35,6 +35,9 @@ void GameScene::Initialize() {
 
 // 更新
 void GameScene::Update() {
+#if DEMO
+	particleManager_.DebugGUI();
+#endif
 	// UIの遅延用
 	if (uiInitFlag == 0) {
 		gameUIManager_.SetUp();

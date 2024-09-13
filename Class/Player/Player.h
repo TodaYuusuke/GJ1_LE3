@@ -306,6 +306,9 @@ public: // ** 変数 ** //
 	LWP::Resource::SkinningModel model_;
 
 private:
+	
+	// パーティクル用
+	ParticleManager* particle_ = nullptr;
 
 
 	std::string animeName_[_countAnimeType] = {

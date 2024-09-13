@@ -1,5 +1,6 @@
 #pragma once
 #include "CeilingFragment.h"
+#include "JumpFragment.h"
 
 class ParticleManager final {
 public:
@@ -25,6 +26,10 @@ public: // ** パーティクル生成関数 ** //
 	/// 天井からの破片
 	/// </summary>
 	void Ceiling(LWP::Math::Vector3 pos);
+	/// <summary>
+	/// ジャンプ時の破片
+	/// </summary>
+	void Jump(LWP::Math::Vector3 pos);
 
 
 private: // ** メンバ変数 ** //
@@ -39,4 +44,7 @@ private: // ** メンバ変数 ** //
 	// パーティクル
 	CeilingFragment ceilingFragment_;
 	int ceilingFragmentNum_ = 6;	// 生成数
+	// パーティクル
+	JumpFragment jumpFragment_;
+	int jumpFragmentNum_ = 6;	// 生成数
 };
