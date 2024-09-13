@@ -78,6 +78,38 @@ void GameUIManager::Update(int wave, int enemyCount) {
 	}
 }
 
+void GameUIManager::Update()
+{
+	// デバッグ
+	Debug();
+
+	// UI関係のセットアップが終わっていない場合セットアップを行う
+	if (!isSetUpUI_) {
+		SetUp();
+		// フラグをtrue
+		isSetUpUI_ = true;
+	}
+
+	// UIの表示状態が切り替わっている場合
+	if (isDisplayObserver_.GetChanged()) {
+		SwitchDisplayUI(isDisplayObserver_.t);
+	}
+
+	// 表示状態の場合は更新
+	if (isDisplayObserver_.t) {
+		// HPゲージ更新
+		HPGaugeUpdate();
+		// 弾ゲージ更新
+		BulletGaugeUpdate();
+	}
+
+	waveSprite_.number.n[0].isActive = false;
+	waveSprite_.text.isActive = false;
+
+	enemySprite_.text.isActive = false;
+
+}
+
 void GameUIManager::DebugGUI()
 {
 	// ImGuiを開始
@@ -207,8 +239,10 @@ void GameUIManager::Debug()
 {
 	// デバッグ時のみ実行
 #ifdef _DEBUG
+
 	// セットアップを毎フレーム実行
 	//SetUp();
+
 	// デバッグGUIの表示
 	DebugGUI();
 

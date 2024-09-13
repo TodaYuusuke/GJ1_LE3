@@ -62,6 +62,8 @@ public://構造体＆enum群
 
 	//ヒット関連
 	struct HitData {
+		//HPが減るフラグ
+		bool isDownHP_ = true;
 		//ヒットフラグ
 		bool isHit_ = true;
 		//ヒット時の無敵時間
@@ -205,7 +207,10 @@ public:
 		_countBehavior
 	};
 
-	
+	//無理やりエリア制限
+	void SetArea();
+
+	void StopAllLoopSE();
 
 public:
 

@@ -162,6 +162,8 @@ private: // メンバ変数
 
 	// 背景用スプライト
 	LWP::Primitive::Sprite backGround_;
+	// 画面名用スプライト
+	LWP::Primitive::Sprite screenNameText_;
 	// コネクタ用スプライト
 	LWP::Primitive::Sprite backConectorGround_;
 	// 大カテゴリ用スプライト
