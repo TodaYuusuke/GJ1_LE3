@@ -210,12 +210,7 @@ void EnemyManager::StartWave(int waveNum) {
 	}
 }
 bool EnemyManager::GetEndWave() {
-	int result = 0;
-	for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
-		result += enemyProperty_[i].spawn;
-	}
-	result += enemies_.size();
-
+	int result = GetRemainingEnemy();	// 残敵確認
 	// 残敵0未満ならば終了
 	return result <= 0;
 }
