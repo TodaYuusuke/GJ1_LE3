@@ -79,6 +79,16 @@ private: // プライベートな関数
 	void BulletGaugeUpdate();
 
 	/// <summary>
+	/// ボタンUI関連初期化関数
+	/// </summary>
+	void ButtonUIInit();
+
+	/// <summary>
+	/// ボタンUI更新関数
+	/// </summary>
+	void ButtonUIUpdate();
+
+	/// <summary>
 	/// UIの表示、非表示の切り替え関数
 	/// </summary>
 	/// <param name="isDisplay">表示、非表示フラグ</param>
@@ -140,13 +150,27 @@ private: // メンバ変数
 	
 	// 左スティックUI
 	LWP::Primitive::Sprite leftStickUI_;
-	// AボタンUI
-	LWP::Primitive::Sprite buttonAUI_;
 	// BボタンUI
 	LWP::Primitive::Sprite buttonBUI_;
 	// RトリガーUI
 	LWP::Primitive::Sprite triggerRUI_;
+	// AボタンUI
+	LWP::Primitive::Sprite buttonAUI_;
+	// 左スティックUI
+	LWP::Primitive::Sprite moveKeyUI_;
+	// BボタンUI
+	LWP::Primitive::Sprite shiftKeyUI_;
+	// RトリガーUI
+	LWP::Primitive::Sprite spaceKeyUI＿;
+	// AボタンUI
+	LWP::Primitive::Sprite wKeyUI_;
 	
+	// 行動名UI
+	LWP::Primitive::Sprite moveText_;
+	LWP::Primitive::Sprite slidingText_;
+	LWP::Primitive::Sprite shotText_;
+	LWP::Primitive::Sprite jumpText_;
+
 	/// UI用変数群
 	// 体力ゲージ変数群
 	float hpGaugeOffsetX_ = 85.0f; // HPゲージのX軸オフセット
