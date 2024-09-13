@@ -62,12 +62,6 @@ void GameScene::Update() {
 		return;
 	}
 
-	// Nキーで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_N)) {
-		fade_.Out();
-	}
-
-
 
 	// 死亡演出
 	if (deadStaging_.flag) {
