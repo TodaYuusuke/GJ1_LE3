@@ -38,6 +38,8 @@ void GameScene::Update() {
 #if DEMO
 	particleManager_.DebugGUI();
 #endif
+	stage_.Update();
+
 	// UIの遅延用
 	if (uiInitFlag == 0) {
 		gameUIManager_.SetUp();

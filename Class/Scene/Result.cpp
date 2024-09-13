@@ -44,11 +44,15 @@ void Result::Initialize() {
 	droneLight_.radius = 10.0f;
 	droneLight_.color = { 202,255,208,255 };
 
+	systemSE_.Load(sysPath_);
+
 	fade_.Init();
 }
 
 // 更新
 void Result::Update() {
+	stage_.Update();
+
 	// アニメーションの再生が終わったら
 	if (!ppParameter.flag && player_.anim.GetProgress() > 0.7f && drone_.anim.GetProgress() > 0.7f) {
 		ppParameter.flag = true;
@@ -67,10 +71,12 @@ void Result::Update() {
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N) || Controller::GetTrigger(XBOX_A)) {
 		fade_.Out();
+		systemSE_.Play();
 	}
 	// Rキーでもう一度
 	if (Keyboard::GetTrigger(DIK_R)) {
 		fade_.Out();
+		systemSE_.Play();
 	}
 
 	fade_.Update();

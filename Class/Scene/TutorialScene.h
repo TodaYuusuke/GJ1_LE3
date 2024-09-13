@@ -162,6 +162,13 @@ private://変数
 	std::unique_ptr<Decoy> decoy_;
 	std::unique_ptr<Decoy> decoy2_;
 
+	//長押しでシーン変更
+	float sceneChangeSec_ = 2.0f;
+	float currentScceneChange_ = 0.0f;
+
+	//進捗ゲージ画像
+	LWP::Primitive::Sprite skipGage_;
+
 
 	// フェードインアウト
 	FadeManager fade_;
@@ -173,6 +180,11 @@ private://変数
 	//bgm
 	LWP::Resource::Audio bgm_;
 	std::string bgmPath_ = "game3.mp3";
+
+
+	LWP::Resource::Audio systemSE_;
+	std::string sysPath_ = "SE/system_Select.mp3";
+
 
 #pragma endregion
 };
