@@ -101,6 +101,11 @@ void GameUIManager::Update()
 		HPGaugeUpdate();
 		// 弾ゲージ更新
 		BulletGaugeUpdate();
+
+		// ウェーブ更新
+		//waveSprite_.Update(wave);
+		// エネミー更新
+		//enemySprite_.Update(enemyCount);
 	}
 
 	waveSprite_.number.n[0].isActive = false;
