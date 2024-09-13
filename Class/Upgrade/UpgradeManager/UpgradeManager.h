@@ -192,6 +192,33 @@ private: // メンバ変数
 	LWP::Primitive::Sprite cursorMoveText_; // カーソル移動
 	LWP::Primitive::Sprite applyText_; // 適用
 
+	// 数字
+	struct NumberSprite {
+		LWP::Primitive::Sprite n[10];
+
+		NumberSprite() {
+			n[0].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/0.png");
+			n[1].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/1.png");
+			n[2].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/2.png");
+			n[3].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/3.png");
+			n[4].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/4.png");
+			n[5].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/5.png");
+			n[6].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/6.png");
+			n[7].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/7.png");
+			n[8].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/8.png");
+			n[9].material.texture = LWP::Resource::LoadTexture("UI/Numbers/0_9/9.png");
+		}
+	};
+
+	// スキルポイントカウンター
+	struct SkillPointCounter {
+		LWP::Primitive::Sprite text;
+		NumberSprite number;
+
+		void Init(LWP::Math::Vector3 pos);
+		void Update(int skillpoint);
+	}skillPointCounter_;
+
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "SE/upgrade/";
 	//音量

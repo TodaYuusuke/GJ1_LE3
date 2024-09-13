@@ -117,6 +117,10 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	audioHit_.Load(audioPath_ + hitPath_);
 	audioSeelect_.Load(audioPath_ + selectPath_);
 
+	// 初期化関数
+	skillPointCounter_.Init({ 1500.0f, 900.0f });
+	skillPointCounter_.text.isActive = false;
+
 	// ボタンUI初期化
 	ButtonInit();
 }
@@ -139,13 +143,16 @@ void UpgradeManager::Update()
 		// 全てのアップグレードとカーソルの当たり判定を検証する
 		CheckCollisionUpgrades();
 
-		// スペースまたはBボタンが押されている、またはスキルポイントが１つもない場合
-		if (Input::Keyboard::GetPress(DIK_ESCAPE) || Input::Controller::GetPress(XBOX_B) || skillPoint_ <= 0) {
+		// カウンタ更新
+		skillPointCounter_.Update(skillPoint_);
+
+		// またはスキルポイントが１つもない場合
+		if (skillPoint_ <= 0) {
 			// 終了待機時間に加算
 			finishStandByTime_ += Info::GetDeltaTimeF();
 
 			// 終了待機時間が既定値を超えている場合
-			if (finishStandByTime_ >= 2.5f) {
+			if (finishStandByTime_ >= 1.0f) {
 				// アップグレードメニューを閉じる
 				isOpenObserver_.t = false;
 			}
@@ -393,6 +400,7 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	spaceKey_.isActive		= isDisplay;
 	cursorMoveText_.isActive = isDisplay;
 	applyText_.isActive = isDisplay;
+	skillPointCounter_.text.isActive = isDisplay;
 
 	// ボタン表示切り替え
 	stick_L_.isActive = isDisplay;
@@ -411,6 +419,9 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 
 	// 終了待機時間リセット
 	finishStandByTime_ = 0.0f;
+
+	// 初期化関数
+	skillPointCounter_.Init({ 1500.0f, 900.0f });
 }
 
 void UpgradeManager::CheckCollisionUpgrades()
@@ -675,4 +686,42 @@ void UpgradeManager::ButtonInit()
 	applyText_.worldTF.Parent(&button_A_.worldTF);
 	applyText_.worldTF.translation = { 125.0f, 0.0f }; // 座標を設定
 	applyText_.isActive = false;
+}
+
+void UpgradeManager::SkillPointCounter::Init(LWP::Math::Vector3 pos)
+{
+	text.material.texture = LWP::Resource::LoadTexture("UI/Text/LeftSkillPoint.png");
+	text.material.enableLighting = false;
+	text.isUI = true;
+	text.worldTF.translation = pos;
+	text.worldTF.scale = { 0.3f,0.3f,0.3f };
+
+	// 
+	for (int i = 0; i < 10; i++) {
+		number.n[i].worldTF.Parent(&text.worldTF);
+		number.n[i].worldTF.translation = { 955.0f,-35.0f,0.0f };
+		number.n[i].worldTF.scale = { 0.3f,0.3,0.3f };
+		number.n[i].isActive = false;
+		number.n[i].material.enableLighting = false;
+		number.n[i].isUI = true;
+	}
+}
+
+void UpgradeManager::SkillPointCounter::Update(int skillpoint)
+{
+	// 初期化
+	for (int i = 0; i < 10; i++) {
+		number.n[i].isActive = false;
+	}
+
+	// 10は特殊処理
+	if (skillpoint >= 10) {
+		number.n[1].isActive = true;
+		number.n[0].isActive = true;
+		number.n[0].worldTF.translation.x = 1165.0f;
+	}
+	// それ以外は通常処理
+	else {
+		number.n[skillpoint].isActive = true;
+	}
 }
