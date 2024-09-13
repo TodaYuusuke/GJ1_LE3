@@ -53,9 +53,9 @@ public: // ** アップグレードされるパブリックな変数 ** //
 
 	struct UpgradeParameter {
 		// アイテム生成に必要な敵の数
-		int kNeedDeadBody = 8;
+		int kNeedDeadBody = 14;
 		// 吸収に必要な時間
-		float kSuctionNeedTime = 3.0f;
+		float kSuctionNeedTime = 1.5f;
 	}upgradeParamater;
 
 private: // ** ステートパターン ** //
