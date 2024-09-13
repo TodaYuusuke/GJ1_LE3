@@ -42,6 +42,7 @@ void TutorialScene::Initialize()
 	taskBoads_[Slide] = LWP::Resource::LoadTexture("tutorial/boad2.png");
 	taskBoads_[Shot] = LWP::Resource::LoadTexture("tutorial/boad3.png");
 	taskBoads_[SlideShot] = LWP::Resource::LoadTexture("tutorial/boad4.png");
+	taskBoads_[SHAdvance] = LWP::Resource::LoadTexture("tutorial/boad5.png");
 	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad5.png");
 
 
@@ -235,6 +236,11 @@ void TutorialScene::SlideShotInitialize()
 	enemyManager_.SummonSpider({0,0,0});
 }
 
+void TutorialScene::SHAdvanceInitialize()
+{
+	spriteBoad_.material.texture = taskBoads_[SHAdvance];
+}
+
 void TutorialScene::AnotherInitialize()
 {
 	spriteBoad_.material.texture = taskBoads_[Another];
@@ -345,8 +351,30 @@ void TutorialScene::SlideShotUpdate()
 		taskDatas_[taskName_[SlideShot]] = true;
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
+		taskReq_ = SHAdvance;
+	}
+}
+
+void TutorialScene::SHAdvanceUpdate()
+{
+
+	//スライディング開始状態取得で認識開始
+	if (player_.GetAnimationType() == "02_SlidingStart"|| player_.GetAnimationType() == "04_SlidingEnd" || player_.GetAnimationType() == "03_Sliding") {
+		normas_.shAdvance.isCount = true;
+	}
+	else {
+		normas_.shAdvance.isCount = false;
+	}
+
+	//スライディング中に敵が0になったとき成功
+
+	if (normas_.shAdvance.isCount) {
+		spriteGage_.worldTF.scale.x = 0;
+		//次のタスクへ
 		taskReq_ = Another;
 	}
+
+
 }
 
 void TutorialScene::AnotherUpdate()

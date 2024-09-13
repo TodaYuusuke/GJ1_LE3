@@ -35,6 +35,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	void SlideInitialize();
 	void ShotInitialize();
 	void SlideShotInitialize();
+	void SHAdvanceInitialize();
 	void AnotherInitialize();
 
 	//各タスク更新処理
@@ -42,6 +43,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 	void SlideUpdate();
 	void ShotUpdate();
 	void SlideShotUpdate();
+	void SHAdvanceUpdate();
 	void AnotherUpdate();
 
 	//デバッグ処理
@@ -72,6 +74,12 @@ private://パラメータ
 		int currentCount = 0;
 		bool isCount = true;
 	};
+	struct SHAdvanceTask
+	{
+		int maxCount = 2;
+		int currentCount = 0;
+		bool isCount = false;
+	};
 	struct AnotherTask {
 		float needMovingSec = 3.0f;
 		float currentMoving = 0.0f;
@@ -83,6 +91,7 @@ private://パラメータ
 		SlideTask slide;
 		ShotTask shot;
 		SlideShotTask slideShot;
+		SHAdvanceTask shAdvance;
 		AnotherTask another;
 	}normas_;
 
@@ -95,6 +104,7 @@ private://変数
 		Slide,
 		Shot,
 		SlideShot,
+		SHAdvance,	//応用編
 		Another,
 		_countTasks
 	}tasks_;
@@ -107,6 +117,7 @@ private://変数
 		"Slide",
 		"Shot,",
 		"SlideShot",
+		"SHAdvance",
 		"anotherText"
 	};
 

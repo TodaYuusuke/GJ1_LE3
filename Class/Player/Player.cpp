@@ -57,7 +57,7 @@ Player::Player()
 		//回復処理
 		if (data->name == "HealItem") {
 			//HPの回復処理
-			if (parameters_.hp++ > parameters_.maxHp) {
+			if (++parameters_.hp > parameters_.maxHp) {
 				parameters_.hp = parameters_.maxHp;
 			}
 			audioGetHeal_.Play();
@@ -66,7 +66,7 @@ Player::Player()
 
 		//ヒットフラグが有効の時
 		if (isHitOnDebug_ && parameters_.hitData.isHit_) {
-			audioHit_.Play();
+			
 			if (parameters_.hitData.isDownHP_) {
 				parameters_.hp--;
 			}
@@ -79,6 +79,7 @@ Player::Player()
 				behaviorReq_ = Dead;
 			}
 			else {
+				audioHit_.Play();
 				parameters_.hitData.isHit_ = false;
 			}
 
