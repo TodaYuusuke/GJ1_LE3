@@ -17,6 +17,8 @@ public:
 	// 終了したか確認
 	bool GetIn() { return endIn; }
 
+	// フェードアウト開始したか確認
+	bool GetStartOut() { return startOut; }
 	// フェードアウト
 	void Out();
 	// 終了したか確認

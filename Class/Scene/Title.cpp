@@ -75,7 +75,7 @@ void Title::Update() {
 	stage_.Update();
 
 	// スペースかAボタンで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A)) {
+	if (!fade_.GetStartOut() && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
 		systemSE_.Play();
 		fade_.Out();	// フェードアウト開始
 	}

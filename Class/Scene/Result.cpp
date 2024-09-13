@@ -121,10 +121,9 @@ void Result::Update() {
 	}
 
 	// Space または Aボタンで次のシーンへ（）
-	if ((Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
+	if (!fade_.GetStartOut() && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
 		fade_.Out();
 		systemSE_.Play();
-
 	}
 
 	fade_.Update();
