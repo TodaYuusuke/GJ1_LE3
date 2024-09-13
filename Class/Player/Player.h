@@ -26,6 +26,7 @@ public://構造体＆enum群
 	//弾薬データ
 	struct BulletData
 	{
+		bool isShot_ = false;
 		//弾発生位置のオフセット
 		LWP::Math::Vector3 offset_{ 0,1.0f,0 };
 

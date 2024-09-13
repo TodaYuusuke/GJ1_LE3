@@ -47,10 +47,11 @@ void TutorialScene::Initialize()
 	//画像データを先に読み込んで保存
 	taskBoads_[Move] = LWP::Resource::LoadTexture("tutorial/boad1.png");
 	taskBoads_[Slide] = LWP::Resource::LoadTexture("tutorial/boad2.png");
+	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad6.png");
 	taskBoads_[Shot] = LWP::Resource::LoadTexture("tutorial/boad3.png");
 	taskBoads_[SlideShot] = LWP::Resource::LoadTexture("tutorial/boad4.png");
 	taskBoads_[SHAdvance] = LWP::Resource::LoadTexture("tutorial/boad5.png");
-	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad6.png");
+	
 
 
 	//ボードスプライト初期化
@@ -346,7 +347,7 @@ void TutorialScene::SlideUpdate()
 		taskDatas_[taskName_[Slide]] = true;
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
-		taskReq_ = Shot;
+		taskReq_ = Another;
 	}
 
 }
@@ -359,7 +360,7 @@ void TutorialScene::ShotUpdate()
 	//	normas_.shot.isCount = true;
 	//}
 	//任意入力があった時
-	if ((Input::Keyboard::GetTrigger(DIK_C)|| Input::Pad::GetTrigger(XBOX_RT))&&player_.parameters_.bulletData.ammoRemaining_>0 ){
+	if (player_.parameters_.bulletData.isShot_) {
 		normas_.shot.currentCount++;
 		//normas_.shot.isCount = false;
 	}
@@ -446,7 +447,7 @@ void TutorialScene::SHAdvanceUpdate()
 	if (normas_.shAdvance.isCount&&decoy_->GetBehavior()==IEnemy::Behavior::DeadBody&& decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
-		taskReq_ = Another;
+		isSceneChange_ = true;;
 	}
 
 
@@ -470,8 +471,8 @@ void TutorialScene::AnotherUpdate()
 	if (normas_.another.currentMoving >= normas_.another.needMovingSec) {
 		taskDatas_[taskName_[Another]] = true;
 		spriteGage_.worldTF.scale.x = 0;
-		//最後なので
-		isSceneChange_ = true;
+		
+		taskReq_ = Shot;
 
 	}
 }

@@ -139,6 +139,8 @@ void Player::Update()
 {
 	Debug();
 
+	parameters_.bulletData.isShot_ = false;
+
 	//状態リクエストがある時実行
 	if (behaviorReq_) {
 		//過去の状態を保存
@@ -330,6 +332,7 @@ bool Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 
 	}
+	parameters_.bulletData.isShot_ = true;
 
 	return true;
 }
