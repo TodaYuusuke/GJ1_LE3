@@ -168,6 +168,7 @@ private://変数
 
 	//進捗ゲージ画像
 	LWP::Primitive::Sprite skipGage_;
+	LWP::Primitive::Sprite skiptext_;
 
 
 	// フェードインアウト

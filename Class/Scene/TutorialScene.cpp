@@ -78,10 +78,17 @@ void TutorialScene::Initialize()
 
 	skipGage_.isUI = true;
 	skipGage_.material.enableLighting = false;
-	skipGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gageBG.png");
-	skipGage_.worldTF.translation = { 100,900,0 };
-	skipGage_.worldTF.scale = { 0.0f,1.0f,1.0f };
+	skipGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gageSkip.png");
+	skipGage_.worldTF.translation = { 100,903,0 };
+	skipGage_.worldTF.scale = { 0.0f,2.5f,1.0f };
 	skipGage_.anchorPoint = { 0.0f,0.5f };
+
+	skiptext_.isUI = true;
+	skiptext_.material.enableLighting = false;
+	skiptext_.material.texture = LWP::Resource::LoadTexture("UI/Text/TutorialSkip.png");
+	skiptext_.worldTF.translation = { 100,900,0 };
+	skiptext_.worldTF.scale = { 0.5f,0.5f,1.0f };
+	skiptext_.anchorPoint = { 0.0f,0.5f };
 
 	
 
@@ -206,6 +213,12 @@ void TutorialScene::Debug()
 				ImGui::TreePop();
 			}
 
+			if (ImGui::TreeNode("skiptext")) {
+				skiptext_.DebugGUI();
+
+				ImGui::TreePop();
+			}
+
 			ImGui::EndTabItem();
 		}
 
@@ -234,11 +247,11 @@ void TutorialScene::SceneChange()
 		}
 
 		float t = currentScceneChange_ / sceneChangeSec_;
-		skipGage_.worldTF.scale.x = LerpX(0.0f, 1.0f, t);
+		skipGage_.worldTF.scale.x = LerpX(0.0f, 2.0f, t);
 
 		if (currentScceneChange_ >= sceneChangeSec_) {
 			isSceneChange_ = true;
-			skipGage_.worldTF.scale.x = 1.0f;
+			skipGage_.worldTF.scale.x = 2.0f;
 			systemSE_.Play();
 		}
 
