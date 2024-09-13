@@ -83,7 +83,7 @@ void GameScene::Update() {
 		if (!waveEnd_ && enemyManager_.GetEndWave()) {
 			waveEnd_ = true;
 			// スキルポイント+1
-			upgradeManager_.AddSkilPoint(1);
+			upgradeManager_.AddSkilPoint(2);
 			upgradeManager_.SetIsDisplay(true);
 		}
 
