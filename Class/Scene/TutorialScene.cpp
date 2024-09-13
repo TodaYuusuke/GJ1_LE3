@@ -75,6 +75,15 @@ void TutorialScene::Update()
 	//デバッグ
 	Debug();
 
+	// UIの遅延用
+	if (uiInitFlag == 0) {
+		gameUIManager_.SetUp();
+		uiInitFlag++;
+	}
+	else if (uiInitFlag == -1) {
+		uiInitFlag++;
+	}
+
 	//状態リクエストがある時実行
 	if (taskReq_) {
 		//状態を更新

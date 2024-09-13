@@ -126,6 +126,27 @@ void GameUIManager::DebugGUI()
 			// 表示トリガー切り替え
 			ImGui::Checkbox("IsDisplay", &isDisplayObserver_.t);
 			
+			// 左スティック
+			if (ImGui::TreeNode("LeftStick")) {
+				leftStickUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// 左スティック
+			if (ImGui::TreeNode("LeftStick")) {
+				buttonAUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// 左スティック
+			if (ImGui::TreeNode("LeftStick")) {
+				buttonBUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// 左スティック
+			if (ImGui::TreeNode("LeftStick")) {
+				triggerRUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+
 			// HPゲージ系スプライト
 			if (ImGui::TreeNode("HPGauge")) {
 				// 最初のスプライトのImGuiを表示
@@ -315,6 +336,12 @@ void GameUIManager::SwitchDisplayUI(bool isDisplay)
 		enemySprite_.numFirst.n[i].isActive = false;
 		enemySprite_.numSecond.n[i].isActive = false;
 	}
+
+	// ボタン系UIの表示表示
+	leftStickUI_.isActive = isDisplay;
+	buttonAUI_.isActive = isDisplay;
+	buttonBUI_.isActive = isDisplay;
+	triggerRUI_.isActive = isDisplay;
 }
 
 void GameUIManager::WaveSprite::Init(LWP::Math::Vector3 pos) {

@@ -139,8 +139,14 @@ private: // メンバ変数
 	}enemySprite_;
 	
 	// 左スティックUI
-
-
+	LWP::Primitive::Sprite leftStickUI_;
+	// AボタンUI
+	LWP::Primitive::Sprite buttonAUI_;
+	// BボタンUI
+	LWP::Primitive::Sprite buttonBUI_;
+	// RトリガーUI
+	LWP::Primitive::Sprite triggerRUI_;
+	
 	/// UI用変数群
 	// 体力ゲージ変数群
 	float hpGaugeOffsetX_ = 85.0f; // HPゲージのX軸オフセット
