@@ -88,7 +88,7 @@ public://構造体＆enum群
 		LWP::Math::Vector3 startPos;
 
 		//減速開始の長さ
-		float length = 10.0f;
+		float length = 8.0f;
 
 		//速度
 		float spd = 11.0f;
