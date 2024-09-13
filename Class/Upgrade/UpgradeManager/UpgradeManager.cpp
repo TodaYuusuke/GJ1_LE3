@@ -30,6 +30,20 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 	backGround_.material.color = { 0.0f, 0.0f, 0.0f, 0.85f }; // 色を設定
 	backGround_.isActive = false;
 
+	// 画面名スプライトのリセット
+	SpriteReset(screenNameText_, "UI/Upgrade/UPGRADE.png");
+	screenNameText_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
+	screenNameText_.worldTF.translation = {
+		static_cast<float>(Config::Window::kResolutionWidth) / 2.0f,
+		125.0f,
+	}; // 座標を設定
+	screenNameText_.worldTF.scale = {
+		1.0f,
+		1.0f,
+		1.0f,
+	}; // スケールを設定
+	screenNameText_.isActive = false;
+
 	// 背景用スプライトのリセット
 	SpriteReset(backConectorGround_, "UI/Upgrade/Icon/Connectors.png");
 	backConectorGround_.anchorPoint = { 0.5f, 0.5f }; // アンカーポイントを設定
@@ -157,6 +171,11 @@ void UpgradeManager::DebugGUI()
 			// 背景スプライトのデバッグ情報表示
 			if (ImGui::TreeNode("BackGround")) {
 				backGround_.DebugGUI("BackGround");
+				ImGui::TreePop();
+			}
+			// 背景スプライトのデバッグ情報表示
+			if (ImGui::TreeNode("screenName")) {
+				screenNameText_.DebugGUI("screenNameText_");
 				ImGui::TreePop();
 			}
 			// 各大カテゴリのデバッグ情報表示
@@ -353,6 +372,7 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	// アップグレード時の背景の表示を切り替える
 	backGround_.isActive = isDisplay;
 	backConectorGround_.isActive = isDisplay;
+	screenNameText_.isActive = isDisplay;
 	// 大カテゴリ用スプライトの表示を切り替える
 	bodyParent_.isActive	= isDisplay;
 	gunParent_.isActive		= isDisplay;
