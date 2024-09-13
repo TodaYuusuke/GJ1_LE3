@@ -57,6 +57,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// ゲーム結果スプライト
 	LWP::Primitive::Sprite resultUI_;
+	LWP::Primitive::Sprite buttonUI_;
 
 	LWP::Resource::Audio systemSE_;
 	std::string sysPath_ = "SE/system_Select.mp3";
