@@ -137,6 +137,11 @@ private: // プライベートな関数
 	/// </summary>
 	void CursorInput();
 
+	/// <summary>
+	/// ボタン初期化関数
+	/// </summary>
+	void ButtonInit();
+
 private: // メンバ変数
 
 	// アップグレード格納配列
@@ -177,6 +182,10 @@ private: // メンバ変数
 	// アップグレードテキストスプライト
 	LWP::Primitive::Sprite upgradeText_;
 
+	// ボタン
+	LWP::Primitive::Sprite stick_L_; // スティック
+	LWP::Primitive::Sprite button_A_; // Aボタン
+
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "SE/upgrade/";
@@ -185,8 +194,6 @@ private: // メンバ変数
 	//走る音
 	LWP::Resource::Audio audioHit_;
 	LWP::Resource::Audio audioSeelect_;
-
-
 
 	std::string hitPath_ = "hit.mp3";
 	std::string selectPath_ = "Select.mp3";

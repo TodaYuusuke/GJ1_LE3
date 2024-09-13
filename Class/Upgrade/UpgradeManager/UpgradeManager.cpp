@@ -116,6 +116,9 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 
 	audioHit_.Load(audioPath_ + hitPath_);
 	audioSeelect_.Load(audioPath_ + selectPath_);
+
+	// ボタンUI初期化
+	ButtonInit();
 }
 
 void UpgradeManager::Update()
@@ -200,6 +203,11 @@ void UpgradeManager::DebugGUI()
 			// カーソルのデバッグ情報表示
 			if (ImGui::TreeNode("Cursor")) {
 				droneParent_.DebugGUI("Cursor");
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Stick")) {
+				stick_L_.DebugGUI("Stick");
 				ImGui::TreePop();
 			}
 
@@ -377,6 +385,10 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	bodyParent_.isActive	= isDisplay;
 	gunParent_.isActive		= isDisplay;
 	droneParent_.isActive	= isDisplay;
+
+	// ボタン表示切り替え
+	stick_L_.isActive = isDisplay;
+	button_A_.isActive = isDisplay;
 
 	// 配列内の全要素の表示、非表示を切り替える
 	for (auto& [key, data] : upgrades_) {
@@ -606,5 +618,28 @@ void UpgradeManager::CursorInput()
 	else if (cursorSprite_->worldTF.translation.y < ((cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f)){
 		cursorSprite_->worldTF.translation.y = ((cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f);
 	}
+
+}
+
+void UpgradeManager::ButtonInit()
+{
+	// 左スティック
+	SpriteReset(stick_L_, "UI/Upgrade/Text/joystick1_left_N.png");
+	stick_L_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	stick_L_.worldTF.translation = {
+		960.0f,
+		900.0f
+	}; // 座標を設定
+	stick_L_.worldTF.scale = { 0.5f, 0.5f }; // スケール調整
+	stick_L_.isActive = false;
+	// Aボタン
+	SpriteReset(button_A_, "UI/Upgrade/Text/button_a_N.png");
+	button_A_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	button_A_.worldTF.translation = {
+		960.0f,
+		900.0f
+	}; // 座標を設定
+	button_A_.worldTF.scale = { 0.5f, 0.5f }; // スケール調整
+	button_A_.isActive = false;
 
 }
