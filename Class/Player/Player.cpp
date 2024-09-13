@@ -348,7 +348,7 @@ void Player::ToSliding()
 
 bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 {
-	if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
+	if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XBOX_RT)) {
 		bool ans = ShotBullet(velo, ammoName, (float)parameters_.bulletData.shotpelletNum_);
 
 		if (ans) {
@@ -371,7 +371,7 @@ bool Player::ToShot(const LWP::Math::Vector3& velo, const std::string& ammoName)
 }
 
 void Player::ToJump() {
-	if (parameters_.activeFlag.jump && (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_A))) {
+	if (parameters_.activeFlag.jump && (Input::Keyboard::GetTrigger(DIK_UP) ||Input::Keyboard::GetTrigger(DIK_W) || Input::Pad::GetTrigger(XINPUT_GAMEPAD_A))) {
 		//残弾がある時のみ処理
 		if (parameters_.bulletData.ammoRemaining_ > 0) {
 			parameters_.bulletData.ammoRemaining_--;
@@ -708,10 +708,10 @@ void Player::UpdateMove()
 
 	//入力による移動処理
 	LWP::Math::Vector3 move{ 0,0,0 };
-	if (LWP::Input::Keyboard::GetPress(DIK_A)) {
+	if (LWP::Input::Keyboard::GetPress(DIK_A)|| Input::Keyboard::GetPress(DIK_LEFT)) {
 		move.x -= 1;
 	}
-	if (LWP::Input::Keyboard::GetPress(DIK_D)) {
+	if (LWP::Input::Keyboard::GetPress(DIK_D)|| Input::Keyboard::GetPress(DIK_RIGHT)) {
 		move.x += 1;
 	}
 
@@ -837,10 +837,10 @@ void Player::UpdateSlide()
 
 	//スライディング中の発砲処理
 	float x = 0;
-	if (Input::Keyboard::GetPress(DIK_D)) {
+	if (Input::Keyboard::GetPress(DIK_D)|| Input::Keyboard::GetPress(DIK_RIGHT)) {
 		x += 1;
 	}
-	if (Input::Keyboard::GetPress(DIK_A)) {
+	if (Input::Keyboard::GetPress(DIK_A)|| Input::Keyboard::GetPress(DIK_LEFT)) {
 		x -= 1;
 	}
 	x += Input::Pad::GetLStick().x;
@@ -871,14 +871,14 @@ void Player::UpdateSlide()
 		}
 		else {
 			//通常処理
-			if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
+			if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XBOX_RT)) {
 				type = slideShot;
 				ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 			}
 		}
 	}
 	else {
-		if (Input::Keyboard::GetTrigger(DIK_C) || Input::Pad::GetTrigger(XBOX_RT)) {
+		if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Pad::GetTrigger(XBOX_RT)) {
 			type = slideShot;
 			ans = ShotBullet(Math::Vector3{ 0,1,0 }.Normalize(), type, (float)parameters_.bulletData.shotpelletNum_);
 		}
