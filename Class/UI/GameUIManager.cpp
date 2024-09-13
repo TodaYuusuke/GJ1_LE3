@@ -335,7 +335,7 @@ void GameUIManager::SwitchDisplayUI(bool isDisplay)
 	// ボタン系UIの表示表示
 	leftStickUI_.isActive = isDisplay;
 	buttonAUI_.isActive = isDisplay;
-	buttoBUI_.isActive = isDisplay;
+	buttonBUI_.isActive = isDisplay;
 	triggerRUI_.isActive = isDisplay;
 }
 

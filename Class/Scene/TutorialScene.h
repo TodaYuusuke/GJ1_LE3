@@ -130,6 +130,8 @@ private://変数
 	//画像データ群
 	LWP::Resource::Texture taskBoads_[_countTasks];
 
+	// UI初期化用
+	int uiInitFlag = -1;
 
 	//各必要な奴
 	
