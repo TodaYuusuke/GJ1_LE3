@@ -10,6 +10,11 @@ using namespace LWP::Math;
 using namespace LWP::Utility;
 using namespace LWP::Object;
 
+int Lerp(const int start, const int end, float t) {
+	// 線形補間した値を返す
+	return(static_cast<float>(start) * (1.0f - t) + static_cast<float>(end) * t);
+}
+
 Result::Result(bool winFlag) {
 	winFlag_ = winFlag;
 
@@ -68,6 +73,25 @@ void Result::Initialize() {
 	droneLight_.radius = 10.0f;
 	droneLight_.color = { 202,255,208,255 };
 
+	// ゲーム結果
+	resultUI_.worldTF.translation = { 100.0f, 250.0f, 0.0f };
+	resultUI_.worldTF.rotation.z = -0.15f;
+	if (winFlag_) {
+		resultUI_.material.texture = LWP::Resource::LoadTexture("UI/Text/GAMECLEAR.png");
+	}
+	else {
+		resultUI_.material.texture = LWP::Resource::LoadTexture("UI/Text/GAMEOVER.png");
+	}
+	resultUI_.material.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+	resultUI_.material.enableLighting = false;
+	resultUI_.isUI = true;
+	// ボタン
+	buttonUI_.worldTF.translation = { 100.0f, 850.0f, 0.0f };
+	buttonUI_.material.texture = LWP::Resource::LoadTexture("UI/Text/NextScreen.png");
+	buttonUI_.material.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+	buttonUI_.material.enableLighting = false;
+	buttonUI_.isUI = true;
+
 	systemSE_.Load(sysPath_);
 
 	fade_.Init();
@@ -90,31 +114,22 @@ void Result::Update() {
 
 		mainCamera.pp.grayScale.intensity = ResultLerp(0.0f, ppParameter.grayScaleIntensity, ppParameter.time / ppParameter.totalTime);
 		mainCamera.pp.radialBlur.blurWidth = ResultLerp(0.0f, ppParameter.radialBlurIntensity, ppParameter.time / ppParameter.totalTime);
+
+		// 結果スプライトを徐々に表示
+		resultUI_.material.color.A = Lerp(resultUI_.material.color.A, 255, 0.01f);
+		buttonUI_.material.color.A = Lerp(buttonUI_.material.color.A, 255, 0.01f);
 	}
 
 	// Space または Aボタンで次のシーンへ（）
-	if (nextTitle == -1 && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
+	if ((Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
 		fade_.Out();
 		systemSE_.Play();
 
-		nextTitle = 0;
-	}
-	// Space または Aボタンで次のシーンへ（）
-	if (nextTitle == -1 && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
-		fade_.Out();
-		systemSE_.Play();
-
-		nextTitle = 1;
 	}
 
 	fade_.Update();
 	if (fade_.GetOut()) {
 		bgm_.Stop();
-		if (nextTitle == 0) {
-			nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
-		}
-		else if (nextTitle == 1) {
-			nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
-		}
+		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
 	}
 }

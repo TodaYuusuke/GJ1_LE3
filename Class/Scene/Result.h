@@ -23,8 +23,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// 勝利フラグ
 	bool winFlag_ = false;
-	// 次のシーンフラグ（0 ... Title, 1 ... GameScene）
-	int nextTitle = -1;
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "BGM/";
@@ -56,6 +54,10 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 		// 経過時間
 		float time = 0.0f;
 	}ppParameter;
+
+	// ゲーム結果スプライト
+	LWP::Primitive::Sprite resultUI_;
+	LWP::Primitive::Sprite buttonUI_;
 
 	LWP::Resource::Audio systemSE_;
 	std::string sysPath_ = "SE/system_Select.mp3";
