@@ -198,7 +198,7 @@ void Drone::UpdateSuction() {
 	else{
 		// 吸収しているようにアニメーション
 		Vector3 pos = model_.worldTF.GetWorldPosition();
-		pos.y += 1.0f;
+		pos.y += 0.7f;
 		suction_.enemy->model_.worldTF.translation = Utility::Interp::Lerp(suction_.worldPos, pos, suction_.time / upgradeParamater.kSuctionNeedTime);
 		suction_.enemy->model_.worldTF.scale = Utility::Interp::Slerp(suction_.scale, { 0.0f,0.0f,0.0f }, suction_.time / upgradeParamater.kSuctionNeedTime);
 	}
