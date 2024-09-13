@@ -38,6 +38,8 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// タイトルロゴ
 	LWP::Primitive::Sprite logo_;
+	// 開始テキスト
+	LWP::Primitive::Sprite buttonText_;
 	// BGM
 	LWP::Resource::Audio bgm_;
 
