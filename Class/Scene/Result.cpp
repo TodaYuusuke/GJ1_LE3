@@ -92,28 +92,29 @@ void Result::Update() {
 		mainCamera.pp.radialBlur.blurWidth = ResultLerp(0.0f, ppParameter.radialBlurIntensity, ppParameter.time / ppParameter.totalTime);
 	}
 
-	// 
-	if (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A)) {
+	// Space または Aボタンで次のシーンへ（）
+	if (nextTitle == -1 && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
 		fade_.Out();
 		systemSE_.Play();
-	}
 
-	static bool flag = false;
-	if (Keyboard::GetTrigger(DIK_1)) {
-		fade_.Out();
-		systemSE_.Play();
-		flag = false;
+		nextTitle = 0;
 	}
-	if (Keyboard::GetTrigger(DIK_2)) {
+	// Space または Aボタンで次のシーンへ（）
+	if (nextTitle == -1 && (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A))) {
 		fade_.Out();
 		systemSE_.Play();
-		flag = true;
+
+		nextTitle = 1;
 	}
 
 	fade_.Update();
 	if (fade_.GetOut()) {
 		bgm_.Stop();
-		//nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
-		nextSceneFunction = []() { return new NullScene([]() { return new Result(flag); }); };
+		if (nextTitle == 0) {
+			nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
+		}
+		else if (nextTitle == 0) {
+			nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
+		}
 	}
 }

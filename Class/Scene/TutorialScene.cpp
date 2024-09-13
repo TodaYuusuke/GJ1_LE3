@@ -259,17 +259,10 @@ void TutorialScene::SceneChange()
 
 	}
 
-
 	//シーン変更フラグがONの時
 	if (isSceneChange_) {
 		fade_.Out();
 	}
-	// Nキーで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_N)) {
-		systemSE_.Play();
-		fade_.Out();
-	}
-
 
 	// フェードインアウト更新
 	fade_.Update();
