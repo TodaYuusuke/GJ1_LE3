@@ -107,7 +107,7 @@ void ParticleManager::Update() {
 	// 一度でも再生したらSEを鳴らす
 	if (summoned) {
 		waterSE_.Play();
-		waterSE_.SetVolume(0.3f);
+		waterSE_.SetVolume(0.1f);
 	}
 }
 
