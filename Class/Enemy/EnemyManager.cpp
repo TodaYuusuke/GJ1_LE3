@@ -154,26 +154,18 @@ void EnemyManager::Update() {
 
 					// 敵召喚
 					Vector3 summonPos = { player_->GetWorldPosition().x,0.0f,0.0f };
-					switch (Utility::GenerateRandamNum<int>(0, 1)) {
-						case 0:
-							// 場外じゃないかチェック
-							if (summonPos.x + screenOutDistance_ > outArea_) {
-								summonPos.x -= screenOutDistance_;
-							}
-							else {
-								summonPos.x += screenOutDistance_;
-							}
-							break;
-						case 1:
-							// 場外じゃないかチェック
-							if (summonPos.x - screenOutDistance_ < outArea_) {
-								summonPos.x += screenOutDistance_;
-							}
-							else {
-								summonPos.x -= screenOutDistance_;
-							}
-							break;
+					float dir = Utility::GenerateRandamNum<int>(0, 1) == 0 ? -1.0f : 1.0f;  // 0 の場合は -1 を返し、1 の場合は 1 を返す
+
+					// 指定した地点が場外かチェック
+					float x = summonPos.x + screenOutDistance_ * dir;
+					if (x >= outArea_) {
+						dir *= -1.0f;
 					}
+					else if (x <= -outArea_){
+						dir *= -1.0f;
+					}
+					// 確定
+					summonPos.x += screenOutDistance_ * dir;
 
 					// 召喚
 					prop.summonFunction_(summonPos);
