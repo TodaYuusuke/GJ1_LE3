@@ -95,7 +95,7 @@ void TutorialScene::Update()
 
 void TutorialScene::Debug()
 {
-
+#if DEMO
 	ImGui::Begin("Game");
 	if (ImGui::BeginTabBar("LWP")) {
 		if (ImGui::BeginTabItem("Tutorial")) {
@@ -142,13 +142,13 @@ void TutorialScene::Debug()
 				ImGui::TreePop();
 			}
 
-
+			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
 	}
 	ImGui::End();
-
+#endif
 }
 
 void TutorialScene::SceneChange()
@@ -160,12 +160,11 @@ void TutorialScene::SceneChange()
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 
-#ifdef DEMO
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
-		nextSceneFunction = []() { return new GameScene(); };
+		bgm_.Stop();
+		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
-#endif // DEMO
 
 
 }

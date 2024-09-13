@@ -1,5 +1,5 @@
 #include "Title.h"
-#include "GameScene.h"
+#include "TutorialScene.h"
 #include "NullScene.h"
 
 using namespace LWP;
@@ -56,13 +56,21 @@ void Title::Initialize() {
 	// BGM
 	bgm_.Load("BGM/title.mp3");
 	bgm_.Play(0.1f, 255);
+
+	fade_.Init();
 }
 
 // 更新
 void Title::Update() {
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N) || Controller::GetTrigger(XBOX_A)) {
+		fade_.Out();	// フェードアウト開始
+	}
+
+	// フェードアウトが終わったら次のシーンへ
+	fade_.Update();
+	if (fade_.GetOut()) {
 		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
+		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
 	}
 }
