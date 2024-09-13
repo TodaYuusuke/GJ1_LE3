@@ -50,14 +50,12 @@ private: // ** パラメータ ** //
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "SE/spider/";
 	//音量
-	float audioVolume_ = 0.4f;
-	float  volume_;
+	float audioVolume_ = 0.07f;
+	float volume_;
 	//走る音
 	LWP::Resource::Audio audioWalk_;
 	LWP::Resource::Audio audioDead_;
 
-
 	std::string walkPath_ = "walk.mp3";
 	std::string deadPath_ = "dead1.mp3";
-
 };

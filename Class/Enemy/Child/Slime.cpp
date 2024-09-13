@@ -20,14 +20,17 @@ void Slime::ChildInit() {
 	audioLand_.Load(audioPath_ + landPath_);
 	audioDead_.Load(audioPath_ + deadPath_);
 
+
+	// ステータスにばらつきを
+
 }
 
 void Slime::ChildUpdate() {
 	// 死んだら更新はしない
 	if (!isAlive_) { return; }
 
-	normal_.velocity.y += normal_.kGravity;
-	model_.worldTF.translation += normal_.velocity;
+	normal_.velocity.y += normal_.kGravity * LWP::Info::GetDeltaTimeF();
+	model_.worldTF.translation += normal_.velocity * LWP::Info::GetDeltaTimeF();
 
 	// スライムが地面に埋まらないように
 	if (model_.worldTF.translation.y < 0.0f) {

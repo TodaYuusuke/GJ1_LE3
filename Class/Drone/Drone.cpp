@@ -62,6 +62,8 @@ void Drone::Update() {
 					suction_.enemy->DebugGUI();
 					ImGui::TreePop();
 				}
+				ImGui::DragFloat3("WorldPos", &suction_.worldPos.x, 0.01f);
+				ImGui::DragFloat3("Scale", &suction_.scale.x, 0.01f);
 				ImGui::DragFloat("time", &suction_.time, 0.01f);
 				ImGui::TreePop();
 			}
@@ -93,6 +95,8 @@ void Drone::Update() {
 	//状態更新処理
 	(this->*BehaviorUpdate[behavior_])();
 
+	// 地形より上に行かないように
+	if (goalPosition_.y > 5.5f) { goalPosition_.y = 5.5f; }
 	// モデルの座標更新
 	model_.worldTF.translation = Utility::Interp::Lerp(model_.worldTF.translation, goalPosition_, kSlerpT_);
 
@@ -164,6 +168,11 @@ void Drone::InitSuction() {
 	if (suction_.enemy == nullptr) {
 		behaviorReq_ = PlayerFollow;
 	}
+	else {
+		suction_.worldPos = suction_.enemy->GetWorldPosition();	// 死体の場所
+		suction_.scale = suction_.enemy->model_.worldTF.scale;	// 死体のスケール
+	}
+	// タイマーリセット
 	suction_.time = 0.0f;
 }
 void Drone::UpdateSuction() {
@@ -185,7 +194,13 @@ void Drone::UpdateSuction() {
 		}
 
 		behaviorReq_ = PlayerFollow;	// プレイヤー追従に戻る
-		// アイテム
+	}
+	else{
+		// 吸収しているようにアニメーション
+		Vector3 pos = model_.worldTF.GetWorldPosition();
+		pos.y += 1.0f;
+		suction_.enemy->model_.worldTF.translation = Utility::Interp::Lerp(suction_.worldPos, pos, suction_.time / upgradeParamater.kSuctionNeedTime);
+		suction_.enemy->model_.worldTF.scale = Utility::Interp::Slerp(suction_.scale, { 0.0f,0.0f,0.0f }, suction_.time / upgradeParamater.kSuctionNeedTime);
 	}
 }
 void Drone::InitGenerateItem() {
