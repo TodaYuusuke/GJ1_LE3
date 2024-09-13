@@ -180,8 +180,7 @@ void Drone::UpdateSuction() {
 	if (suction_.enemy == nullptr) { return; }
 
 	// 経過時間を加算
-	//suction_.time += LWP::Info::GetDeltaTimeF();
-	suction_.time += 1.0f/60.0f;
+	suction_.time += LWP::Info::GetDeltaTimeF();
 	// 経過時間を過ぎたら吸収完了
 	if (suction_.time > upgradeParamater.kSuctionNeedTime) {
 		delete suction_.enemy;
@@ -195,11 +194,12 @@ void Drone::UpdateSuction() {
 		}
 
 		behaviorReq_ = PlayerFollow;	// プレイヤー追従に戻る
-		// アイテム
 	}
 	else{
 		// 吸収しているようにアニメーション
-		suction_.enemy->model_.worldTF.translation = Utility::Interp::Slerp(suction_.worldPos, model_.worldTF.GetWorldPosition(), suction_.time / upgradeParamater.kSuctionNeedTime);
+		Vector3 pos = model_.worldTF.GetWorldPosition();
+		pos.y += 1.0f;
+		suction_.enemy->model_.worldTF.translation = Utility::Interp::Lerp(suction_.worldPos, pos, suction_.time / upgradeParamater.kSuctionNeedTime);
 		suction_.enemy->model_.worldTF.scale = Utility::Interp::Slerp(suction_.scale, { 0.0f,0.0f,0.0f }, suction_.time / upgradeParamater.kSuctionNeedTime);
 	}
 }

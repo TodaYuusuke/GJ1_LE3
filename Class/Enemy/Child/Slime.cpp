@@ -29,7 +29,7 @@ void Slime::ChildUpdate() {
 	// 死んだら更新はしない
 	if (!isAlive_) { return; }
 
-	normal_.velocity.y += normal_.kGravity;
+	normal_.velocity.y += normal_.kGravity * LWP::Info::GetDeltaTimeF();
 	model_.worldTF.translation += normal_.velocity * LWP::Info::GetDeltaTimeF();
 
 	// スライムが地面に埋まらないように

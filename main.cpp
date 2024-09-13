@@ -8,12 +8,11 @@
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::StartUp("Window Title");
-	// ReleaseのFPSチェックのためにImGui表示
 #if DEMO
 	LWP::System::Run(new Title);
 #else
 	LWP::Window::ChangeFullScreenMode();
-	LWP::System::Run(new GameScene);
+	LWP::System::Run(new Title);
 #endif
 	return 0;
 }

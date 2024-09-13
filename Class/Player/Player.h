@@ -27,7 +27,7 @@ public://構造体＆enum群
 	struct BulletData
 	{
 		//弾発生位置のオフセット
-		LWP::Math::Vector3 offset_{ 0,1.4f,0 };
+		LWP::Math::Vector3 offset_{ 0,1.0f,0 };
 
 		//弾の速度
 		float bulletsSpd_ = 100;
@@ -39,7 +39,7 @@ public://構造体＆enum群
 		int maxAmmoNum_ = 4;
 
 		//弾のばらつき度合い
-		float bulletDispersion_ = 0.17f;
+		float bulletDispersion_ = 0.5f;
 
 		//同時リロード数
 		int simultaneouslyLoaded_ = 1;
@@ -88,7 +88,7 @@ public://構造体＆enum群
 		float length = 10.0f;
 
 		//速度
-		float spd = 15.0f;
+		float spd = 11.0f;
 
 		//減速量
 		float acceSpd = 80.0f;

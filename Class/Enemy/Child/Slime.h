@@ -39,7 +39,7 @@ private: // ** パラメーター ** //
 
 		float kJumpIntervalTime = 4.0f;	// ジャンプインターバル時間（秒）
 		LWP::Math::Vector3 kJumpVelocity = { -4.0f,11.0f,0.0f };	// ジャンプした瞬間の速度
-		float kGravity = -0.3f;	// 重力
+		float kGravity = -11.0f;	// 重力
 	}normal_;
 
 	//オーディオがあるフォルダまでのパス
