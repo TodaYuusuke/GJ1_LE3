@@ -60,6 +60,13 @@ void TutorialScene::Initialize()
 	spriteGage_.worldTF.scale = { 2.0f,1.0f,1.0f };
 	spriteGage_.anchorPoint = { 0.0f,0.5f };
 
+	spriteGageBack_.isUI = true;
+	spriteGageBack_.material.enableLighting = false;
+	spriteGageBack_.material.texture = LWP::Resource::LoadTexture("tutorial/gageBG.png");
+	spriteGageBack_.worldTF.translation = { 760,440,0 };
+	spriteGageBack_.worldTF.scale = { 2.0f,1.0f,1.0f };
+	spriteGageBack_.anchorPoint = { 0.0f,0.5f };
+
 	fade_.Init();
 }
 
@@ -170,6 +177,7 @@ void TutorialScene::SceneChange()
 	if (fade_.GetOut()) {
 		// 曲を止めてシーン変更
 		bgm_.Stop();
+		player_.StopAllLoopSE();
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 }

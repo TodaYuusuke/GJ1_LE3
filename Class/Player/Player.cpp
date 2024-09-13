@@ -411,6 +411,11 @@ void Player::SetArea()
 	}
 }
 
+void Player::StopAllLoopSE()
+{
+	audioRun_.Stop();
+}
+
 float Player::GetPlayerDirection()
 {
 	if (pVeloX_ < 0) {

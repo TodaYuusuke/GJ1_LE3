@@ -210,6 +210,8 @@ public:
 	//無理やりエリア制限
 	void SetArea();
 
+	void StopAllLoopSE();
+
 public:
 
 	//プレイヤーの現在の状態を取得

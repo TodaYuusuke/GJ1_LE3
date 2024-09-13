@@ -120,8 +120,12 @@ private://変数
 	//説明ボード画像
 	LWP::Primitive::Sprite spriteBoad_;
 
+	//進捗ゲージ背景画像
+	LWP::Primitive::Sprite spriteGageBack_;
+
 	//進捗ゲージ画像
 	LWP::Primitive::Sprite spriteGage_;
+
 
 	//画像データ群
 	LWP::Resource::Texture taskBoads_[_countTasks];
