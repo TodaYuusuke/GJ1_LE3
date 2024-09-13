@@ -181,5 +181,10 @@ private://変数
 	LWP::Resource::Audio bgm_;
 	std::string bgmPath_ = "game3.mp3";
 
+
+	LWP::Resource::Audio systemSE_;
+	std::string sysPath_ = "SE/system_Select.mp3";
+
+
 #pragma endregion
 };

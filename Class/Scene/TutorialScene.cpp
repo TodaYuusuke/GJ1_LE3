@@ -79,7 +79,7 @@ void TutorialScene::Initialize()
 	skipGage_.isUI = true;
 	skipGage_.material.enableLighting = false;
 	skipGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gageBG.png");
-	skipGage_.worldTF.translation = { 1160,800,0 };
+	skipGage_.worldTF.translation = { 100,900,0 };
 	skipGage_.worldTF.scale = { 0.0f,1.0f,1.0f };
 	skipGage_.anchorPoint = { 0.0f,0.5f };
 
@@ -97,6 +97,9 @@ void TutorialScene::Initialize()
 	decoy2_->isAlive_ = false;
 	decoy2_->model_.isActive = false;
 	decoy2_->collider_.isActive = false;
+
+
+	systemSE_.Load(sysPath_);
 }
 
 void TutorialScene::Update() {
@@ -236,6 +239,7 @@ void TutorialScene::SceneChange()
 		if (currentScceneChange_ >= sceneChangeSec_) {
 			isSceneChange_ = true;
 			skipGage_.worldTF.scale.x = 1.0f;
+			systemSE_.Play();
 		}
 
 	}
@@ -247,6 +251,7 @@ void TutorialScene::SceneChange()
 	}
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
+		systemSE_.Play();
 		fade_.Out();
 	}
 
@@ -258,6 +263,7 @@ void TutorialScene::SceneChange()
 		// 曲を止めてシーン変更
 		bgm_.Stop();
 		player_.StopAllLoopSE();
+
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
 }
@@ -503,6 +509,7 @@ void TutorialScene::SHAdvanceUpdate()
 	if (normas_.shAdvance.isCount && decoy_->GetBehavior() == IEnemy::Behavior::DeadBody && decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
+		systemSE_.Play();
 		isSceneChange_ = true;;
 	}
 

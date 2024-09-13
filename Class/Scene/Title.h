@@ -43,4 +43,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 
 	// フェードインアウト
 	FadeManager fade_;
+
+	LWP::Resource::Audio systemSE_;
+	std::string sysPath_ = "SE/system_Select.mp3";
 };
