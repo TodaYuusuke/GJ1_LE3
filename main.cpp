@@ -9,7 +9,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::StartUp("Window Title");
 #if DEMO
 	LWP::System::Run(new Result(true));
-	LWP::Info::ChangeShowDebugGUI();
 #else
 	LWP::Window::ChangeFullScreenMode();
 	LWP::System::Run(new Title);
