@@ -113,7 +113,7 @@ void Result::Update() {
 		if (nextTitle == 0) {
 			nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
 		}
-		else if (nextTitle == 0) {
+		else if (nextTitle == 1) {
 			nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 		}
 	}
