@@ -133,6 +133,8 @@ private: // メンバ変数
 		void Update(int enemy);
 	}enemySprite_;
 	
+	// 左スティックUI
+
 
 	/// UI用変数群
 	// 体力ゲージ変数群
