@@ -162,6 +162,13 @@ private://変数
 	std::unique_ptr<Decoy> decoy_;
 	std::unique_ptr<Decoy> decoy2_;
 
+	//長押しでシーン変更
+	float sceneChangeSec_ = 2.0f;
+	float currentScceneChange_ = 0.0f;
+
+	//進捗ゲージ画像
+	LWP::Primitive::Sprite skipGage_;
+
 
 	// フェードインアウト
 	FadeManager fade_;

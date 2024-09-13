@@ -76,6 +76,15 @@ void TutorialScene::Initialize()
 	spriteGageBack_.worldTF.scale = { 2.0f,1.0f,1.0f };
 	spriteGageBack_.anchorPoint = { 1.0f,0.5f };
 
+	skipGage_.isUI = true;
+	skipGage_.material.enableLighting = false;
+	skipGage_.material.texture = LWP::Resource::LoadTexture("tutorial/gageBG.png");
+	skipGage_.worldTF.translation = { 1160,800,0 };
+	skipGage_.worldTF.scale = { 0.0f,1.0f,1.0f };
+	skipGage_.anchorPoint = { 0.0f,0.5f };
+
+	
+
 	fade_.Init();
 
 
@@ -187,6 +196,12 @@ void TutorialScene::Debug()
 				ImGui::TreePop();
 			}
 
+			if (ImGui::TreeNode("skipGage")) {
+				skipGage_.DebugGUI();
+
+				ImGui::TreePop();
+			}
+
 			ImGui::EndTabItem();
 		}
 
@@ -198,6 +213,33 @@ void TutorialScene::Debug()
 
 void TutorialScene::SceneChange()
 {
+
+	if (!isSceneChange_) {
+
+		float delta = Info::GetDeltaTimeF();
+
+		//押し続けるとカウント増加
+		if (Input::Keyboard::GetPress(DIK_W)|| Input::Keyboard::GetPress(DIK_UP)||Input::Controller::GetPress(XINPUT_GAMEPAD_A)) {
+			currentScceneChange_ += delta;
+		}
+		else {
+			currentScceneChange_ -= delta;
+			if (currentScceneChange_ < 0) {
+				currentScceneChange_ = 0;
+			}
+		}
+
+		float t = currentScceneChange_ / sceneChangeSec_;
+		skipGage_.worldTF.scale.x = LerpX(0.0f, 1.0f, t);
+
+		if (currentScceneChange_ >= sceneChangeSec_) {
+			isSceneChange_ = true;
+			skipGage_.worldTF.scale.x = 1.0f;
+		}
+
+	}
+
+
 	//シーン変更フラグがONの時
 	if (isSceneChange_) {
 		fade_.Out();
