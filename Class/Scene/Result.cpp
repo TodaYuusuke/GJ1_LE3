@@ -68,6 +68,18 @@ void Result::Initialize() {
 	droneLight_.radius = 10.0f;
 	droneLight_.color = { 202,255,208,255 };
 
+	// タイトル
+	resultUI_.worldTF.translation = { 250.0f, 125.0f, 0.0f };
+	if (winFlag_) {
+		resultUI_.material.texture = LWP::Resource::LoadTexture("UI/Text/GAMECLEAR.png");
+	}
+	else {
+		resultUI_.material.texture = LWP::Resource::LoadTexture("UI/Text/GAMEOVER.png");
+	}
+	resultUI_.material.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+	resultUI_.material.enableLighting = false;
+	resultUI_.isUI = true;
+
 	systemSE_.Load(sysPath_);
 
 	fade_.Init();
