@@ -449,6 +449,8 @@ void UpgradeManager::CheckCollisionUpgrades()
 
 		// 前提アップグレードが存在しない場合
 		if (it->second.upgrade->prevUpgradeName_ == "") {
+
+
 			// 衝突判定を検証する
 			if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
 				// テキストを選択した説明のモノに変更する
@@ -476,8 +478,6 @@ void UpgradeManager::CheckCollisionUpgrades()
 					if (Input::Keyboard::GetTrigger(DIK_SPACE) || Input::Controller::GetPress(XBOX_A)) {
 						// 適用関数を呼び出す
 						it->second.upgrade->Apply(player_, drone_);
-						// スプライトの色を少し薄くする
-						it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
 
 						// スキルポイントを - 1
 						skillPoint_--;
@@ -504,8 +504,6 @@ void UpgradeManager::CheckCollisionUpgrades()
 		else if(it->second.upgrade->prevUpgradeName_ != "") { // 前提アップグレードが存在する場合
 			// 前提アップグレードが解放されている場合
 			if (upgrades_[it->second.upgrade->prevUpgradeName_].upgrade->isApplied_ && !it->second.upgrade->isApplied_) {
-				// スプライトの色を戻す
-				it->second.ui.material.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 				// 衝突判定を検証する
 				if (CheckCollision2Upgrade(cursorPos, cursorRadius, upgradePos, upgradeRadius)) {
@@ -553,8 +551,6 @@ void UpgradeManager::CheckCollisionUpgrades()
 				}
 			}
 			else { // 解放されていない場合
-				// スプライトの色を少し薄くする
-				it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
 
 				// スケールを線形補間で小さくする
 				it->second.ui.worldTF.scale =
@@ -574,6 +570,46 @@ void UpgradeManager::CheckCollisionUpgrades()
 				);
 
 			
+		}
+
+		// アップグレードの色を変える処理
+		if (it->second.upgrade->isApplied_) {
+			// 適用済みアップグレードは白
+			it->second.ui.material.color = Utility::ColorPattern::WHITE;
+		}
+		else {
+			// 前提アップグレードがないとき
+			if (it->second.upgrade->prevUpgradeName_ == "") {
+				// スキルポイントが1以上あるとき
+				if (skillPoint_ > 0) {
+					// 解放できるアップグレードは黄色に
+					it->second.ui.material.color = Utility::ColorPattern::YELLOW;
+				}
+				else {
+
+					// スキルポイントがあれば適用できるものは暗めに
+					it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
+				}
+			}
+			else {
+				// 前提アップグレードが適用済みの場合
+				if (upgrades_[it->second.upgrade->prevUpgradeName_].upgrade->isApplied_) {
+					// スキルポイントが1以上あるとき
+					if (skillPoint_ > 0) {
+						// 解放できるアップグレードは黄色に
+						it->second.ui.material.color = Utility::ColorPattern::YELLOW;
+					}
+					else {
+
+						// スキルポイントがあれば適用できるものは暗めに
+						it->second.ui.material.color = { 0.35f, 0.35f, 0.35f, 1.0f };
+					}
+				}
+				else {
+					// 適用不可能
+					it->second.ui.material.color = { 5, 5, 5, 255 };
+				}
+			}
 		}
 	}
 
