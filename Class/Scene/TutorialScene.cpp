@@ -514,7 +514,7 @@ void TutorialScene::SHAdvanceUpdate()
 
 	//スライディング中に敵が0になったとき成功
 
-	if (normas_.shAdvance.isCount && decoy_->GetBehavior() == IEnemy::Behavior::DeadBody && decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
+	if (!isSceneChange_&&normas_.shAdvance.isCount && decoy_->GetBehavior() == IEnemy::Behavior::DeadBody && decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
 		systemSE_.Play();
