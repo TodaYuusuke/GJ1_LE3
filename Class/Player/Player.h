@@ -27,7 +27,7 @@ public://構造体＆enum群
 	struct BulletData
 	{
 		//弾発生位置のオフセット
-		LWP::Math::Vector3 offset_{ 0,1.4f,0 };
+		LWP::Math::Vector3 offset_{ 0,1.0f,0 };
 
 		//弾の速度
 		float bulletsSpd_ = 100;
@@ -39,16 +39,16 @@ public://構造体＆enum群
 		int maxAmmoNum_ = 4;
 
 		//弾のばらつき度合い
-		float bulletDispersion_ = 0.17f;
+		float bulletDispersion_ = 0.5f;
 
 		//同時リロード数
 		int simultaneouslyLoaded_ = 1;
 
 		//リロード開始時間
-		float reloadStartSec_ = 1;
+		float reloadStartSec_ = 2.0f;
 
 		//一発のリロードにかかる時間
-		float putBulletInSec_ = 0.2f;
+		float putBulletInSec_ = 0.4f;
 
 		//弾の同時発射数
 		int shotpelletNum_ = 5;
@@ -62,6 +62,8 @@ public://構造体＆enum群
 
 	//ヒット関連
 	struct HitData {
+		//HPが減るフラグ
+		bool isDownHP_ = true;
 		//ヒットフラグ
 		bool isHit_ = true;
 		//ヒット時の無敵時間
@@ -88,7 +90,7 @@ public://構造体＆enum群
 		float length = 10.0f;
 
 		//速度
-		float spd = 15.0f;
+		float spd = 11.0f;
 
 		//減速量
 		float acceSpd = 80.0f;
@@ -205,7 +207,10 @@ public:
 		_countBehavior
 	};
 
-	
+	//無理やりエリア制限
+	void SetArea();
+
+	void StopAllLoopSE();
 
 public:
 

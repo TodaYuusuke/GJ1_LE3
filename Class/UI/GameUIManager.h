@@ -34,6 +34,11 @@ public: // メンバ関数
 	void Update(int wave, int enemyCount);
 
 	/// <summary>
+	/// 更新関数（敵関係を表示しない
+	/// </summary>
+	void Update();
+
+	/// <summary>
 	/// ImGui表示関数
 	/// </summary>
 	void DebugGUI();
