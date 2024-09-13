@@ -415,6 +415,7 @@ void Player::SetArea()
 
 void Player::StopAllLoopSE()
 {
+	
 	audioRun_.Stop();
 }
 
