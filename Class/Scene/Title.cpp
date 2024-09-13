@@ -16,12 +16,14 @@ void Title::Initialize() {
 	stage_.Init(&mainCamera);
 	
 	player_.model.LoadShortPath("Robot/Player_Boned_IK.gltf");
+	player_.model.materials["HeadDisplay"].enableLighting = false;
 	player_.anim.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &player_.model);
 	player_.anim.Play("14_Title", true);
 	player_.model.worldTF.translation = { -34.0f, 0.0f, 7.0f };
 	player_.model.worldTF.rotation = { 0.0f, 0.948f, 0.0f, -0.319f };
 	
 	drone_.model.LoadShortPath("Drone/Drone.gltf");
+	drone_.model.materials["Gage"].enableLighting = false;
 	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
 	drone_.anim.Play("00_Idle", true);
 	drone_.model.worldTF.translation = { -32.76f, 2.0f, 9.25f };

@@ -24,6 +24,7 @@ void TutorialScene::Initialize()
 	player_.Initialize(&particleManager_);
 	player_.parameters_.hitData.isDownHP_ = false;//あたってもHPが減らない
 	drone_.model.LoadShortPath("Drone/Drone.gltf");
+	drone_.model.materials["Gage"].enableLighting = false;
 	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
 	drone_.anim.Play("00_Idle", true);
 	drone_.model.worldTF.translation = { -6.0f, 4.0f, 0.0f };

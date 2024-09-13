@@ -54,7 +54,8 @@ void GameScene::Update() {
 	fade_.Update();
 	if (fade_.GetOut()) {
 		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+		bool b = !deadStaging_.flag;
+		nextSceneFunction = [b]() { return new NullScene([b]() { return new Result(b); }); };
 	}
 	// フェードインが終わるまで処理しない
 	if (!fade_.GetIn()) {
@@ -94,8 +95,7 @@ void GameScene::Update() {
 		if (waveEnd_) {
 			// ウェーブ10終了でゲーム終了
 			if (wave_ >= 10) {
-				bgm_.Stop();
-				nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+				fade_.Out();
 				upgradeManager_.SetIsDisplay(false);	// アップグレードUIを表示しない
 			}
 			else {

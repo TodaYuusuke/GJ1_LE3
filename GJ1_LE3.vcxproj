@@ -163,7 +163,6 @@
     <ClCompile Include="Class\Scene\GameScene.cpp" />
     <ClCompile Include="Class\Scene\NullScene.cpp" />
     <ClCompile Include="Class\Scene\Result.cpp" />
-    <ClCompile Include="Class\Scene\TestScene.cpp" />
     <ClCompile Include="Class\Scene\Title.cpp" />
     <ClCompile Include="Class\Stage\Stage.cpp" />
     <ClCompile Include="Class\Scene\TutorialScene.cpp" />
@@ -191,7 +190,6 @@
     <ClInclude Include="Class\Scene\GameScene.h" />
     <ClInclude Include="Class\Scene\NullScene.h" />
     <ClInclude Include="Class\Scene\Result.h" />
-    <ClInclude Include="Class\Scene\TestScene.h" />
     <ClInclude Include="Class\Scene\Title.h" />
     <ClInclude Include="Class\Stage\Stage.h" />
     <ClInclude Include="Class\Scene\TutorialScene.h" />

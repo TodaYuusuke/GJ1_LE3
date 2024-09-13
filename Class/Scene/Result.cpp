@@ -10,6 +10,23 @@ using namespace LWP::Math;
 using namespace LWP::Utility;
 using namespace LWP::Object;
 
+Result::Result(bool winFlag) {
+	winFlag_ = winFlag;
+
+	// winFlag が falseならば
+	if (!winFlag) {
+		// プレイヤーのみ非表示に
+		player_.model.isActive = false;
+		drone_.model.worldTF.translation = { -34.68f, 0.42f, 4.86f };	// 少し下にする
+		mainCamera.pp.radialBlur.center = { 0.69f, 0.15f };
+	}
+	// winFlag が trueならば勝利したので通常通り
+	else {
+		drone_.model.worldTF.translation = { -34.68f, 0.72f, 4.86f };
+		mainCamera.pp.radialBlur.center = { 0.61f, 0.33f };
+	}
+}
+
 // 初期化
 void Result::Initialize() {
 	//	音関係の初期化と発生
@@ -19,7 +36,6 @@ void Result::Initialize() {
 	// ポストプロセス調整
 	mainCamera.pp.grayScale.intensity = 0.0f;
 	mainCamera.pp.grayScale.use = true;
-	mainCamera.pp.radialBlur.center = { 0.61f, 0.33f };
 	mainCamera.pp.radialBlur.blurWidth = 0.0f;
 	mainCamera.pp.radialBlur.use = true;
 	stage_.Init(&mainCamera);
@@ -29,15 +45,23 @@ void Result::Initialize() {
 
 	// プレイヤー読み込み
 	player_.model.LoadShortPath("Robot/Player_Boned_IK.gltf");
+	player_.model.materials["HeadDisplay"].enableLighting = false;
 	player_.anim.LoadFullPath("resources/model/Robot/Player_Boned_IK.gltf", &player_.model);
 	player_.anim.Play("15_Result");
 	player_.model.worldTF.translation = { -34.53f, 0.06f, 4.63f };
 
 	// ドローン読み込み
 	drone_.model.LoadShortPath("Drone/Drone.gltf");
+	drone_.model.materials["Gage"].enableLighting = false;
+	if (winFlag_) {
+		drone_.model.materials["Gage"].uvTransform.translation.y = -0.5f;
+	}
+	else {
+		drone_.model.materials["Gage"].texture = LWP::Resource::LoadTextureLongPath("resources/system/texture/white.png");
+		drone_.model.materials["Gage"].color = Utility::ColorPattern::RED;
+	}
 	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
 	drone_.anim.Play("01_Result");
-	drone_.model.worldTF.translation = { -34.68f, 0.72f, 4.86f };
 	droneLight_.transform.Parent(&drone_.model.worldTF);
 	droneLight_.transform.translation.y = -0.72f;
 	droneLight_.intensity = 0.5f;
@@ -68,20 +92,28 @@ void Result::Update() {
 		mainCamera.pp.radialBlur.blurWidth = ResultLerp(0.0f, ppParameter.radialBlurIntensity, ppParameter.time / ppParameter.totalTime);
 	}
 
-	// Nキーで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_N) || Controller::GetTrigger(XBOX_A)) {
+	// 
+	if (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A)) {
 		fade_.Out();
 		systemSE_.Play();
 	}
-	// Rキーでもう一度
-	if (Keyboard::GetTrigger(DIK_R)) {
+
+	static bool flag = false;
+	if (Keyboard::GetTrigger(DIK_1)) {
 		fade_.Out();
 		systemSE_.Play();
+		flag = false;
+	}
+	if (Keyboard::GetTrigger(DIK_2)) {
+		fade_.Out();
+		systemSE_.Play();
+		flag = true;
 	}
 
 	fade_.Update();
 	if (fade_.GetOut()) {
 		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
+		//nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
+		nextSceneFunction = []() { return new NullScene([]() { return new Result(flag); }); };
 	}
 }

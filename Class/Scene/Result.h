@@ -8,7 +8,7 @@
 class Result final
 	: public IScene {
 public:
-	Result() = default;
+	Result(bool winFlag);
 	~Result() = default;
 
 	//*** 純粋仮想関数の実体宣言 ***//
@@ -20,6 +20,9 @@ public:
 
 
 private: //*** これより先に必要な処理や変数を記述 ***//
+
+	// 勝利フラグ
+	bool winFlag_ = false;
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "BGM/";
