@@ -62,6 +62,8 @@ void Title::Initialize() {
 
 // 更新
 void Title::Update() {
+	stage_.Update();
+
 	// スペースかAボタンで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A)) {
 		fade_.Out();	// フェードアウト開始
