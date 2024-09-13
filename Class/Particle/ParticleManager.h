@@ -14,6 +14,10 @@ public:
 	/// 初期化
 	/// </summary>
 	void Init();
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
 
 	/// <summary>
 	/// ImGui
@@ -48,7 +52,8 @@ private: // ** メンバ変数 ** //
 	// ジャンプ破片
 	JumpFragment jumpFragment_;
 	int jumpFragmentNum_ = 6;	// 生成数
-	// 水面表現破片
+	// 水面表現
 	MilkCrown milkCrown_;
 	int milkCrownNum_ = 12;	// 生成数
+	LWP::Resource::Audio waterSE_;
 };

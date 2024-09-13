@@ -92,6 +92,7 @@ void TutorialScene::Initialize()
 
 void TutorialScene::Update() {
 	stage_.Update();
+	particleManager_.Update();
 
 	//デバッグ
 	Debug();
