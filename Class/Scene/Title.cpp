@@ -57,6 +57,8 @@ void Title::Initialize() {
 	bgm_.Load("BGM/title.mp3");
 	bgm_.Play(0.1f, 255);
 
+	systemSE_.Load(sysPath_);
+
 	fade_.Init();
 }
 
@@ -66,6 +68,7 @@ void Title::Update() {
 
 	// スペースかAボタンで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_SPACE) || Controller::GetTrigger(XBOX_A)) {
+		systemSE_.Play();
 		fade_.Out();	// フェードアウト開始
 	}
 

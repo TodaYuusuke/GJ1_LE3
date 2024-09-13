@@ -52,5 +52,8 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 		float time = 0.0f;
 	}ppParameter;
 
+	LWP::Resource::Audio systemSE_;
+	std::string sysPath_ = "SE/system_Select.mp3";
+
 	FadeManager fade_;
 };

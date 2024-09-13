@@ -116,6 +116,13 @@ void UpgradeManager::Initialize(Player* player, Drone* drone)
 
 	audioHit_.Load(audioPath_ + hitPath_);
 	audioSeelect_.Load(audioPath_ + selectPath_);
+
+	// 初期化関数
+	skillPointCounter_.Init({ 1500.0f, 900.0f });
+	skillPointCounter_.text.isActive = false;
+
+	// ボタンUI初期化
+	ButtonInit();
 }
 
 void UpgradeManager::Update()
@@ -136,13 +143,16 @@ void UpgradeManager::Update()
 		// 全てのアップグレードとカーソルの当たり判定を検証する
 		CheckCollisionUpgrades();
 
-		// スペースまたはBボタンが押されている、またはスキルポイントが１つもない場合
-		if (Input::Keyboard::GetPress(DIK_ESCAPE) || Input::Controller::GetPress(XBOX_B) || skillPoint_ <= 0) {
+		// カウンタ更新
+		skillPointCounter_.Update(skillPoint_);
+
+		// またはスキルポイントが１つもない場合
+		if (skillPoint_ <= 0) {
 			// 終了待機時間に加算
 			finishStandByTime_ += Info::GetDeltaTimeF();
 
 			// 終了待機時間が既定値を超えている場合
-			if (finishStandByTime_ >= 2.5f) {
+			if (finishStandByTime_ >= 1.0f) {
 				// アップグレードメニューを閉じる
 				isOpenObserver_.t = false;
 			}
@@ -200,6 +210,15 @@ void UpgradeManager::DebugGUI()
 			// カーソルのデバッグ情報表示
 			if (ImGui::TreeNode("Cursor")) {
 				droneParent_.DebugGUI("Cursor");
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Stick")) {
+				stick_L_.DebugGUI("Stick");
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Aボタン")) {
+				button_A_.DebugGUI("Stick");
 				ImGui::TreePop();
 			}
 
@@ -377,6 +396,15 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	bodyParent_.isActive	= isDisplay;
 	gunParent_.isActive		= isDisplay;
 	droneParent_.isActive	= isDisplay;
+	arrowKeys_.isActive		= isDisplay;
+	spaceKey_.isActive		= isDisplay;
+	cursorMoveText_.isActive = isDisplay;
+	applyText_.isActive = isDisplay;
+	skillPointCounter_.text.isActive = isDisplay;
+
+	// ボタン表示切り替え
+	stick_L_.isActive = isDisplay;
+	button_A_.isActive = isDisplay;
 
 	// 配列内の全要素の表示、非表示を切り替える
 	for (auto& [key, data] : upgrades_) {
@@ -391,6 +419,9 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 
 	// 終了待機時間リセット
 	finishStandByTime_ = 0.0f;
+
+	// 初期化関数
+	skillPointCounter_.Init({ 1500.0f, 900.0f });
 }
 
 void UpgradeManager::CheckCollisionUpgrades()
@@ -607,4 +638,90 @@ void UpgradeManager::CursorInput()
 		cursorSprite_->worldTF.translation.y = ((cursorSprite_->size.t.y * cursorSprite_->worldTF.scale.y) / 2.0f);
 	}
 
+}
+
+void UpgradeManager::ButtonInit()
+{
+	// 左スティック
+	SpriteReset(stick_L_, "UI/Button/joystick1_left_N.png");
+	stick_L_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	stick_L_.worldTF.translation = {
+		1500.0f,
+		35.0f
+	}; // 座標を設定
+	stick_L_.worldTF.scale = { 0.4f, 0.4f }; // スケール調整
+	stick_L_.isActive = false;
+	// Aボタン
+	SpriteReset(button_A_, "UI/Button/button_a_N.png");
+	button_A_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	button_A_.worldTF.translation = {
+		1500.0f,
+		105.0f
+	}; // 座標を設定
+	button_A_.worldTF.scale = { 0.4f, 0.4f }; // スケール調整
+	button_A_.isActive = false;
+
+	// 左スティック
+	SpriteReset(arrowKeys_, "UI/KeyBoard/arrowkeys.png");
+	arrowKeys_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	arrowKeys_.worldTF.Parent(&stick_L_.worldTF);
+	arrowKeys_.worldTF.translation = { -165.0f, 0.0f }; // 座標を設定
+	arrowKeys_.isActive = false;
+	// Aボタン
+	SpriteReset(spaceKey_, "UI/KeyBoard/SPACE.png");
+	spaceKey_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	spaceKey_.worldTF.Parent(&button_A_.worldTF);
+	spaceKey_.worldTF.translation = { -165.0f, 0.0f }; // 座標を設定
+	spaceKey_.isActive = false;
+	
+	// カーソル移動
+	SpriteReset(cursorMoveText_, "UI/Text/cursorMove.png");
+	cursorMoveText_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	cursorMoveText_.worldTF.Parent(&stick_L_.worldTF);
+	cursorMoveText_.worldTF.translation = { 125.0f, 0.0f }; // 座標を設定
+	cursorMoveText_.isActive = false;
+	// 適用
+	SpriteReset(applyText_, "UI/Text/Apply.png");
+	applyText_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	applyText_.worldTF.Parent(&button_A_.worldTF);
+	applyText_.worldTF.translation = { 125.0f, 0.0f }; // 座標を設定
+	applyText_.isActive = false;
+}
+
+void UpgradeManager::SkillPointCounter::Init(LWP::Math::Vector3 pos)
+{
+	text.material.texture = LWP::Resource::LoadTexture("UI/Text/LeftSkillPoint.png");
+	text.material.enableLighting = false;
+	text.isUI = true;
+	text.worldTF.translation = pos;
+	text.worldTF.scale = { 0.3f,0.3f,0.3f };
+
+	// 
+	for (int i = 0; i < 10; i++) {
+		number.n[i].worldTF.Parent(&text.worldTF);
+		number.n[i].worldTF.translation = { 955.0f,-35.0f,0.0f };
+		number.n[i].worldTF.scale = { 0.3f,0.3,0.3f };
+		number.n[i].isActive = false;
+		number.n[i].material.enableLighting = false;
+		number.n[i].isUI = true;
+	}
+}
+
+void UpgradeManager::SkillPointCounter::Update(int skillpoint)
+{
+	// 初期化
+	for (int i = 0; i < 10; i++) {
+		number.n[i].isActive = false;
+	}
+
+	// 10は特殊処理
+	if (skillpoint >= 10) {
+		number.n[1].isActive = true;
+		number.n[0].isActive = true;
+		number.n[0].worldTF.translation.x = 1165.0f;
+	}
+	// それ以外は通常処理
+	else {
+		number.n[skillpoint].isActive = true;
+	}
 }
