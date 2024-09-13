@@ -53,6 +53,12 @@ void Title::Initialize() {
 	logo_.material.enableLighting = false;
 	logo_.isUI = true;
 
+	// ボタンテキスト
+	buttonText_.worldTF.translation = { 926.0f, 750.0f, 0.0f };
+	buttonText_.material.texture = LWP::Resource::LoadTexture("UI/Text/EnterTitle.png");
+	buttonText_.material.enableLighting = false;
+	buttonText_.isUI = true;
+
 	// BGM
 	bgm_.Load("BGM/title.mp3");
 	bgm_.Play(0.1f, 255);
