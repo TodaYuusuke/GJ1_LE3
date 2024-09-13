@@ -10,6 +10,8 @@ void ParticleManager::Init() {
 	ceilingFragment_.model.LoadShortPath("Debris/Debris.gltf");
 	s = 0.05f;
 	ceilingFragment_.model.worldTF.scale = { s,s,s };
+	jumpFragment_.model.LoadShortPath("Debris/Debris.gltf");
+	jumpFragment_.model.worldTF.scale = { s,s,s };
 
 #pragma region 当たり判定生成
 	// フラグ設定
@@ -83,7 +85,6 @@ void ParticleManager::Init() {
 #pragma endregion
 }
 void ParticleManager::DebugGUI() {
-
 #if DEMO
 	// ** ImGui用変数 ** //
 	static int selectedClass = 0;	// 生成クラス
@@ -103,6 +104,12 @@ void ParticleManager::DebugGUI() {
 				ceilingFragment_.DebugGUI();
 				ImGui::TreePop();
 			}
+			if (ImGui::TreeNode("JumpFragment")) {
+				if (ImGui::Button("Generate")) { jumpFragment_.Add(jumpFragmentNum_); }
+				ImGui::InputInt("Num", &jumpFragmentNum_);
+				jumpFragment_.DebugGUI();
+				ImGui::TreePop();
+			}
 
 			ImGui::EndTabItem();
 		}
@@ -115,5 +122,8 @@ void ParticleManager::DebugGUI() {
 
 void ParticleManager::Ceiling(LWP::Math::Vector3 pos) {
 	ceilingFragment_.Add(ceilingFragmentNum_, pos);
+}
+void ParticleManager::Jump(LWP::Math::Vector3 pos) {
+	jumpFragment_.Add(jumpFragmentNum_, pos);
 }
 

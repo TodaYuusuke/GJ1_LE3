@@ -104,6 +104,7 @@ Player::~Player()
 
 void Player::Initialize(ParticleManager* particle)
 {
+	particle_ = particle;
 
 	model_.worldTF.translation = { 0,0,0 };
 	aabb_.aabb.min = standAABB_.min;
@@ -138,6 +139,8 @@ void Player::Initialize(ParticleManager* particle)
 void Player::Update()
 {
 	Debug();
+
+	parameters_.bulletData.isShot_ = false;
 
 	//状態リクエストがある時実行
 	if (behaviorReq_) {
@@ -330,6 +333,7 @@ bool Player::ShotBullet(const LWP::Math::Vector3& v, const std::string& cName, f
 
 
 	}
+	parameters_.bulletData.isShot_ = true;
 
 	return true;
 }
@@ -625,6 +629,10 @@ void Player::InitializeJump()
 
 	// ジャンプで射撃
 	audioShot_.Play();
+	// パーティクル生成
+	Math::Vector3 p = model_.worldTF.GetWorldPosition();
+	p.x += Math::Vector3{ pVeloX_,0,0 }.Normalize().x;
+	particle_->Jump(p);
 }
 void Player::InitializeSlideStopShot()
 {

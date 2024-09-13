@@ -35,6 +35,9 @@ void GameScene::Initialize() {
 
 // 更新
 void GameScene::Update() {
+#if DEMO
+	particleManager_.DebugGUI();
+#endif
 	// UIの遅延用
 	if (uiInitFlag == 0) {
 		gameUIManager_.SetUp();
@@ -80,7 +83,7 @@ void GameScene::Update() {
 		if (!waveEnd_ && enemyManager_.GetEndWave()) {
 			waveEnd_ = true;
 			// スキルポイント+1
-			upgradeManager_.AddSkilPoint(1);
+			upgradeManager_.AddSkilPoint(2);
 			upgradeManager_.SetIsDisplay(true);
 		}
 

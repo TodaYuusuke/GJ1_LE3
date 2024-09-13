@@ -182,7 +182,9 @@
     <ClInclude Include="Class\FollowCamera\FollowCamera.h" />
     <ClInclude Include="Class\Mask\Mask.h" />
     <ClInclude Include="Class\Particle\CeilingFragment.h" />
+    <ClInclude Include="Class\Particle\JumpFragment.h" />
     <ClInclude Include="Class\Particle\ParticleManager.h" />
+    <ClInclude Include="Class\Particle\MilkCrown.h" />
     <ClInclude Include="Class\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Class\Player\Player.h" />
     <ClInclude Include="Class\Scene\FadeManager.h" />

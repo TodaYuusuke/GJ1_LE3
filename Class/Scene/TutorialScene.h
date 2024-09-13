@@ -54,7 +54,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 private://パラメータ
 #pragma region 各タスクのカウント処理
 	struct MoveTask {
-		float needMovingSec = 5.0f;//かかる時間
+		float needMovingSec = 3.0f;//かかる時間
 		float currentMoving = 0.0f;//カウント
 	};
 	struct SlideTask
@@ -65,7 +65,7 @@ private://パラメータ
 	};
 	struct ShotTask
 	{
-		int maxCount = 5;
+		int maxCount = 4;
 		int currentCount = 0;
 		bool isCount = true;
 	};

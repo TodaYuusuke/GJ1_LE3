@@ -26,7 +26,7 @@ void TutorialScene::Initialize()
 	drone_.model.LoadShortPath("Drone/Drone.gltf");
 	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
 	drone_.anim.Play("00_Idle", true);
-	drone_.model.worldTF.translation = { -1.0f, 2.0f, 0.0f };
+	drone_.model.worldTF.translation = { -6.0f, 4.0f, 0.0f };
 	droneLight_.transform.Parent(&drone_.model.worldTF);
 	droneLight_.transform.translation.y = -0.72f;
 	droneLight_.intensity = 0.5f;
@@ -47,10 +47,11 @@ void TutorialScene::Initialize()
 	//画像データを先に読み込んで保存
 	taskBoads_[Move] = LWP::Resource::LoadTexture("tutorial/boad1.png");
 	taskBoads_[Slide] = LWP::Resource::LoadTexture("tutorial/boad2.png");
+	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad6.png");
 	taskBoads_[Shot] = LWP::Resource::LoadTexture("tutorial/boad3.png");
 	taskBoads_[SlideShot] = LWP::Resource::LoadTexture("tutorial/boad4.png");
 	taskBoads_[SHAdvance] = LWP::Resource::LoadTexture("tutorial/boad5.png");
-	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad6.png");
+
 
 
 	//ボードスプライト初期化
@@ -206,7 +207,7 @@ void TutorialScene::SceneChange()
 		fade_.Out();
 	}
 
-	
+
 	// フェードインアウト更新
 	fade_.Update();
 	// フェードアウトが終わったら
@@ -358,8 +359,21 @@ void TutorialScene::ShotUpdate()
 	//	//次の任意入力で反応するように
 	//	normas_.shot.isCount = true;
 	//}
+
+		//任意入力があった時
+	if (decoy_->GetBehavior() == IEnemy::Behavior::DeadBody) {
+
+		//再配置
+		decoy_->model_.worldTF.translation = { 2,0,0 };
+		decoy_->behaviorReq_ = IEnemy::Normal;
+		decoy_->isAlive_ = true;
+		decoy_->model_.isActive = true;
+		decoy_->collider_.isActive = true;
+	}
+
+
 	//任意入力があった時
-	if ((Input::Keyboard::GetTrigger(DIK_C)|| Input::Pad::GetTrigger(XBOX_RT))&&player_.parameters_.bulletData.ammoRemaining_>0 ){
+	if (player_.parameters_.bulletData.isShot_) {
 		normas_.shot.currentCount++;
 		//normas_.shot.isCount = false;
 	}
@@ -373,14 +387,14 @@ void TutorialScene::ShotUpdate()
 		taskDatas_[taskName_[Shot]] = true;
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
-		taskReq_ = SlideShot;
+		taskReq_ = Another;
 	}
 }
 
 void TutorialScene::SlideShotUpdate()
 {
 	//範囲外で初期位置へ
-	if (decoy_->model_.worldTF.translation.x < -12.0f|| decoy_->model_.worldTF.translation.x > 12.0f) {
+	if (decoy_->model_.worldTF.translation.x < -12.0f || decoy_->model_.worldTF.translation.x > 12.0f) {
 		decoy_->model_.worldTF.translation.x = 2.0f;
 	}
 
@@ -415,7 +429,7 @@ void TutorialScene::SHAdvanceUpdate()
 {
 
 	//スライディング開始状態取得で認識開始
-	if (player_.GetAnimationType() == "02_SlidingStart"|| player_.GetAnimationType() == "04_SlidingEnd" || player_.GetAnimationType() == "03_Sliding") {
+	if (player_.GetAnimationType() == "02_SlidingStart" || player_.GetAnimationType() == "04_SlidingEnd" || player_.GetAnimationType() == "03_Sliding") {
 		normas_.shAdvance.isCount = true;
 	}
 	else {
@@ -439,14 +453,14 @@ void TutorialScene::SHAdvanceUpdate()
 		normas_.shAdvance.isCount = false;
 	}
 
-	
+
 
 	//スライディング中に敵が0になったとき成功
 
-	if (normas_.shAdvance.isCount&&decoy_->GetBehavior()==IEnemy::Behavior::DeadBody&& decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
+	if (normas_.shAdvance.isCount && decoy_->GetBehavior() == IEnemy::Behavior::DeadBody && decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
-		taskReq_ = Another;
+		isSceneChange_ = true;;
 	}
 
 
@@ -470,8 +484,8 @@ void TutorialScene::AnotherUpdate()
 	if (normas_.another.currentMoving >= normas_.another.needMovingSec) {
 		taskDatas_[taskName_[Another]] = true;
 		spriteGage_.worldTF.scale.x = 0;
-		//最後なので
-		isSceneChange_ = true;
+
+		taskReq_ = SlideShot;
 
 	}
 }

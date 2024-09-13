@@ -26,6 +26,7 @@ public://構造体＆enum群
 	//弾薬データ
 	struct BulletData
 	{
+		bool isShot_ = false;
 		//弾発生位置のオフセット
 		LWP::Math::Vector3 offset_{ 0,1.0f,0 };
 
@@ -87,7 +88,7 @@ public://構造体＆enum群
 		LWP::Math::Vector3 startPos;
 
 		//減速開始の長さ
-		float length = 10.0f;
+		float length = 8.0f;
 
 		//速度
 		float spd = 11.0f;
@@ -142,10 +143,10 @@ public://構造体＆enum群
 	struct Parameters
 	{
 		//体力
-		int hp = 3;
+		int hp = 4;
 
 		//最大HP
-		int maxHp = 3;
+		int maxHp = 4;
 
 		//移動速度
 		float moveSpd = 10.0f;
@@ -305,6 +306,9 @@ public: // ** 変数 ** //
 	LWP::Resource::SkinningModel model_;
 
 private:
+	
+	// パーティクル用
+	ParticleManager* particle_ = nullptr;
 
 
 	std::string animeName_[_countAnimeType] = {
