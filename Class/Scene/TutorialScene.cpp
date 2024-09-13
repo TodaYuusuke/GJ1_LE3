@@ -23,8 +23,15 @@ void TutorialScene::Initialize()
 	particleManager_.Init();
 	player_.Initialize(&particleManager_);
 	player_.parameters_.hitData.isDownHP_ = false;//あたってもHPが減らない
-	enemyManager_.Initialize(&player_);
-	drone_.Initialize(&player_, &enemyManager_);
+	drone_.model.LoadShortPath("Drone/Drone.gltf");
+	drone_.anim.LoadFullPath("resources/model/Drone/Drone.gltf", &drone_.model);
+	drone_.anim.Play("00_Idle", true);
+	drone_.model.worldTF.translation = { -1.0f, 2.0f, 0.0f };
+	droneLight_.transform.Parent(&drone_.model.worldTF);
+	droneLight_.transform.translation.y = -0.72f;
+	droneLight_.intensity = 0.5f;
+	droneLight_.radius = 10.0f;
+	droneLight_.color = { 202,255,208,255 };
 	stage_.Init(&mainCamera);
 	gameUIManager_.Initialize(&player_);
 
@@ -43,7 +50,7 @@ void TutorialScene::Initialize()
 	taskBoads_[Shot] = LWP::Resource::LoadTexture("tutorial/boad3.png");
 	taskBoads_[SlideShot] = LWP::Resource::LoadTexture("tutorial/boad4.png");
 	taskBoads_[SHAdvance] = LWP::Resource::LoadTexture("tutorial/boad5.png");
-	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad5.png");
+	taskBoads_[Another] = LWP::Resource::LoadTexture("tutorial/boad6.png");
 
 
 	//ボードスプライト初期化
@@ -69,6 +76,17 @@ void TutorialScene::Initialize()
 	spriteGageBack_.anchorPoint = { 1.0f,0.5f };
 
 	fade_.Init();
+
+
+	decoy_ = std::make_unique<Decoy>(&player_, LWP::Math::Vector3{ 2,0,0 });
+	decoy_->isAlive_ = false;
+	decoy_->model_.isActive = false;
+	decoy_->collider_.isActive = false;
+
+	decoy2_ = std::make_unique<Decoy>(&player_, LWP::Math::Vector3{ -2,0,0 });
+	decoy2_->isAlive_ = false;
+	decoy2_->model_.isActive = false;
+	decoy2_->collider_.isActive = false;
 }
 
 void TutorialScene::Update()
@@ -96,16 +114,19 @@ void TutorialScene::Update()
 		//ゲージのサイズを初期化
 		spriteGage_.worldTF.scale = { 2.0f,1.0f,1.0f };
 	}
-	//状態更新処理
-	(this->*TaskUpdate[tasks_])();
+
 
 	//クラス更新
-	drone_.Update();
 	player_.Update();
 	player_.SetArea();
-	enemyManager_.Update();
+	decoy_->Update();
+	decoy2_->Update();
+
 	// 外で更新
 	gameUIManager_.Update();
+
+	//状態更新処理
+	(this->*TaskUpdate[tasks_])();
 
 	//シーン変更処理
 	SceneChange();
@@ -202,6 +223,7 @@ void (TutorialScene::* TutorialScene::TaskInitialize[])() = {
 	&TutorialScene::SlideInitialize,
 	&TutorialScene::ShotInitialize,
 	&TutorialScene::SlideShotInitialize,
+	&TutorialScene::SHAdvanceInitialize,
 	&TutorialScene::AnotherInitialize
 };
 
@@ -210,6 +232,7 @@ void (TutorialScene::* TutorialScene::TaskUpdate[])() = {
 	&TutorialScene::SlideUpdate,
 	&TutorialScene::ShotUpdate,
 	&TutorialScene::SlideShotUpdate,
+	&TutorialScene::SHAdvanceUpdate,
 	&TutorialScene::AnotherUpdate
 };
 
@@ -226,18 +249,41 @@ void TutorialScene::SlideInitialize()
 
 void TutorialScene::ShotInitialize()
 {
+	decoy_->isAlive_ = true;
+	decoy_->model_.isActive = true;
+	decoy_->collider_.isActive = true;
+
 	spriteBoad_.material.texture = taskBoads_[Shot];
 }
 
 void TutorialScene::SlideShotInitialize()
 {
+
+	decoy_->model_.worldTF.translation = { 2,0,0 };
+	decoy_->behaviorReq_ = IEnemy::Normal;
+	decoy_->isAlive_ = true;
+	decoy_->model_.isActive = true;
+	decoy_->collider_.isActive = true;
+
+
 	spriteBoad_.material.texture = taskBoads_[SlideShot];
 
-	enemyManager_.SummonSpider({0,0,0});
 }
 
 void TutorialScene::SHAdvanceInitialize()
 {
+	decoy_->model_.worldTF.translation = { 2,0,0 };
+	decoy_->behaviorReq_ = IEnemy::Normal;
+	decoy_->isAlive_ = true;
+	decoy_->model_.isActive = true;
+	decoy_->collider_.isActive = true;
+
+	decoy2_->model_.worldTF.translation = { -2,0,0 };
+	decoy2_->behaviorReq_ = IEnemy::Normal;
+	decoy2_->isAlive_ = true;
+	decoy2_->model_.isActive = true;
+	decoy2_->collider_.isActive = true;
+
 	spriteBoad_.material.texture = taskBoads_[SHAdvance];
 }
 
@@ -333,12 +379,22 @@ void TutorialScene::ShotUpdate()
 
 void TutorialScene::SlideShotUpdate()
 {
+	//範囲外で初期位置へ
+	if (decoy_->model_.worldTF.translation.x < -12.0f|| decoy_->model_.worldTF.translation.x > 12.0f) {
+		decoy_->model_.worldTF.translation.x = 2.0f;
+	}
 
 	//任意入力があった時
-	if (enemyManager_.GetRemainingEnemy()==0) {
+	if (decoy_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		normas_.slideShot.currentCount++;
+
+		//カウントがたりない場合再配置
 		if (normas_.slideShot.currentCount < normas_.slideShot.maxCount) {
-			enemyManager_.SummonSpider({ 0,0,0 });
+			decoy_->model_.worldTF.translation = { 2,0,0 };
+			decoy_->behaviorReq_ = IEnemy::Normal;
+			decoy_->isAlive_ = true;
+			decoy_->model_.isActive = true;
+			decoy_->collider_.isActive = true;
 		}
 	}
 	//カウント進行度でゲージのサイズ調整
@@ -363,16 +419,36 @@ void TutorialScene::SHAdvanceUpdate()
 		normas_.shAdvance.isCount = true;
 	}
 	else {
+
+		//trueからfalseの時初期化
+		if (normas_.shAdvance.isCount) {
+			//再配置処理
+			decoy_->model_.worldTF.translation = { 2,0,0 };
+			decoy_->behaviorReq_ = IEnemy::Normal;
+			decoy_->isAlive_ = true;
+			decoy_->model_.isActive = true;
+			decoy_->collider_.isActive = true;
+
+			decoy2_->model_.worldTF.translation = { -2,0,0 };
+			decoy2_->behaviorReq_ = IEnemy::Normal;
+			decoy2_->isAlive_ = true;
+			decoy2_->model_.isActive = true;
+			decoy2_->collider_.isActive = true;
+		}
+
 		normas_.shAdvance.isCount = false;
 	}
 
+	
+
 	//スライディング中に敵が0になったとき成功
 
-	if (normas_.shAdvance.isCount) {
+	if (normas_.shAdvance.isCount&&decoy_->GetBehavior()==IEnemy::Behavior::DeadBody&& decoy2_->GetBehavior() == IEnemy::Behavior::DeadBody) {
 		spriteGage_.worldTF.scale.x = 0;
 		//次のタスクへ
 		taskReq_ = Another;
 	}
+
 
 
 }

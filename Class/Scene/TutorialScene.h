@@ -7,6 +7,7 @@
 #include"../Stage/Stage.h"
 #include "../Upgrade/UpgradeManager/UpgradeManager.h"
 #include "../UI/GameUIManager.h"
+#
 
 #include "FadeManager.h"
 
@@ -146,13 +147,20 @@ private://変数
 
 	//各必要な奴
 	
+	struct Skins {
+		LWP::Resource::SkinningModel model;
+		LWP::Resource::Animation anim;
+	};
 	Player player_;
-	Drone drone_;
+	// ドローン
+	Skins drone_;
+	LWP::Object::PointLight droneLight_;
 	Stage stage_;
 	// パーティクル管理
 	ParticleManager particleManager_;
-	EnemyManager enemyManager_; // 敵管理
 	GameUIManager gameUIManager_;	// ゲーム内UIマネージャー
+	std::unique_ptr<Decoy> decoy_;
+	std::unique_ptr<Decoy> decoy2_;
 
 
 	// フェードインアウト
