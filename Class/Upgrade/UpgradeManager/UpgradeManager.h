@@ -185,7 +185,12 @@ private: // メンバ変数
 	// ボタン
 	LWP::Primitive::Sprite stick_L_; // スティック
 	LWP::Primitive::Sprite button_A_; // Aボタン
-
+	// キー
+	LWP::Primitive::Sprite arrowKeys_; // 矢印キー
+	LWP::Primitive::Sprite spaceKey_; // スペース
+	// キー
+	LWP::Primitive::Sprite cursorMoveText_; // カーソル移動
+	LWP::Primitive::Sprite applyText_; // 適用
 
 	//オーディオがあるフォルダまでのパス
 	std::string audioPath_ = "SE/upgrade/";

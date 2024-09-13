@@ -210,6 +210,10 @@ void UpgradeManager::DebugGUI()
 				stick_L_.DebugGUI("Stick");
 				ImGui::TreePop();
 			}
+			if (ImGui::TreeNode("Aボタン")) {
+				button_A_.DebugGUI("Stick");
+				ImGui::TreePop();
+			}
 
 			// ここより下はアップグレードのデバッグ表示
 			ImGui::Text("Upgrades");
@@ -385,6 +389,10 @@ void UpgradeManager::SwitchDisplayUI(bool isDisplay)
 	bodyParent_.isActive	= isDisplay;
 	gunParent_.isActive		= isDisplay;
 	droneParent_.isActive	= isDisplay;
+	arrowKeys_.isActive		= isDisplay;
+	spaceKey_.isActive		= isDisplay;
+	cursorMoveText_.isActive = isDisplay;
+	applyText_.isActive = isDisplay;
 
 	// ボタン表示切り替え
 	stick_L_.isActive = isDisplay;
@@ -624,22 +632,47 @@ void UpgradeManager::CursorInput()
 void UpgradeManager::ButtonInit()
 {
 	// 左スティック
-	SpriteReset(stick_L_, "UI/Upgrade/Text/joystick1_left_N.png");
+	SpriteReset(stick_L_, "UI/Button/joystick1_left_N.png");
 	stick_L_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
 	stick_L_.worldTF.translation = {
-		960.0f,
-		900.0f
+		1500.0f,
+		35.0f
 	}; // 座標を設定
-	stick_L_.worldTF.scale = { 0.5f, 0.5f }; // スケール調整
+	stick_L_.worldTF.scale = { 0.4f, 0.4f }; // スケール調整
 	stick_L_.isActive = false;
 	// Aボタン
-	SpriteReset(button_A_, "UI/Upgrade/Text/button_a_N.png");
+	SpriteReset(button_A_, "UI/Button/button_a_N.png");
 	button_A_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
 	button_A_.worldTF.translation = {
-		960.0f,
-		900.0f
+		1500.0f,
+		105.0f
 	}; // 座標を設定
-	button_A_.worldTF.scale = { 0.5f, 0.5f }; // スケール調整
+	button_A_.worldTF.scale = { 0.4f, 0.4f }; // スケール調整
 	button_A_.isActive = false;
 
+	// 左スティック
+	SpriteReset(arrowKeys_, "UI/KeyBoard/arrowkeys.png");
+	arrowKeys_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	arrowKeys_.worldTF.Parent(&stick_L_.worldTF);
+	arrowKeys_.worldTF.translation = { -165.0f, 0.0f }; // 座標を設定
+	arrowKeys_.isActive = false;
+	// Aボタン
+	SpriteReset(spaceKey_, "UI/KeyBoard/SPACE.png");
+	spaceKey_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	spaceKey_.worldTF.Parent(&button_A_.worldTF);
+	spaceKey_.worldTF.translation = { -165.0f, 0.0f }; // 座標を設定
+	spaceKey_.isActive = false;
+	
+	// カーソル移動
+	SpriteReset(cursorMoveText_, "UI/Text/cursorMove.png");
+	cursorMoveText_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	cursorMoveText_.worldTF.Parent(&stick_L_.worldTF);
+	cursorMoveText_.worldTF.translation = { 125.0f, 0.0f }; // 座標を設定
+	cursorMoveText_.isActive = false;
+	// 適用
+	SpriteReset(applyText_, "UI/Text/Apply.png");
+	applyText_.anchorPoint = { 0.0f, 0.0f }; // アンカーポイントを設定
+	applyText_.worldTF.Parent(&button_A_.worldTF);
+	applyText_.worldTF.translation = { 125.0f, 0.0f }; // 座標を設定
+	applyText_.isActive = false;
 }
