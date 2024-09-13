@@ -255,8 +255,3 @@ int EnemyManager::GetRemainingEnemy() {
 
 	return result;
 }
-
-void EnemyManager::SummonSpider(LWP::Math::Vector3 pos) {
-	// 召喚
-	enemyProperty_[0].summonFunction_(pos);
-}

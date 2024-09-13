@@ -1,6 +1,7 @@
 #pragma once
 #include "Child/Spider.h"
 #include "Child/Slime.h"
+#include "Child/Decoy.h"
 
 #include <vector>
 
@@ -44,10 +45,6 @@ public:
 	/// <returns>敵の実態</returns>
 	int GetRemainingEnemy();
 
-	/// <summary>
-	/// クモを召喚する
-	/// </summary>
-	void SummonSpider(LWP::Math::Vector3 pos);
 
 private: // ** メンバ変数 ** //
 
