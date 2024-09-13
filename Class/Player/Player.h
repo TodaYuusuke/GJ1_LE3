@@ -45,10 +45,10 @@ public://構造体＆enum群
 		int simultaneouslyLoaded_ = 1;
 
 		//リロード開始時間
-		float reloadStartSec_ = 1;
+		float reloadStartSec_ = 2.0f;
 
 		//一発のリロードにかかる時間
-		float putBulletInSec_ = 0.2f;
+		float putBulletInSec_ = 0.4f;
 
 		//弾の同時発射数
 		int shotpelletNum_ = 5;

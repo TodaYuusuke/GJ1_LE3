@@ -207,10 +207,8 @@ void GameUIManager::Debug()
 {
 	// デバッグ時のみ実行
 #ifdef _DEBUG
-
 	// セットアップを毎フレーム実行
-	SetUp();
-
+	//SetUp();
 	// デバッグGUIの表示
 	DebugGUI();
 

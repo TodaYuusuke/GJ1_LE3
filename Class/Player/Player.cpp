@@ -48,7 +48,7 @@ Player::Player()
 	slideAABB_.max = { 0.6f,0.55f,0.5f };
 
 	//被弾処理
-	aabb_.collider.enterLambda = [=](Collider::Collider* data) {
+	aabb_.collider.stayLambda = [=](Collider::Collider* data) {
 
 		if (data->name == "Spider" && (nowPlayAnimeName_ == animeName_[A_Sliding]) || data->name == standShot || data->name == slideShot) {
 			return;

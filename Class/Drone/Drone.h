@@ -37,7 +37,7 @@ private: // ** メンバ変数 ** //
 
 	// なめらかな移動用の変数
 	LWP::Math::Vector3 goalPosition_ = { 0.0f,0.0f,0.0f }; // Slerp使用のため目標座標をこちらに設定
-	float kSlerpT_ = 0.09f;	// Slerpの係数
+	float kSlerpT_ = 0.04f;	// Slerpの係数
 
 	// 吸収した敵の数
 	int suctionedDeadBody_ = 0;
@@ -113,6 +113,9 @@ private: // ** パラメータ ** //
 
 	struct Suction {
 		IEnemy* enemy = nullptr;	// 回収する死体のポインタ
+		LWP::Math::Vector3 worldPos;	// 死体の場所
+		LWP::Math::Vector3 scale;	// 死体のスケール
+
 		float time = 0.0f;	// 経過時間
 	}suction_;
 

@@ -21,7 +21,7 @@ void EnemyManager::Initialize(Player* ptr) {
 
 	enemyProperty_[int(EnemyType::Spider)].kMaxSpawn = 5;
 	enemyProperty_[int(EnemyType::Spider)].summonFunction_ = [this](Vector3 pos) { enemies_.push_back(new Spider(player_, pos)); };
-	enemyProperty_[int(EnemyType::Slime)].kMaxSpawn = 2;
+	enemyProperty_[int(EnemyType::Slime)].kMaxSpawn = 3;
 	enemyProperty_[int(EnemyType::Slime)].summonFunction_ = [this](Vector3 pos) { enemies_.push_back(new Slime(player_, pos)); };
 }
 
@@ -247,9 +247,13 @@ IEnemy* EnemyManager::GetNearDeadBody(LWP::Math::Vector3 pos) {
 }
 
 int EnemyManager::GetRemainingEnemy() {
-	// 召喚予定の残敵
-	int result = enemies_.size();
+	int result = 0;
+	// 残っている敵（死体をカウントしない）
+	for (IEnemy* e : enemies_) {
+		if (e->behavior_ != IEnemy::Behavior::DeadBody) { result++;	}
+	}
 
+	// 召喚予定の残敵
 	for (int i = 0; i < static_cast<int>(EnemyType::Count); i++) {
 		result += enemyProperty_[i].spawn;
 	}
