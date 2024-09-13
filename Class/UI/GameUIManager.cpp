@@ -47,6 +47,9 @@ void GameUIManager::Initialize(Player* player)
 			b.worldTF.scale = { 0.35f, 0.35f };
 		}
 	}
+
+	// ボタンUI初期化
+	ButtonUIInit();
 }
 
 void GameUIManager::Update(int wave, int enemyCount) {
@@ -71,6 +74,8 @@ void GameUIManager::Update(int wave, int enemyCount) {
 		HPGaugeUpdate();
 		// 弾ゲージ更新
 		BulletGaugeUpdate();
+		// ボタンUIの更新
+		ButtonUIUpdate();
 		// ウェーブ更新
 		waveSprite_.Update(wave);
 		// エネミー更新
@@ -101,11 +106,8 @@ void GameUIManager::Update()
 		HPGaugeUpdate();
 		// 弾ゲージ更新
 		BulletGaugeUpdate();
-
-		// ウェーブ更新
-		//waveSprite_.Update(wave);
-		// エネミー更新
-		//enemySprite_.Update(enemyCount);
+		// ボタンUIの更新
+		ButtonUIUpdate();
 	}
 
 	waveSprite_.number.n[0].isActive = false;
@@ -131,19 +133,40 @@ void GameUIManager::DebugGUI()
 				leftStickUI_.DebugGUI();
 				ImGui::TreePop();
 			}
-			// 左スティック
-			if (ImGui::TreeNode("LeftStick")) {
-				buttonAUI_.DebugGUI();
-				ImGui::TreePop();
-			}
-			// 左スティック
-			if (ImGui::TreeNode("LeftStick")) {
+			// Bボタン
+			if (ImGui::TreeNode("BButton")) {
 				buttonBUI_.DebugGUI();
 				ImGui::TreePop();
 			}
-			// 左スティック
-			if (ImGui::TreeNode("LeftStick")) {
+			// 右トリガー
+			if (ImGui::TreeNode("RTrigger")) {
 				triggerRUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// Aボタン
+			if (ImGui::TreeNode("Abutton")) {
+				buttonAUI_.DebugGUI();
+				ImGui::TreePop();
+			}
+
+			// 左スティック
+			if (ImGui::TreeNode("move")) {
+				moveText_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// Aボタン
+			if (ImGui::TreeNode("sliding")) {
+				slidingText_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// Bボタン
+			if (ImGui::TreeNode("Shot")) {
+				shotText_.DebugGUI();
+				ImGui::TreePop();
+			}
+			// 右トリガー
+			if (ImGui::TreeNode("jump")) {
+				jumpText_.DebugGUI();
 				ImGui::TreePop();
 			}
 
@@ -309,6 +332,113 @@ void GameUIManager::BulletGaugeUpdate()
 	}
 }
 
+void GameUIManager::ButtonUIInit()
+{
+	/// ボタン系スプライト
+	// 左スティック
+	leftStickUI_.material.texture = Resource::LoadTexture("UI/Button/joystick1_left_N.png");
+	leftStickUI_.worldTF.translation = {
+		1500.0f, 10.0f
+	};
+	leftStickUI_.worldTF.scale = {
+		0.4f, 0.4f, 1.0f
+	};
+	leftStickUI_.isUI = true;
+	leftStickUI_.material.enableLighting = false;
+	// Bボタン
+	buttonBUI_.material.texture = Resource::LoadTexture("UI/Button/button_b_N.png");
+	buttonBUI_.worldTF.translation = {
+		1500.0f, 65.0f
+	};
+	buttonBUI_.worldTF.scale = {
+		0.4f, 0.4f, 1.0f
+	};
+	buttonBUI_.isUI = true;
+	buttonBUI_.material.enableLighting = false;
+	// 右トリガー
+	triggerRUI_.material.texture = Resource::LoadTexture("UI/Button/rt_N.png");
+	triggerRUI_.worldTF.translation = {
+		1500.0f, 120.0f
+	};
+	triggerRUI_.worldTF.scale = {
+		0.4f, 0.4f, 1.0f
+	};
+	triggerRUI_.isUI = true;
+	triggerRUI_.material.enableLighting = false;
+	// Aボタン
+	buttonAUI_.material.texture = Resource::LoadTexture("UI/Button/button_a_N.png");
+	buttonAUI_.worldTF.translation = {
+		1500.0f, 175.0f
+	};
+	buttonAUI_.worldTF.scale = {
+		0.4f, 0.4f, 1.0f
+	};
+	buttonAUI_.isUI = true;
+	buttonAUI_.material.enableLighting = false;
+
+	// 行動名UI初期化
+	// 移動
+	moveText_.material.texture = Resource::LoadTexture("UI/Text/Move.png");
+	moveText_.worldTF.Parent(&leftStickUI_.worldTF);
+	moveText_.worldTF.translation = { 125.0f, 0.0f };
+	moveText_.isUI = true;
+	moveText_.material.enableLighting = false;
+	// スライディング
+	slidingText_.material.texture = Resource::LoadTexture("UI/Text/Sliding.png");
+	slidingText_.worldTF.Parent(&buttonBUI_.worldTF);
+	slidingText_.worldTF.translation = { 125.0f, 0.0f };
+	slidingText_.isUI = true;
+	slidingText_.material.enableLighting = false;
+	// 射撃
+	shotText_.material.texture = Resource::LoadTexture("UI/Text/Shot.png");
+	shotText_.worldTF.Parent(&triggerRUI_.worldTF);
+	shotText_.worldTF.translation = { 125.0f, 0.0f };
+	shotText_.isUI = true;
+	shotText_.material.enableLighting = false;
+	// ジャンプ
+	jumpText_.material.texture = Resource::LoadTexture("UI/Text/Jump.png");
+	jumpText_.worldTF.Parent(&buttonAUI_.worldTF);
+	jumpText_.worldTF.translation = { 125.0f, 0.0f };
+	jumpText_.isUI = true;
+	jumpText_.material.enableLighting = false;
+	// ジャンプのみは個別で設定、有効化された段階で表示させる
+	jumpText_.isActive = false;
+
+	// キーUI初期化
+	// 移動
+	moveKeyUI_.material.texture = Resource::LoadTexture("UI/KeyBoard/MoveKey.png");
+	moveKeyUI_.worldTF.Parent(&leftStickUI_.worldTF);
+	moveKeyUI_.worldTF.translation = { -165.0f, 0.0f };
+	moveKeyUI_.isUI = true;
+	moveKeyUI_.material.enableLighting = false;
+	// スライディング
+	shiftKeyUI_.material.texture = Resource::LoadTexture("UI/KeyBoard/SHIFT.png");
+	shiftKeyUI_.worldTF.Parent(&buttonBUI_.worldTF);
+	shiftKeyUI_.worldTF.translation = { -165.0f, 0.0f };
+	shiftKeyUI_.isUI = true;
+	shiftKeyUI_.material.enableLighting = false;
+	// 射撃
+	spaceKeyUI＿.material.texture = Resource::LoadTexture("UI/KeyBoard/SPACE.png");
+	spaceKeyUI＿.worldTF.Parent(&triggerRUI_.worldTF);
+	spaceKeyUI＿.worldTF.translation = { -165.0f, 0.0f };
+	spaceKeyUI＿.isUI = true;
+	spaceKeyUI＿.material.enableLighting = false;
+	// ジャンプ
+	wKeyUI_.material.texture = Resource::LoadTexture("UI/KeyBoard/W.png");
+	wKeyUI_.worldTF.Parent(&buttonAUI_.worldTF);
+	wKeyUI_.worldTF.translation = { -165.0f, 0.0f };
+	wKeyUI_.isUI = true;
+	wKeyUI_.material.enableLighting = false;
+
+}
+
+void GameUIManager::ButtonUIUpdate()
+{
+
+	// ジャンプUIの表示を有効化、非有効化で切り替える
+	jumpText_.isActive = player_->parameters_.activeFlag.jump;
+}
+
 void GameUIManager::SwitchDisplayUI(bool isDisplay)
 {
 	//　HPゲージの表示を非表示
@@ -342,6 +472,19 @@ void GameUIManager::SwitchDisplayUI(bool isDisplay)
 	buttonAUI_.isActive = isDisplay;
 	buttonBUI_.isActive = isDisplay;
 	triggerRUI_.isActive = isDisplay;
+
+	// キー系UIの表示非表示
+	moveKeyUI_.isActive = isDisplay;
+	shiftKeyUI_.isActive = isDisplay;
+	spaceKeyUI＿.isActive = isDisplay;
+	wKeyUI_.isActive = isDisplay;
+
+	// 行動名系UIの表示非表示
+	moveText_.isActive = isDisplay;
+	slidingText_.isActive = isDisplay;
+	shotText_.isActive = isDisplay;
+	jumpText_.isActive = isDisplay;
+
 }
 
 void GameUIManager::WaveSprite::Init(LWP::Math::Vector3 pos) {
