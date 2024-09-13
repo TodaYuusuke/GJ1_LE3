@@ -3,6 +3,7 @@
 #include "scene/IScene.h"
 
 #include "../Stage/Stage.h"
+#include "FadeManager.h"
 
 class Result final
 	: public IScene {
@@ -50,4 +51,6 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 		// 経過時間
 		float time = 0.0f;
 	}ppParameter;
+
+	FadeManager fade_;
 };

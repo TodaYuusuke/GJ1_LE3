@@ -71,6 +71,6 @@ void Title::Update() {
 	fade_.Update();
 	if (fade_.GetOut()) {
 		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
+		nextSceneFunction = []() { return new NullScene([]() { return new TutorialScene(); }); };
 	}
 }

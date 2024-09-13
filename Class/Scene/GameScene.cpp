@@ -29,6 +29,8 @@ void GameScene::Initialize() {
 	// BGM
 	bgm_.Load("BGM/game1.mp3");
 	bgm_.Play(0.1f, 255);
+
+	fade_.Init();
 }
 
 // 更新
@@ -42,10 +44,20 @@ void GameScene::Update() {
 		uiInitFlag++;
 	}
 
-	// Nキーで次のシーンへ
-	if (Keyboard::GetTrigger(DIK_N)) {
+	// フェードインアウト更新
+	fade_.Update();
+	if (fade_.GetOut()) {
 		bgm_.Stop();
 		nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+	}
+	// フェードインが終わるまで処理しない
+	if (!fade_.GetIn()) {
+		return;
+	}
+
+	// Nキーで次のシーンへ
+	if (Keyboard::GetTrigger(DIK_N)) {
+		fade_.Out();
 	}
 
 
@@ -56,8 +68,7 @@ void GameScene::Update() {
 		deadStaging_.time += Info::GetDeltaTimeF();
 		if (deadStaging_.time > deadStaging_.totalTime) {
 			deadStaging_.time = deadStaging_.totalTime;
-			bgm_.Stop();
-			nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+			fade_.Out();
 		}
 
 		mainCamera.pp.grayScale.intensity = ResultLerp(0.0f, deadStaging_.grayInt, deadStaging_.time / deadStaging_.totalTime);

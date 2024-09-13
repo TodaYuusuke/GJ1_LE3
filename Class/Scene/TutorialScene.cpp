@@ -57,11 +57,7 @@ void TutorialScene::Initialize()
 	spriteGage_.worldTF.scale = { 2.0f,1.0f,1.0f };
 	spriteGage_.anchorPoint = { 0.0f,0.5f };
 
-
-	//testSprite_.isUI = true;
-	//testSprite_.material.enableLighting = false;
-	//testSprite_.material.texture = LWP::Resource::LoadTexture("");
-	//testSprite_.size;
+	fade_.Init();
 }
 
 void TutorialScene::Update()
@@ -155,18 +151,22 @@ void TutorialScene::SceneChange()
 {
 	//シーン変更フラグがONの時
 	if (isSceneChange_) {
-		//曲を止めてシーン変更
-		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
+		fade_.Out();
 	}
-
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N)) {
+		fade_.Out();
+	}
+
+	
+	// フェードインアウト更新
+	fade_.Update();
+	// フェードアウトが終わったら
+	if (fade_.GetOut()) {
+		// 曲を止めてシーン変更
 		bgm_.Stop();
 		nextSceneFunction = []() { return new NullScene([]() { return new GameScene(); }); };
 	}
-
-
 }
 
 void (TutorialScene::* TutorialScene::TaskInitialize[])() = {

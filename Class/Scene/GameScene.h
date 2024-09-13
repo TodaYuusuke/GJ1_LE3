@@ -10,6 +10,7 @@
 
 #include "../Particle/ParticleManager.h"
 #include "../Stage/Stage.h"
+#include "FadeManager.h"
 
 class GameScene final
 	: public IScene {
@@ -65,4 +66,7 @@ private: //*** これより先に必要な処理や変数を記述 ***//
 		// ビネットの強度
 		float vignetInt = 16.0f;
 	}deadStaging_;
+
+	// フェードインアウト
+	FadeManager fade_;
 };

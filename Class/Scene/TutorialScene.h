@@ -7,6 +7,8 @@
 #include"../Stage/Stage.h"
 #include "../Upgrade/UpgradeManager/UpgradeManager.h"
 
+#include "FadeManager.h"
+
 class TutorialScene final
 	: public IScene {
 public:
@@ -132,6 +134,9 @@ private://変数
 	// パーティクル管理
 	ParticleManager particleManager_;
 	EnemyManager enemyManager_; // 敵管理
+
+	// フェードインアウト
+	FadeManager fade_;
 
 #pragma region 音関係
 

@@ -43,6 +43,8 @@ void Result::Initialize() {
 	droneLight_.intensity = 0.5f;
 	droneLight_.radius = 10.0f;
 	droneLight_.color = { 202,255,208,255 };
+
+	fade_.Init();
 }
 
 // 更新
@@ -64,12 +66,16 @@ void Result::Update() {
 
 	// Nキーで次のシーンへ
 	if (Keyboard::GetTrigger(DIK_N) || Controller::GetTrigger(XBOX_A)) {
-		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
+		fade_.Out();
 	}
 	// Rキーでもう一度
 	if (Keyboard::GetTrigger(DIK_R)) {
+		fade_.Out();
+	}
+
+	fade_.Update();
+	if (fade_.GetOut()) {
 		bgm_.Stop();
-		nextSceneFunction = []() { return new NullScene([]() { return new Result(); }); };
+		nextSceneFunction = []() { return new NullScene([]() { return new Title(); }); };
 	}
 }
