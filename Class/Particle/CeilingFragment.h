@@ -38,7 +38,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 		newData.collider->enterLambda = [&newData, this](lwp::Collider::Collider* col) {
 			// 地面だった場合の処理
 			if (col->name == "Ground") {
-				// 跳ねる
+				// 跳ねる	
 				newData.velocity.y *= -0.35f;
 				newData.velocity.x *= 0.6f;
 				newData.velocity.z *= 0.6f;
