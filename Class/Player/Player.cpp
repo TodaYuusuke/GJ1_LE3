@@ -152,7 +152,6 @@ void Player::Update()
 		behaviorReq_ = std::nullopt;
 		//初期化処理
 		(this->*BehaviorInitialize[(int)behavior_])();
-
 	}
 	//状態更新処理
 	(this->*BehaviorUpdate[behavior_])();
@@ -388,20 +387,12 @@ void Player::ToJump() {
 
 void Player::SetAnimation(AnimatinNameType type, bool loop)
 {
-	
-
 	//歩行サウンドに関する処理
-	//走るモーションが呼び出されたとき足音
-	//すでに再生済
-	//すでに再生済
-	if (nowPlayAnimeName_ == animeName_[A_Run] && animeName_[type] == animeName_[A_Run]) {
-		return;
-	}
-	if (nowPlayAnimeName_!=animeName_[A_Run] && animeName_[type] == animeName_[A_Run]) {
-		audioRun_.Play();
-	}
-	else if (nowPlayAnimeName_ == animeName_[A_Run] && animeName_[type] != animeName_[A_Run]) {
+	if (nowPlayAnimeName_ == animeName_[A_Run]) {
 		audioRun_.Stop();
+	}
+	else if (animeName_[type] == animeName_[A_Run]) {
+		audioRun_.Play(audioVolume_, 255);
 	}
 
 	//スライドサウンド
