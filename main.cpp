@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	LWP::System::Run(new Result(true));
 #else
 	LWP::Window::ChangeFullScreenMode();
-	LWP::System::Run(new Title);
+	LWP::System::Run(new Title());
 #endif
 	return 0;
 }

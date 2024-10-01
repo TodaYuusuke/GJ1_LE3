@@ -49,7 +49,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 	/// <returns></returns>
 	bool UpdateParticle(Data& data) override {
 		// 経過フレーム
-		data.elapsedFrame++;
+		data.elapsedTime += LWP::Info::GetDeltaTimeF();
 
 		// 速度ベクトルを加算
 		data.m.worldTF.translation += data.velocity;
@@ -58,7 +58,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 		data.velocity.y += -9.8f / 600.0f;
 		
 		// 3秒経過で削除
-		if (data.elapsedFrame > 60) {
+		if (data.elapsedTime > 1.0f) {
 			return true;
 		}
 

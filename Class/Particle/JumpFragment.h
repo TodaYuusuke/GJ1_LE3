@@ -46,7 +46,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 			}
 			// 水面だった場合の処理
 			else if (col->name == "WaterSurface") {
-				newData.elapsedFrame = 180;	// パーティクルを終わらす
+				newData.elapsedTime = 3.0f;	// パーティクルを終わらす
 				milkPosition.push_back(newData.m.worldTF.GetWorldPosition());
 			}
 		};
@@ -61,7 +61,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 	/// <returns></returns>
 	bool UpdateParticle(Data& data) override {
 		// 経過フレーム
-		data.elapsedFrame++;
+		data.elapsedTime += LWP::Info::GetDeltaTimeF();
 
 		data.m.worldTF.translation += data.velocity;    // 速度ベクトルを加算
 		data.m.worldTF.rotation += data.velocity;    // ついでに回転させとく
@@ -71,7 +71,7 @@ private: // ** 純粋仮想関数のオーバーライド ** //
 		data.velocity.y += -9.8f / 600.0f;
 		
 		// 3秒経過で削除
-		if (data.elapsedFrame > 180) {
+		if (data.elapsedTime > 3.0f) {
 			return true;
 		}
 
